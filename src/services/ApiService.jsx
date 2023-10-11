@@ -34,7 +34,7 @@ export const userCidential = (body, isTeacher) => {
 /**
  * Gọi API đăng ký user
  * 
- * @param {*} body : requst body (từ form)
+ * @param {*} body : request body (từ form)
  * @param {*} teacher : check xem có phải là teacher ha không
  * @returns : Trả về 1 promise
  */
