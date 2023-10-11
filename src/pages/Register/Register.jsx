@@ -5,12 +5,13 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import InputField from '../../components/form-controls/InputField/InputField';
 import { displayNameInvalid, emailInvalid, emailRegex, passwordInvalid, passwordRegex, userNameInvalid, usernameRegex } from '../../utils/Constant';
 import Button from '../../components/form-controls/Button/Button';
-import { signUpService } from '../../services/ApiService';
-import { toast } from 'react-toastify';
+import { userCidential } from '../../services/ApiService';
+
 import 'react-toastify/dist/ReactToastify.css';
 import Toggle from '../../components/form-controls/Toggle/Toggle';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Path from '../../utils/Path';
+
 
 const DISPLAY_NAME = 'displayName';
 const USERNAME = 'loginName';
@@ -55,24 +56,17 @@ const Register = () => {
       })
 
       const [isTeacher, setIsTeacher] = useState(false)
+
+      // True nếu user nhận mình là giáo viên"
       const getToggle = (isToggle) => {
             setIsTeacher(isToggle)
       }
       const submitForm = (body) => {
             // Tạo service để chứa response từ API riêng
-            signUpService(body, isTeacher) // => Promise
-                  .then((response) => {
-                        navigate(Path.HOME);
-                        // Link tham khảo Toast: https://blog.logrocket.com/using-react-toastify-style-toast-messages/
-                        toast.success(`Sign-up successfully!`, {
-                              position: toast.POSITION.TOP_RIGHT,
-                        });
-                  })
-                  .catch((error) => {
-                        toast.error(`Sign-up fail !`, {
-                              position: toast.POSITION.TOP_RIGHT,
-                        });
-                  });
+            userCidential(body, isTeacher) // => Chỉ nhận response nếu kh có lỗi
+
+            // Nếu thành công thì chuyển đến trang Home
+            navigate(Path.HOME)
       };
       return (
             <div>
