@@ -76,7 +76,7 @@ const Register = () => {
                         toast.error(`Sign-up fail !`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });
-                        // setErrorMessage(error.response.data.message)
+                        setErrorMessage(error.response.data.message)
                   });
             // Nếu thành công thì chuyển đến trang Home
       };
