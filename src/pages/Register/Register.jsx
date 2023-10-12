@@ -5,13 +5,12 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import InputField from '../../components/form-controls/InputField/InputField';
 import { displayNameInvalid, emailInvalid, emailRegex, passwordInvalid, passwordRegex, userNameInvalid, usernameRegex } from '../../utils/Constant';
 import Button from '../../components/form-controls/Button/Button';
-import { userCidential } from '../../services/ApiService';
-
 import 'react-toastify/dist/ReactToastify.css';
 import Toggle from '../../components/form-controls/Toggle/Toggle';
 import { NavLink, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { checkStudent, saveCedentials, signUpService } from '../../services/ApiService';
 import Path from '../../utils/Path';
-
 
 const DISPLAY_NAME = 'displayName';
 const USERNAME = 'loginName';
@@ -56,18 +55,46 @@ const Register = () => {
       })
 
       const [isTeacher, setIsTeacher] = useState(false)
-
+      const [errorMessage, setErrorMessage] = useState();
       // True nếu user nhận mình là giáo viên"
       const getToggle = (isToggle) => {
             setIsTeacher(isToggle)
       }
       const submitForm = (body) => {
             // Tạo service để chứa response từ API riêng
-            userCidential(body, isTeacher) // => Chỉ nhận response nếu kh có lỗi
 
+            signUpService(body, isTeacher)
+                  .then((response) => {
+                        // Link tham khảo Toast: https://blog.logrocket.com/using-react-toastify-style-toast-messages/
+                        toast.success(`Sign-up successfully!`, {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
+                        saveCedentials(response) // Lưu thông tin user vào local sto
+                        // navigate(Path.HOME);
+                  })
+                  .catch((error) => {
+                        toast.error(`Sign-up fail !`, {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
+                        // setErrorMessage(error.response.data.message)
+                  });
             // Nếu thành công thì chuyển đến trang Home
-            navigate(Path.HOME)
       };
+      const checkRole = () => {
+            alert("Check role")
+            checkStudent()
+                  .then((response) => {
+                        toast.success(`Sign-up successfully!`, {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
+                        alert(response);
+                  })
+                  .catch((error) => {
+                        toast.error(`Sign-up fail !`, {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
+                  });
+      }
       return (
             <div>
                   <div className="mx-auto max-w-screen-xl px-4 py-2 sm:px-6 lg:px-8">
@@ -86,8 +113,9 @@ const Register = () => {
                                     <InputField name={PASSWORD} label="Password" form={form} />
                                     <InputField name={EMAIL} label="Email address" form={form} />
                                     <Toggle handleToggle={getToggle} >I am a teacher.</Toggle>
+                                    {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
                                     <Button className={isTeacher ? "bg-blue-800" : "bg-indigo-500"} isSubmiting={form.formState.isSubmitting} type='submit' >Sign up as {isTeacher ? 'an teacher' : 'an student'}</Button>
-
+                                    <a className={"bg-red-500"} onClick={() => checkRole()} >Check role</a>
                                     <p className="text-center text-sm text-gray-500">
                                           {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
                                           <NavLink className='underline text-sm' to="/login" >Login</NavLink>

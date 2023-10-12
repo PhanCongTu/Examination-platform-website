@@ -1,34 +1,21 @@
-import axios from 'axios';
-import Path from '../utils/Path';
-import { toast } from 'react-toastify';
+import axios from './axios';
+const signUpStudentUrl = `/signup/student`;
+const signUpTeacherUrl = `/signup/teacher`;
 
-const host = 'http://localhost:5000';
-const signUpStudentUrl = `${host}/signup/student`;
-const signUpTeacherUrl = `${host}/signup/teacher`;
+const checkRoleStudent = `/check/student`;
 
-
-/**
- * Chỉ return data nếu không có lỗi
- * 
- * @param {*} body : request body (từ form)
- * @param {*} isTeacher : check xem có phải là giáo viên hay không
- * @returns : response body
- */
-export const userCidential = (body, isTeacher) => {
-      signUpService(body, isTeacher)
-            .then((response) => {
-                  // Link tham khảo Toast: https://blog.logrocket.com/using-react-toastify-style-toast-messages/
-                  toast.success(`Sign-up successfully!`, {
-                        position: toast.POSITION.TOP_RIGHT,
-                  });
-                  saveCedentials(response.data)
-                  return response;
-            })
-            .catch((error) => {
-                  toast.error(`Sign-up fail !`, {
-                        position: toast.POSITION.TOP_RIGHT,
-                  });
-            });
+export const checkStudent = async () => {
+      const accessToken = getAccessToken();
+      let config = {
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: `${checkRoleStudent}`,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+            }
+      };
+      return await axios.request(config);
 }
 
 /**
@@ -38,11 +25,11 @@ export const userCidential = (body, isTeacher) => {
  * @param {*} teacher : check xem có phải là teacher ha không
  * @returns : Trả về 1 promise
  */
-const signUpService = async (body, teacher) => {
+export const signUpService = async (body, isTeacher) => {
       let config = {
             method: 'post',
             maxBodyLength: Infinity,
-            url: `${teacher ? signUpTeacherUrl : signUpStudentUrl}`,
+            url: `${isTeacher ? signUpTeacherUrl : signUpStudentUrl}`,
             headers: {
                   'Content-Type': 'application/json'
             },
@@ -57,11 +44,28 @@ const signUpService = async (body, teacher) => {
  * @param {*} userInfor : Thoong tin user (từ response body)
  * @param {*} rememberMe : True nếu user check vào "Remember Me"
  */
-const saveCedentials = (userInfor, rememberMe) => {
-      if (rememberMe) {
-            localStorage.setItem('userInfor', JSON.stringify(userInfor));
-      } else {
-            sessionStorage.setItem('userInfor', JSON.stringify(userInfor));
-      }
+export const saveCedentials = (userInfor) => {
+      localStorage.setItem('userInfor', JSON.stringify(userInfor));
+
+      // Lưu token riêng vào local storage
+      saveToken(userInfor.accessToken, userInfor.refreshToken);
+}
+
+export const saveToken = (accessToken, refreshToken) => {
+      localStorage.setItem('accessToken', accessToken);
+      localStorage.setItem('refreshToken', refreshToken);
+}
+export const destroyToken = () => {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+}
+
+export const getAccessToken = () => {
+      return localStorage.getItem('accessToken');
+
+}
+
+export const getRefreshToken = () => {
+      return localStorage.getItem('refreshToken');
 }
 
