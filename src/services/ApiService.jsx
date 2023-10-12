@@ -2,22 +2,6 @@ import axios from './axios';
 const signUpStudentUrl = `/signup/student`;
 const signUpTeacherUrl = `/signup/teacher`;
 
-const checkRoleStudent = `/check/student`;
-
-export const checkStudent = async () => {
-      const accessToken = getAccessToken();
-      let config = {
-            method: 'get',
-            maxBodyLength: Infinity,
-            url: `${checkRoleStudent}`,
-            headers: {
-                  'Authorization': `Bearer ${accessToken}`,
-                  'Content-Type': 'application/json'
-            }
-      };
-      return await axios.request(config);
-}
-
 /**
  * Gọi API đăng ký user
  * 
@@ -44,7 +28,7 @@ export const signUpService = async (body, isTeacher) => {
  * @param {*} userInfor : Thoong tin user (từ response body)
  * @param {*} rememberMe : True nếu user check vào "Remember Me"
  */
-export const saveCedentials = (userInfor) => {
+export const saveCredential = (userInfor) => {
       localStorage.setItem('userInfor', JSON.stringify(userInfor));
 
       // Lưu token riêng vào local storage
