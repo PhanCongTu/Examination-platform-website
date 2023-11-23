@@ -1,9 +1,12 @@
 import React from 'react'
+import { Header } from '../../components/form-controls/Nav/Header.jsx'
+
+
 
 function Home() {
       return (
             <div>
-                  <h1>Welcome home, baeee!!</h1>
+                  <Header/>
             </div>
       )
 }

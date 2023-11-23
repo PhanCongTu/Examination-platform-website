@@ -1,7 +1,7 @@
 import React, { memo, useState } from 'react'
 
-function Toggle({ children, handleToggle }) {
-      const [isChecked, setIsChecked] = useState(false)
+function Toggle({ children, handleToggle, checked }) {
+      const [isChecked, setIsChecked] = useState(false||checked)
 
       const handleCheckboxChange = () => {
             setIsChecked(!isChecked) // isChecked chưa thay rồi vì phải render hết script thì value mới thay đổi
