@@ -55,30 +55,8 @@ const ForgotPassword = () => {
 
 
       const submitForm = (body) => {
-
-            // if (!isCode) {
-            //       setIsCode(true);
-            //       codeResetService(body,email).then(
-            //             () => {
-            //                   toast.success(`Code reset password is sended to email!`, {
-            //                         position: toast.POSITION.TOP_RIGHT,
-            //                   });
-            //             }
-
-
-            //       ).catch(
-            //             (e) => {
-            //                   toast.error(`Error send code reset password`, {
-            //                         position: toast.POSITION.TOP_RIGHT,
-            //                   });
-            //                   setErrorMessage(e.response)
-            //             }
-            //       )
-
-            // } else {
                   if (body.password === body.confirmPassword) {
                         resetPasswordService(body,email).then((res) => {
-                              console.log("AAAAAA")
                               toast.success(`Reset password successfully!`, {
                                     position: toast.POSITION.TOP_RIGHT,
                               });

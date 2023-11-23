@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getRefreshToken, saveToken } from './ApiService';
+import { getRefreshToken,  saveToken } from './ApiService';
 
 const instance = axios.create({
       baseURL: 'http://localhost:5000',
@@ -18,14 +18,16 @@ instance.interceptors.response.use(function (response) {
       const prevRequest = error?.config;
       if (error.response && error?.response?.status === 401 && !prevRequest?.sent) {
             prevRequest.sent = true;
+            console.log("REFRESH TOKEN ", getRefreshToken());
             const resp = (await refreshToken(getRefreshToken()));
 
             console.log("resp")
             console.log(resp)
-            console.log(JSON.stringify(prevRequest))
+           
+            // const roles=getUserInfo().roles;
+            // console.log(JSON.stringify(roles))
 
-
-            saveToken(resp.accessToken, resp.refreshToken)
+            saveToken(resp.accessToken, resp.refreshToken, null);
             prevRequest.headers = {
                   authorization: `Bearer ${resp.accessToken}`,
                   'Content-Type': 'application/json'

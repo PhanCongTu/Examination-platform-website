@@ -8,8 +8,9 @@ import Button from '../../components/form-controls/Button/Button';
 import 'react-toastify/dist/ReactToastify.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getAccessToken, loginInService, saveCredential } from '../../services/ApiService';
+import { getAccessToken, getRoles, loginInService, saveCredential } from '../../services/ApiService';
 import Path from '../../utils/Path';
+import { ROLE_ADMIN } from '../../utils/Constant';
 
 const USERNAME = 'loginName';
 const PASSWORD = 'password';
@@ -41,24 +42,36 @@ const Login = () => {
             // https://www.techzaion.com/validation-with-yup
             resolver: yupResolver(yupObject)
       })
-      useEffect(()=>{
-            if(getAccessToken()){
-                  navigate(Path.HOME);
+      useEffect(() => {
+            let accessToken = getAccessToken()
+            let roles = getRoles();
+            console.log(roles);
+            console.log(roles?.includes(ROLE_ADMIN));
+            if (accessToken) {
+                  if (roles.includes(ROLE_ADMIN))
+                        navigate(Path.AMCLASSMANAGER);
+                  else
+                        navigate(Path.HOME);
             }
-      },[])
+      }, [])
       const [errorMessage, setErrorMessage] = useState();
       // True nếu user nhận mình là giáo viên"
-      
+
       const submitForm = (body) => {
             // Tạo service để chứa response từ API riêng
-           
+
             loginInService(body)
                   .then((response) => {
+                        console.log(response);
                         toast.success(`Log in successfully!`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });
-                        saveCredential(response) // Lưu thông tin user vào local sto
-                        navigate(Path.HOME);
+                        saveCredential(response)
+                        let roles = getRoles();// Lưu thông tin user vào local sto
+                        if (roles.includes(ROLE_ADMIN))
+                              navigate(Path.AMCLASSMANAGER);
+                        else
+                              navigate(Path.HOME);
                   })
                   .catch((error) => {
                         toast.error(`Log in fail !`, {
@@ -69,7 +82,7 @@ const Login = () => {
             // Nếu thành công thì chuyển đến trang Home
       };
       return (
-            <div>
+            <div className='mt-12'>
                   <div className="mx-auto max-w-screen-xl px-4 py-2 sm:px-6 lg:px-8">
                         <div className="mx-auto max-w-lg">
                               <h1 className="text-center text-2xl font-bold text-indigo-600 sm:text-3xl">
@@ -82,23 +95,23 @@ const Login = () => {
                                     <p className="text-center text-lg font-medium">Log in</p>
 
                                     <InputField name={USERNAME} label="Username" form={form} />
-                                    <InputField name={PASSWORD} type ="password" label="Password" form={form} />
+                                    <InputField name={PASSWORD} type="password" label="Password" form={form} />
                                     {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
-                                    <Button className= "bg-blue-800" isSubmiting={form.formState.isSubmitting} type='submit' >Log in</Button>
+                                    <Button className="bg-blue-800" isSubmiting={form.formState.isSubmitting} type='submit' >Log in</Button>
                                     <div>
-                                    <p className="text-center text-sm text-gray-500">
-                                          {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
-                                          Haven't an account? &nbsp;
-                                          <NavLink className='underline text-sm' to="/register" >Register</NavLink>
-                                          
-                                    </p>
-                                    <p className="text-center text-sm text-gray-500">
-                                          {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
-                                          Don't remember password? &nbsp;
-                                          <NavLink className='underline text-sm' to="/forgot" >Forgot password</NavLink>
-                                    </p>
+                                          <p className="text-center text-sm text-gray-500">
+                                                {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
+                                                Haven't an account? &nbsp;
+                                                <NavLink className='underline text-sm' to="/register" >Register</NavLink>
+
+                                          </p>
+                                          <p className="text-center text-sm text-gray-500">
+                                                {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
+                                                Don't remember password? &nbsp;
+                                                <NavLink className='underline text-sm' to="/forgot" >Forgot password</NavLink>
+                                          </p>
                                     </div>
-                                    
+
                               </form>
                         </div>
                   </div>

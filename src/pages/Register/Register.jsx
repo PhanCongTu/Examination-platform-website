@@ -16,6 +16,7 @@ const DISPLAY_NAME = 'displayName';
 const USERNAME = 'loginName';
 const PASSWORD = 'password';
 const EMAIL = 'emailAddress';
+const CONFIRMPASSWORD = 'confirmPassword';
 
 const Register = () => {
       const navigate = useNavigate();
@@ -35,6 +36,9 @@ const Register = () => {
                   .string()
                   .matches(usernameRegex, userNameInvalid),
             [PASSWORD]: yup
+                  .string()
+                  .matches(passwordRegex, passwordInvalid),
+            [CONFIRMPASSWORD]: yup
                   .string()
                   .matches(passwordRegex, passwordInvalid),
             [EMAIL]: yup
@@ -62,23 +66,25 @@ const Register = () => {
       }
       const submitForm = (body) => {
             // Tạo service để chứa response từ API riêng
-
-            signUpService(body, isTeacher)
-                  .then((response) => {
-                        // Link tham khảo Toast: https://blog.logrocket.com/using-react-toastify-style-toast-messages/
-                        toast.success(`Sign-up successfully!`, {
-                              position: toast.POSITION.TOP_RIGHT,
+            if (body.password === body.confirmPassword)
+                  signUpService(body, isTeacher)
+                        .then((response) => {
+                              // Link tham khảo Toast: https://blog.logrocket.com/using-react-toastify-style-toast-messages/
+                              toast.success(`Sign-up successfully!`, {
+                                    position: toast.POSITION.TOP_RIGHT,
+                              });
+                              saveCredential(response) // Lưu thông tin user vào local sto
+                              navigate(Path.HOME);
+                        })
+                        .catch((error) => {
+                              toast.error(`Sign-up fail !`, {
+                                    position: toast.POSITION.TOP_RIGHT,
+                              });
+                              setErrorMessage(error.response.data.message)
                         });
-                        saveCredential(response) // Lưu thông tin user vào local sto
-                        navigate(Path.HOME);
-                  })
-                  .catch((error) => {
-                        toast.error(`Sign-up fail !`, {
-                              position: toast.POSITION.TOP_RIGHT,
-                        });
-                        setErrorMessage(error.response.data.message)
-                  });
-            // Nếu thành công thì chuyển đến trang Home
+            else {
+                  setErrorMessage("Password and confirm password do not match");
+            }
       };
       return (
             <div>
@@ -96,6 +102,7 @@ const Register = () => {
                                     <InputField name={DISPLAY_NAME} label="Display name" form={form} />
                                     <InputField name={USERNAME} label="Username" form={form} />
                                     <InputField name={PASSWORD} label="Password" form={form} />
+                                    <InputField name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
                                     <InputField name={EMAIL} label="Email address" form={form} />
                                     <Toggle handleToggle={getToggle} >I am a teacher.</Toggle>
                                     {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
