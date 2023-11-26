@@ -6,8 +6,9 @@ const Path = {
     LOGOUT: '/logout',
     AMCLASSMANAGER: '/admin/class',
     AMTEACHERMANAGER:'/admin/teacher',
-    AMSTUDENTMANAGER:'/admin/student/:idClassRoom?',
+    AMSTUDENTMANAGER:'/admin/student/:idClassRoom',
     AMQUESTIONGROUPMANAGER:'/admin/questiongr/:id?',
-    AMEXAMINATIONMANAGER:'/admin/examination/:idClassRoom?'
+    AMEXAMINATIONMANAGER:'/admin/examination/:idClassRoom?',
+    AMQUESTIONMANAGER:'/admin/question/:idClassRoom?'
 }
 export default Path

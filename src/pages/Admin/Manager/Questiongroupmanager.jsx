@@ -10,6 +10,7 @@ import Toggle from '../../../components/form-controls/Toggle/Toggle';
 import { addQuestionGroupService, deleteQuestionGroupService, getAllActivateQuestionGroupService, getAllUnActiveQuestionGroupService, removeCredential, updateQuestionGroupService } from '../../../services/ApiService';
 import PaginationNav from '../../../components/pagination/PaginationNav';
 import Path from '../../../utils/Path';
+import { Questionmanager } from './Questionmanager';
 
 const QUESTIONGROUP_CODE = 'code';
 const QUESTIONGROUP_NAME = 'name';
@@ -18,7 +19,8 @@ const ID_QUESTIONGROUP = 'id';
 const ID_CLASSROOM = 'classroomId';
 
 export const QuestionGroup = (props) => {
-    const {id}=useParams();
+    const { id } = useParams();
+    const [isShowQuestion, setIsShowQuestion] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -34,7 +36,7 @@ export const QuestionGroup = (props) => {
     const [questionGroupSelect, setQuestionGroupSelect] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
-    const navigate=useNavigate();
+    const navigate = useNavigate();
 
     const initialValue = {
         [QUESTIONGROUP_CODE]: '',
@@ -53,17 +55,24 @@ export const QuestionGroup = (props) => {
         setIsEdit(false);
         setIsAdd(false);
         setIsDelete(false);
+        setIsShowQuestion(false);
     }
 
     const handleClickAdd = () => {
         console.log("ADDD");
         setIsAdd(true);
     }
+    
     const form = useForm({
         mode: 'onSubmit',
         defaultValues: initialValue,
         criteriaMode: "firstError",
     })
+
+    const handleShowQuestion = (item) => {
+        setIsShowQuestion(true);
+        setQuestionGroupSelect(item);
+    }
 
     const submitForm = (body) => {
         console.log(body);
@@ -245,10 +254,11 @@ export const QuestionGroup = (props) => {
     };
 
     useEffect(() => {
-        getAllQuestionGroup();
         console.log(id);
-        if(id===':id')
+        if (id === ':id')
             navigate(Path.AMCLASSMANAGER);
+        else
+            getAllQuestionGroup();
     }, [isModeActive]);
 
 
@@ -259,7 +269,7 @@ export const QuestionGroup = (props) => {
                     <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='items-center flex gap-4 justify-between mb-[14px]'>
-                               
+
 
                                 <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
                                 <div className="relative">
@@ -272,14 +282,14 @@ export const QuestionGroup = (props) => {
 
                                 </div>
                                 <div className='flex gap-4  items-center justify-between'>
-                                    <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add</Button>
+                                    <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question group</Button>
                                     {/* <Button className="bg-red-500" handleOnClick={() => { handleClickDelete() }}>Delete</Button> */}
                                 </div>
                             </div>
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                
+
                                         <th scope="col" className="px-6 py-3">
                                             ID question group
                                         </th>
@@ -310,7 +320,7 @@ export const QuestionGroup = (props) => {
                                                                     {item.id}
                                                                 </th>
                                                                 <td className="px-6 py-4 w-[200px]">
-                                                                    <p className="cursor-pointer font-medium dark:text-blue-500 hover:underline">{item.name}</p>
+                                                                    <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[200px]">
                                                                     {item.code}
@@ -338,7 +348,7 @@ export const QuestionGroup = (props) => {
                                     }
                                 </tbody>
                             </table>
-                          
+
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -376,7 +386,7 @@ export const QuestionGroup = (props) => {
                 }
                 {isAdd && (
                     <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -384,8 +394,8 @@ export const QuestionGroup = (props) => {
                                 >
                                     <p className="text-center text-lg font-medium">Add question group</p>
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={id} />
-                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} />
-                                    <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} />
+                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={''} />
+                                    <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={''} />
                                     <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
@@ -410,6 +420,19 @@ export const QuestionGroup = (props) => {
                                 </form>
                             </Modal.Body>
                         </Modal></>)
+                }
+                {
+                    isShowQuestion && (
+                        <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
+                            <Modal className="top-0 left-0 right-0 z-[101] m-auto w-auto" show={true} size="md" popup onClose={() => handleClose()} >
+                                <Modal.Header >
+                                    <h1>Question of question group</h1>
+                                    <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
+                                </Modal.Header>
+                                <Modal.Body>
+                                    <Questionmanager id={questionGroupSelect.id}/>
+                                </Modal.Body>
+                            </Modal></>)
                 }
             </div >
         </div >

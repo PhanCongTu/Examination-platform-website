@@ -6,8 +6,12 @@ function InputField(props) {
   const { form, name, label, type, disabled, children, defaultValue } = props;
   const { errors } = form.formState;
   const hasError = errors[name];
-  if(defaultValue)
+  
+  if(defaultValue===''){
+    console.log("SSSS ",defaultValue);
     form.setValue(name, defaultValue);
+  }
+    
   return (
     <>
       <div className={clsx(form.formState.isSubmitting ? "opacity-50" : '', disabled ? "hidden" : '')} >

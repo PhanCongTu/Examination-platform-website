@@ -9,7 +9,7 @@ export const Sidebar = (props) => {
    let navigate = useNavigate();
    const { handleOnClick } = props;
    const handleLogOut = () => {
-      
+
       // handleOnClick(false);
       navigate(Path.LOGIN);
       removeCredential();
@@ -84,10 +84,9 @@ export const Sidebar = (props) => {
                      </NavLink>
                   </li>
                   <li className=''>
-                     <NavLink to={'/'}className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)} >
+                     <NavLink to={'/admin/question/'} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)} >
 
                         <svg width="20px" height="20px" viewBox="0 0 24 24" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M13 15h-1a4.62 4.62 0 0 1 1.803-3.755c.672-.66 1.203-1.182 1.197-2.049A2.188 2.188 0 0 0 12.607 7a2.419 2.419 0 0 0-2.624 2.39h-1a3.19 3.19 0 0 1 1.163-2.557A3.88 3.88 0 0 1 12.606 6 3.173 3.173 0 0 1 16 9.193a3.732 3.732 0 0 1-1.496 2.765A3.636 3.636 0 0 0 13 15zm-1.5 3.5a1 1 0 1 0 1-1 1 1 0 0 0-1 1zm11.3-6A10.3 10.3 0 1 1 12.5 2.2a10.297 10.297 0 0 1 10.3 10.3zm-1 0a9.3 9.3 0 1 0-9.3 9.3 9.31 9.31 0 0 0 9.3-9.3z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-
                         <span className="flex-1 ml-3 whitespace-nowrap">Question management</span>
                      </NavLink>
                   </li>
@@ -102,8 +101,8 @@ export const Sidebar = (props) => {
                   <li className=''>
                      <NavLink to={Path.AMQUESTIONGROUPMANAGER} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)}>
 
-                       
-                        <FontAwesomeIcon icon={faBook} style={{color: "#0f0f0f",}} />
+
+                        <FontAwesomeIcon icon={faBook} style={{ color: "#0f0f0f", }} />
                         <span className="flex-1 ml-3 whitespace-nowrap">Question group management</span>
                      </NavLink>
                   </li>

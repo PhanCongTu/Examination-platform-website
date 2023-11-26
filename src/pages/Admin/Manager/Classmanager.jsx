@@ -79,12 +79,14 @@ export const Classmanager = () => {
     // };
 
     const handleShowExamOfClass = (item) => {
+        console.log("SSAAA", item.id);
         navigate(`/admin/examination/${item.id}`)
     }
 
     const handleClickOpenQuestionGroup = (item) => {
         navigate(`/admin/questiongr/${item.id}`)
     }
+    
     const handleClickDelete = (item) => {
         setIsDelete(true);
         setClassSelect(item);
