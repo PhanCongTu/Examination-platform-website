@@ -199,7 +199,11 @@ export const Examinationmanager = () => {
     useEffect(() => {
         document.title = "Examination Mananger Admin"
         console.log(idClassRoom);
-        getAllExam();
+        if(idClassRoom)
+            getAllExam();
+        else{
+            navigate(Path.AMCLASSMANAGER);
+        }
     }, [isStarted]);
 
     return (

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Button from '../../../components/form-controls/Button/Button';
-import { Modal } from 'flowbite-react';
+import { Modal, Toast } from 'flowbite-react';
 import Toggle from '../../../components/form-controls/Toggle/Toggle';
 import InputField from '../../../components/form-controls/InputField/InputField';
 import PaginationNav from '../../../components/pagination/PaginationNav';
@@ -9,18 +9,29 @@ import {
     MenuHandler,
     MenuList,
     MenuItem,
-    Button as ButtonMenu
+    Button as ButtonMenu,
+    input
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { getAllActiveQuestionService, getAllInActiveQuestionService, removeCredential } from '../../../services/ApiService';
+import { addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionService, getAllInActiveQuestionService, removeCredential, updateQuestionService } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
-
+import clsx from 'clsx';
+import { createRoot } from 'react-dom/client';
+const CONTENT_QUESTION = 'content';
+const QUESTION_GROUP_ID = 'questionGroupId';
+const ANSWER1 = 'answer1';
+const ANSWER2 = 'answer2';
+const ANSWER3 = 'answer3';
+const ANSWER4 = 'answer4';
+const ID_QUESTION = 'id';
 export const Questionmanager = (props) => {
     const navigate = useNavigate();
+    const [listAnswer, setListAnswer] = useState([]);
+    const [clickCount, setClickCount] = useState(1);
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -38,10 +49,57 @@ export const Questionmanager = (props) => {
     const [isDelete, setIsDelete] = useState(false);
     const [isToggle, setIsToggle] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
+    const [answer, setAnswer] = useState('');
+    const [selectedOption, setSelectedOption] = useState('');
 
-    const initialValue = {
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
 
     };
+
+    const showAnswer = useRef(null);
+
+    const initialValue = {
+        [CONTENT_QUESTION]: '',
+        [QUESTION_GROUP_ID]: '',
+        [ID_QUESTION]: '',
+        [ANSWER1]: '',
+        [ANSWER2]: '',
+        [ANSWER3]: '',
+        [ANSWER4]: '',
+    };
+
+    const handleAddAnswer = (event) => {
+        event.preventDefault();
+        if (answer === '') {
+            toast.error('Please enter answer', { position: toast.POSITION.TOP_RIGHT })
+        }
+        else {
+            const label = document.createElement('label');
+            const input = document.createElement('input');
+            input.type = 'radio';
+            input.name = 'options';
+            input.value = answer;
+            const updatedListAnswer = [...listAnswer];
+            updatedListAnswer.push(answer);
+            setListAnswer(updatedListAnswer);
+            input.checked = selectedOption === input.value;
+            input.addEventListener('change', handleOptionChange);
+
+            // Object.assign(input, form.register('asnwer' + clickCount));
+            label.appendChild(input);
+            label.appendChild(document.createTextNode(answer));
+            showAnswer.current.appendChild(label);
+            setClickCount(clickCount + 1);
+            setAnswer('');
+        }
+
+
+    }
+
+    const handleInputAnswer = (event) => {
+        setAnswer(event.target.value);
+    }
 
     const isChecked = (itemId) => {
         // const filteredItems = listClassDelete.filter((item) => item === itemId);
@@ -83,6 +141,10 @@ export const Questionmanager = (props) => {
             setIsDelete(false);
         if (isQuestionGroupOpen)
             setIsQuestionGroupOpen(false);
+        setAnswer('');
+        setSelectedOption('');
+        setClickCount(1);
+        setListAnswer([]);
     }
 
     const handleClickAdd = () => {
@@ -99,11 +161,68 @@ export const Questionmanager = (props) => {
     const submitForm = (body) => {
         handleClose();
         console.log(body);
-        if (isEdit);
+        const newBody = {
+            content: body.content,
+            firstAnswer: {
+                answerContent: body.answer1
+            },
+            secondAnswer: {
+                answerContent: body.answer2,
 
-        if (isAdd);
+            },
+            thirdAnswer: {
+                answerContent: body.answer3,
+            },
+            fourthAnswer: {
+                answerContent: body.answer4
+            },
+            questionGroupId: body.questionGroupId
+        }
+        listAnswer.map((item, index) => {
+            if (selectedOption === item) {
+                switch (index) {
+                    case 0:
+                        newBody.firstAnswer.isCorrect = true;
+                        break;
+                    case 1:
+                        newBody.secondAnswer.isCorrect = true;
+                        break;
+                    case 2:
+                        newBody.thirdAnswer.isCorrect = true;
+                        break;
+                    default:
+                        newBody.fourthAnswer.isCorrect = true;
+                        break;
+                }
+            }
+        })
+        console.log("New body", newBody);
+        if (isEdit) {
+            let { questionGroupId, ...newBodys } = newBody;
+            newBodys.id = body.id;
+            updateQuestionService(newBodys).then((res) => {
+                toast.success('Edit question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                getAllQuestion();
+            }).catch((error) => {
+                toast.error('Edit question fail', { position: toast.POSITION.TOP_RIGHT });
+            })
+        }
 
-        if (isDelete);
+        if (isAdd)
+            addQuestionByQuestionGroupService(newBody).then((res) => {
+                toast.success('Add question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                getAllQuestion();
+            }).catch((error) => {
+                toast.error('Add question fail', { position: toast.POSITION.TOP_RIGHT });
+            })
+
+        if (isDelete)
+        deleteQuestionService(body.id).then((res) => {
+            toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
+            getAllQuestion();
+        }).catch((error) => {
+            toast.error('Delete question fail', { position: toast.POSITION.TOP_RIGHT });
+        })
 
         setActiveIndex(0);
 
@@ -254,7 +373,7 @@ export const Questionmanager = (props) => {
     };
 
     useEffect(() => {
-       
+
         if (props.id)
             getAllQuestion();
         else
@@ -376,7 +495,7 @@ export const Questionmanager = (props) => {
                                                                                 <FontAwesomeIcon icon={faBars} />
                                                                             </ButtonMenu>
                                                                         </MenuHandler>
-                                                                        <MenuList className='rounded-md'>
+                                                                        <MenuList className='rounded-md z-[102]'>
                                                                             <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
                                                                             <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
 
@@ -411,14 +530,51 @@ export const Questionmanager = (props) => {
                 </div>
                 {isEdit && (
                     <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-                                    <p className="text-center text-lg font-medium"> Edit class</p>
-
+                                    <p className="text-center text-lg font-medium">Edit question</p>
+                                    <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} />
+                                    <InputField name='id' disabled form={form} defaultValue={props.id} />
+                                    <InputField name={ANSWER1} label="First Answer" form={form} defaultValue={questionSelect.firstAnswer}
+                                        children={<><input
+                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                            type="checkbox"
+                                            name="options"
+                                            value={questionSelect.firstAnswer}
+                                            checked={selectedOption === questionSelect.firstAnswer}
+                                            onChange={handleOptionChange}
+                                        /></>} />
+                                    <InputField name={ANSWER2} label="Second Answer" form={form} defaultValue={questionSelect.secondAnswer} 
+                                    children={<><input
+                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                        type="checkbox"
+                                        name="options"
+                                        value={questionSelect.secondAnswer}
+                                        checked={selectedOption === questionSelect.secondAnswer}
+                                        onChange={handleOptionChange}
+                                    /></>}/>
+                                    <InputField name={ANSWER3} label="Third Answer" form={form} defaultValue={questionSelect.thirdAnswer} 
+                                    children={<><input
+                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                        type="checkbox"
+                                        name="options"
+                                        value={questionSelect.thirdAnswer}
+                                        checked={selectedOption === questionSelect.thirdAnswer}
+                                        onChange={handleOptionChange}
+                                    /></>}/>
+                                    <InputField name={ANSWER4} label="Fourth Answer" form={form} defaultValue={questionSelect.fourthAnswer} 
+                                    children={<><input
+                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                        type="checkbox"
+                                        name="options"
+                                        value={questionSelect.fourthAnswer}
+                                        checked={selectedOption === questionSelect.fourthAnswer}
+                                        onChange={handleOptionChange}
+                                    /></>}/>
                                     <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
@@ -426,15 +582,34 @@ export const Questionmanager = (props) => {
                 }
                 {isAdd && (
                     <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <p className="text-center text-lg font-medium">Add question</p>
+                                    <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
+                                    <InputField name={ANSWER1} disabled form={form} defaultValue={listAnswer[0] || ''} />
+                                    <InputField name={ANSWER2} disabled form={form} defaultValue={listAnswer[1] || ''} />
+                                    <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
+                                    <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} />
+                                    <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={''} />
+                                    <div>
+                                        <label className='block pb-1 text-sm font-medium text-gray-700'>
+                                            Answer
+                                        </label>
+                                        <div className={clsx('relative flex justify-center ')}>
 
-                                    <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
+                                            <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder='Enter answer'>
+
+                                            </input>
+                                            <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('border-2 border-blue-200 rounded-lg bg-green-200 text-xs', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add answer</button>
+                                        </div>
+                                    </div>
+                                    <div ref={showAnswer} className='showAnswer flex flex-col' >
+                                    </div>
+                                    <Button onClick={() => handleClose()} className={clsx(clickCount <= 4 ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -447,7 +622,7 @@ export const Questionmanager = (props) => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-                                    <InputField disabled form={form} defaultValue={questionSelect.id} />
+                                    <InputField name={ID_QUESTION} disabled form={form} defaultValue={questionSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
                                     <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
                                     <div className='invisible py-3'></div>

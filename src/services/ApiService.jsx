@@ -23,6 +23,35 @@ const addExamByIdClassroomUrl = 'api/v1/multiple-choice-test/create'
 const getAllActiveQuestionUrl = 'api/v1/question/question-group'
 const getAllInActiveQuestionUrl = 'api/v1/question/inactive/question-group'
 const addQuestionByQuestionGroupUrl='api/v1/question/create';
+const updateQuestionUrl='api/v1/question/update/{id}';
+const deleteQuestionUrl='api/v1/question/delete/{id}';
+
+export const deleteQuestionService=async(id)=>{
+      let accessToken=getAccessToken();
+      return await axios.request({
+            method:'put',
+            url:deleteQuestionUrl.replace('{id}',id),
+            headers:{
+                  'Authorization':`Bearer ${accessToken}`,
+                  'Content-Type':'application/json'
+            }
+      })
+}
+
+export const updateQuestionService=async(body)=>{
+      let {id,...params}=body;
+     
+      let accessToken=getAccessToken();
+      return await axios.request({
+            method:'put',
+            url:updateQuestionUrl.replace('{id}',id),
+            data:params,
+            headers:{
+                  'Authorization':`Bearer ${accessToken}`,
+                  'Content-Type':'application/json'
+            }
+      })
+}
 
 export const addQuestionByQuestionGroupService= async(body)=>{
       let accessToken=getAccessToken();
