@@ -5,6 +5,7 @@ const Path = {
     FORGOT: '/forgot',
     LOGOUT: '/logout',
     VERIFY_EMAIL: '/verify-email',
+    VERIFY_EMAIL: '/verify-email',
     AMCLASSMANAGER: '/admin/class',
     AMTEACHERMANAGER: '/admin/teacher',
     AMSTUDENTMANAGER: '/admin/student/:idClassRoom?',

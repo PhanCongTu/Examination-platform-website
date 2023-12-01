@@ -46,10 +46,7 @@ export const AppRoutes = () => {
           <Route path={Path.AMCLASSMANAGER} element={<Classmanager />} />
           <Route path={Path.AMQUESTIONGROUPMANAGER} element={<QuestionGroup />} />
           <Route path={Path.AMEXAMINATIONMANAGER} element={<Examinationmanager />} />
-          <Route path={Path.AMSTUDENTMANAGER} element={<Studentmanager />} />
           <Route path={'/admin/student/:idClassRoom'} element={<Studentmanager />} />
-          <Route path={Path.AMQUESTIONMANAGER} element={<Questionmanager />} />
-          <Route path={Path.AMSCOREMANAGER} element={<Scoremanager />} />
           <Route path={'/admin/student'} element={<Studentmanager showByIdClassRoom={false} />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />
