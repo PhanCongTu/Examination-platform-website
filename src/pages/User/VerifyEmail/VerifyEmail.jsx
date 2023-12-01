@@ -1,9 +1,9 @@
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom';
-import { sendEmailVerifyCodeService, verifyEmailService } from '../../services/UserService';
-import { getUserInfo, removeCredential, saveCredential } from '../../services/ApiService';
+import { sendEmailVerifyCodeService, verifyEmailService } from '../../../services/UserService';
+import { getUserInfo, removeCredential, saveCredential } from '../../../services/ApiService';
 import { toast } from 'react-toastify';
-import Path from '../../utils/Path';
+import Path from '../../../utils/Path';
 function VerifyEmail() {
       const navigate = useNavigate();
       const [code, setCode] = React.useState();

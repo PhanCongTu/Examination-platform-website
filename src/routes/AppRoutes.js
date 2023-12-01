@@ -19,7 +19,7 @@ import ClassroomDetail from '../pages/User/ClassrommDetail/ClassroomDetail'
 import PrepareTest from '../pages/User/PrepareTest/PrepareTest';
 import Student from '../pages/User/Student';
 import DoMCTest from '../pages/User/DoMCTest/DoMCTest';
-import VerifyEmail from '../pages/VerifyEmail/VerifyEmail';
+import VerifyEmail from '../pages/User/VerifyEmail/VerifyEmail';
 export const AppRoutes = () => {
 
   return (
