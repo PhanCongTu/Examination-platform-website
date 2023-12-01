@@ -9,7 +9,7 @@ export const Sidebar = (props) => {
    let navigate = useNavigate();
    const { handleOnClick } = props;
    const handleLogOut = () => {
-      
+
       // handleOnClick(false);
       navigate(Path.LOGIN);
       removeCredential();
@@ -67,7 +67,7 @@ export const Sidebar = (props) => {
                      </NavLink>
                   </li> */}
                   <li className=''>
-                     <NavLink to={'/'} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)} >
+                     <NavLink to={'/admin/score/'} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)} >
 
                         <svg width="20px" height="20px" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 1024 1024" version="1.1" ><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M905.92 237.76a32 32 0 0 0-52.48 36.48A416 416 0 1 1 96 512a418.56 418.56 0 0 1 297.28-398.72 32 32 0 1 0-18.24-61.44A480 480 0 1 0 992 512a477.12 477.12 0 0 0-86.08-274.24z" fill="#231815"></path><path d="M630.72 113.28A413.76 413.76 0 0 1 768 185.28a32 32 0 0 0 39.68-50.24 476.8 476.8 0 0 0-160-83.2 32 32 0 0 0-18.24 61.44zM489.28 86.72a36.8 36.8 0 0 0 10.56 6.72 30.08 30.08 0 0 0 24.32 0 37.12 37.12 0 0 0 10.56-6.72A32 32 0 0 0 544 64a33.6 33.6 0 0 0-9.28-22.72A32 32 0 0 0 505.6 32a20.8 20.8 0 0 0-5.76 1.92 23.68 23.68 0 0 0-5.76 2.88l-4.8 3.84a32 32 0 0 0-6.72 10.56A32 32 0 0 0 480 64a32 32 0 0 0 2.56 12.16 37.12 37.12 0 0 0 6.72 10.56zM355.84 313.6a36.8 36.8 0 0 0-13.12 18.56l-107.52 312.96a37.44 37.44 0 0 0 2.56 35.52 32 32 0 0 0 24.96 10.56 27.84 27.84 0 0 0 17.28-5.76 43.84 43.84 0 0 0 10.56-13.44 100.16 100.16 0 0 0 7.04-15.36l4.8-12.8 17.6-49.92h118.72l24.96 69.76a45.76 45.76 0 0 0 10.88 19.2 28.8 28.8 0 0 0 20.48 8.32h2.24a27.52 27.52 0 0 0 27.84-15.68 41.28 41.28 0 0 0 0-29.44l-107.84-313.6a36.8 36.8 0 0 0-13.44-19.2 44.16 44.16 0 0 0-48 0.32z m24.32 96l41.6 125.44h-83.2zM594.88 544a66.56 66.56 0 0 0 25.6 4.16h62.4v78.72a29.12 29.12 0 0 0 32 32 26.24 26.24 0 0 0 27.2-16.32 73.28 73.28 0 0 0 4.16-26.24v-66.88h73.6a27.84 27.84 0 0 0 29.44-32 26.56 26.56 0 0 0-16-27.2 64 64 0 0 0-23.04-4.16h-64v-75.84a28.16 28.16 0 0 0-32-30.08 26.56 26.56 0 0 0-27.2 15.68 64 64 0 0 0-4.16 24v66.88h-62.72a69.44 69.44 0 0 0-25.6 4.16 26.56 26.56 0 0 0-15.68 27.2 25.92 25.92 0 0 0 16 25.92z" fill="#231815"></path></g></svg>
 
@@ -84,10 +84,9 @@ export const Sidebar = (props) => {
                      </NavLink>
                   </li>
                   <li className=''>
-                     <NavLink to={'/'}className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)} >
+                     <NavLink to={'/admin/question/'} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)} >
 
                         <svg width="20px" height="20px" viewBox="0 0 24 24" className="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"><g id="SVGRepo_bgCarrier" strokeWidth="0"></g><g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g><g id="SVGRepo_iconCarrier"><path d="M13 15h-1a4.62 4.62 0 0 1 1.803-3.755c.672-.66 1.203-1.182 1.197-2.049A2.188 2.188 0 0 0 12.607 7a2.419 2.419 0 0 0-2.624 2.39h-1a3.19 3.19 0 0 1 1.163-2.557A3.88 3.88 0 0 1 12.606 6 3.173 3.173 0 0 1 16 9.193a3.732 3.732 0 0 1-1.496 2.765A3.636 3.636 0 0 0 13 15zm-1.5 3.5a1 1 0 1 0 1-1 1 1 0 0 0-1 1zm11.3-6A10.3 10.3 0 1 1 12.5 2.2a10.297 10.297 0 0 1 10.3 10.3zm-1 0a9.3 9.3 0 1 0-9.3 9.3 9.31 9.31 0 0 0 9.3-9.3z"></path><path fill="none" d="M0 0h24v24H0z"></path></g></svg>
-
                         <span className="flex-1 ml-3 whitespace-nowrap">Question management</span>
                      </NavLink>
                   </li>
@@ -102,8 +101,8 @@ export const Sidebar = (props) => {
                   <li className=''>
                      <NavLink to={Path.AMQUESTIONGROUPMANAGER} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)}>
 
-                       
-                        <FontAwesomeIcon icon={faBook} style={{color: "#0f0f0f",}} />
+
+                        <FontAwesomeIcon icon={faBook} style={{ color: "#0f0f0f", }} />
                         <span className="flex-1 ml-3 whitespace-nowrap">Question group management</span>
                      </NavLink>
                   </li>

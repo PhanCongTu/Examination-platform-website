@@ -13,6 +13,8 @@ import { Classmanager } from '../pages/Admin/Manager/Classmanager'
 import { Studentmanager } from '../pages/Admin/Manager/Studentmanager'
 import { QuestionGroup } from '../pages/Admin/Manager/Questiongroupmanager'
 import { Examinationmanager } from '../pages/Admin/Manager/Examinationmanager'
+import { Questionmanager } from '../pages/Admin/Manager/Questionmanager'
+import { Scoremanager } from '../pages/Admin/Manager/Scoremanager'
 
 export const AppRoutes = () => {
 
@@ -25,15 +27,16 @@ export const AppRoutes = () => {
         <Route path={Path.LOGIN} element={<Login />} />
         <Route path={Path.FORGOT} element={<ForgotPassword />} />
         <Route path={Path.LOGOUT} element={<Logout />} />
-
-
         <Route path="*" element={<PageNotFound />} />
+
         <Route path='/admin' element={<Admin />}>
           <Route path={Path.AMCLASSMANAGER} element={<Classmanager />} />
-          <Route path={Path.AMQUESTIONGROUPMANAGER} element={<QuestionGroup/>} />
-          <Route path={Path.AMEXAMINATIONMANAGER} element={<Examinationmanager/>}/>
-          <Route path={'/admin/student/:idClassRoom'} element={<Studentmanager />} />
-          <Route path={'/admin/student'} element={<Studentmanager showByIdClassRoom={false}/>} />
+          <Route path={Path.AMQUESTIONGROUPMANAGER} element={<QuestionGroup />} />
+          <Route path={Path.AMEXAMINATIONMANAGER} element={<Examinationmanager />} />
+          <Route path={Path.AMSTUDENTMANAGER} element={<Studentmanager />} />
+          <Route path={Path.AMQUESTIONMANAGER} element={<Questionmanager />} />
+          <Route path={Path.AMSCOREMANAGER} element={<Scoremanager />} />
+          <Route path={'/admin/student'} element={<Studentmanager showByIdClassRoom={false} />} />
         </Route>
       </Routes>
     </div>
