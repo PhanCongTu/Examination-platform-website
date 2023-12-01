@@ -70,10 +70,6 @@ function Home() {
                         // navigate(Path.LOGIN);
                   })
       }, [])
-      var date = new Date();
-      date.setHours(23)
-      date.setMinutes(1)
-      console.log(date.getTime())
       return (
             <>
                   <Header />
