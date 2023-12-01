@@ -1,17 +1,26 @@
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { clsx } from 'clsx'
 
 function InputField(props) {
   const { form, name, label, type, disabled, children, defaultValue } = props;
   const { errors } = form.formState;
   const hasError = errors[name];
+  const [checkDefaultValue, setCheckDefault] = useState(true);
   useEffect(() => {
     if (defaultValue === '') {
-      console.log("SSSSS");
-      form.setValue(name, defaultValue);
+      console.log("SSSSS ", defaultValue);
+      form.setValue(name, '');
+      setCheckDefault(false);
+    } else {
+      if (defaultValue) {
+        console.log("AAAAA ", defaultValue);
+        form.setValue(name, defaultValue);
+        setCheckDefault(false);
+      }
     }
-  }, [])
+
+  }, [defaultValue])
 
 
   return (
@@ -21,7 +30,7 @@ function InputField(props) {
         <div className="relative flex justify-center">
           <input
             {...form.register(name)}
-            {...defaultValue && form.setValue(name, defaultValue)}
+            {...defaultValue && checkDefaultValue === true && form.setValue(name, defaultValue)}
             type={type || 'text'}
             name={name}
             className={clsx("text-opacity-50", "border-2", hasError ? "border-red-500/75" : "border-gray-500/75", "w-full", "rounded-lg", "p-4", "pe-12", "text-sm", "shadow-sm")}

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import ButtonE from '../../../components/form-controls/Button/Button'
 import InputField from '../../../components/form-controls/InputField/InputField'
 import { Modal } from 'flowbite-react'
-import { addExamByIdClassroomService, convertDateToMiliseconds, getAllExamOfClassService, getFormattedDateTimeByMilisecond, removeCredential } from '../../../services/ApiService'
+import { addExamByIdClassroomService, convertDateToMiliseconds, deleteExamService, getAllExamOfClassService, getFormattedDateTimeByMilisecond, removeCredential, setFormatDateYYYYMMDD, updateExamService } from '../../../services/ApiService'
 import Path from '../../../utils/Path'
 import { toast } from 'react-toastify'
 import { useForm } from 'react-hook-form'
@@ -19,6 +19,8 @@ import {
     Button
 } from "@material-tailwind/react";
 import { DatePicker } from '../../../components/form-controls/Datepicker/DatePicker'
+import { QuestionGroup } from './Questiongroupmanager'
+import { Questionmanager } from './Questionmanager'
 const ID_EXAM = 'id';
 const EXAM_NAME = 'testName';
 const START_DATE = 'startDate';
@@ -44,8 +46,11 @@ export const Examinationmanager = () => {
     const [examSelect, setExamSelect] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
-    const [isToggle, setIsToggle] = useState(false);
-    const [isStarted, setIsStarted] = useState(true);
+    const [checkExamStart, setCheckExamStart] = useState([]);
+    const [isEnded, setIsEnded] = useState(false);
+    const [isShowRamdomQuestion, setIsShowRandomQuestion] = useState(false);
+    const [isShowManualQuestion, setIsShowManualQuestion] = useState(false);
+    const [questionsSelect, setQuestionsSelect] = useState([]);
 
     const initialValue = {
         [ID_EXAM]: '',
@@ -68,7 +73,23 @@ export const Examinationmanager = () => {
             setIsAdd(false);
         if (isDelete)
             setIsDelete(false);
+        setQuestionsSelect([]);
+    }
 
+    const handleShowStudentScore = (item) => {
+        navigate(`/admin/score/${item.id}`);
+    }
+
+    const handleCloseShowChooseRandomQuestion = () => {
+        setIsShowRandomQuestion(false);
+    }
+
+    const handleCloseShowChooseManualQuestion = () => {
+        setIsShowManualQuestion(false);
+    }
+
+    const handleOpenManualQuestion = () => {
+        setIsShowManualQuestion(true);
     }
 
     const handleClickAdd = () => {
@@ -84,17 +105,30 @@ export const Examinationmanager = () => {
 
     const submitForm = (body) => {
         handleClose();
+        console.log(body);
         body.startDate = convertDateToMiliseconds(body.startDate);
         body.endDate = convertDateToMiliseconds(body.endDate);
-        console.log(body);
-        if (isEdit);
+        if (isEdit) {
+            let { classroomId, ...newBody } = body;
+            console.log(newBody);
+            updateExam(newBody);
+        }
+        if (isAdd) {
+            let { id, ...newBody } = body;
+            newBody = { ...newBody, questionIds: questionsSelect };
+            console.log(newBody);
+            addExamByIdClassroom(newBody);
 
-        if (isAdd);
-        // addExamByIdClassroom(body);
-        if (isDelete);
+        }
+        if (isDelete)
+            deleteExam(body.id);
 
         setActiveIndex(0);
 
+    }
+
+    const handleOpenRandomQuestion = () => {
+        setIsShowRandomQuestion(true);
     }
 
     const handleClickPage = (index) => {
@@ -115,12 +149,34 @@ export const Examinationmanager = () => {
         getAllExam(index + 1);
     }
 
+    const checkTimeStart = (list) => {
+        console.log(list);
+        list.map((item, index) => {
+            let time = item.startDate;
+            let timeReal = convertDateToMiliseconds(new Date());
+            console.log(time, ' ', timeReal);
+            if (time - timeReal < 0) {
+                console.log(item.id);
+                setCheckExamStart((preValue) => [...preValue, item.id]);
+            }
+            // else
+            // {
+            //     console.log("VVV ",item.id);
+            //     setCheckExamStart(checkExamStart.filter((value) => value !== item.id));
+            // }
+            return 0;
+        })
+
+    }
+
     const handleSearch = (data) => {
         console.log("SEARCH");
-        getAllExamOfClassService(idClassRoom, isStarted, undefined, undefined, undefined, undefined, data).then((res) => {
+        getAllExamOfClassService(idClassRoom, isEnded, undefined, undefined, undefined, undefined, data).then((res) => {
+            checkTimeStart(res.content);
             setListAllExam(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
+            
             console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
@@ -145,6 +201,8 @@ export const Examinationmanager = () => {
     }
 
     const handleClickEdit = (item) => {
+        console.log(checkExamStart);
+        console.log(checkExamStart.indexOf(item.id));
         console.log("IIII", item);
         setIsEdit(true);
         setTimeout(() => {
@@ -153,20 +211,52 @@ export const Examinationmanager = () => {
         console.log(item);
     }
 
-    const addExamByIdClassroom = async (body) => {
+    const updateExam = (body) => {
+        updateExamService(body).then((res) => {
+            toast.success(`Update exam successfully !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            getAllExam();
+        }).catch((error) => {
+            toast.error(`Update exam fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        })
+    }
 
+    const deleteExam = (id) => {
+        deleteExamService(id).then((res) => {
+            toast.success(`Delete exam successfully !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            getAllExam();
+        }).catch((error) => {
+            toast.error(`Delete exam fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        })
+    }
+
+    const addExamByIdClassroom = (body) => {
         addExamByIdClassroomService(body).then((res) => {
+            getAllExam();
+            toast.success(`Add exam successfully !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
 
         }).catch((error) => {
-
+            toast.error(`Add exam fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
         })
     }
 
     const getAllExamOfClassroom = async (page, sortType, column, size, search) => {
-        getAllExamOfClassService(idClassRoom, isStarted, page, sortType, column, size, search).then((res) => {
+        getAllExamOfClassService(idClassRoom, isEnded, page, sortType, column, size, search).then((res) => {
             setListAllExam(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
+            checkTimeStart(res.content);
             console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
@@ -192,6 +282,7 @@ export const Examinationmanager = () => {
     const getAllExam = (page, sortType, column, size, search) => {
         getAllExamOfClassroom(page, sortType, column, size, search);
     }
+
     const isActive = (index) => {
         return index === activeIndex;
     };
@@ -199,12 +290,13 @@ export const Examinationmanager = () => {
     useEffect(() => {
         document.title = "Examination Mananger Admin"
         console.log(idClassRoom);
-        if(idClassRoom)
+        setCheckExamStart([]);
+        if (idClassRoom)
             getAllExam();
-        else{
+        else {
             navigate(Path.AMCLASSMANAGER);
         }
-    }, [isStarted]);
+    }, [isEnded]);
 
     return (
         <>
@@ -219,7 +311,7 @@ export const Examinationmanager = () => {
 
                                 <div className='w-[100px]'>
 
-                                    <Toggle checked={isStarted} handleToggle={setIsStarted} >{isStarted ? 'Started' : 'Pending'}</Toggle>
+                                    <Toggle checked={isEnded} handleToggle={setIsEnded} >{isEnded ? 'Ended' : 'Pending'}</Toggle>
                                 </div>
                                 <div className="relative float-right">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
@@ -269,18 +361,7 @@ export const Examinationmanager = () => {
 
                                                         return (
                                                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                {/* <td className="w-4 p-4">
-                                                                    <div className="flex items-center">
-                                                                        <input
-                                                                            checked={isChecked(item.id)}
-                                                                            onChange={(e) => handleCheckboxChange(e, item.id)}
-                                                                            id={`checkbox-table-search-${index}`}
-                                                                            type="checkbox"
-                                                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                                                        />
-                                                                        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                                                                    </div>
-                                                                </td> */}
+
                                                                 <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                     {item.id}
                                                                 </th>
@@ -305,9 +386,14 @@ export const Examinationmanager = () => {
                                                                             </Button>
                                                                         </MenuHandler>
                                                                         <MenuList className='rounded-md'>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { }}>Show student has joined exam</MenuItem>
+                                                                            {
+                                                                                checkExamStart.indexOf(item.id) > -1 ? <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>Show student score has joined exam</MenuItem> : (<>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
+                                                                                </>)
+                                                                            }
+
+
 
                                                                         </MenuList>
                                                                     </Menu>
@@ -350,9 +436,13 @@ export const Examinationmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-                                    <p className="text-center text-lg font-medium">Edit class</p>
-
-                                    <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
+                                    <p className="text-center text-lg font-medium">Edit exam</p>
+                                    <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={examSelect.testName} />
+                                    <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
+                                    <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={examSelect.testingTime} />
+                                    <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.startDate)} />
+                                    <DatePicker name={END_DATE} label="End date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.endDate)} />
+                                    <ButtonE onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonE>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -367,11 +457,11 @@ export const Examinationmanager = () => {
                                 >
                                     <p className="text-center text-lg font-medium">Add Exam</p>
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={''} />
-                                    <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={''} />
+                                    <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
                                     <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={''} />
                                     <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={''} />
                                     <DatePicker name={END_DATE} label="End date" form={form} defaultValue={''} />
-                                      {/* <div className='px w-[150px]'>
+                                    <div className='px w-[150px]'>
                                         <Menu placement='bottom-start' >
                                             <MenuHandler>
                                                 <Button onClick={() => { console.log("SSSSSAAAAAAAAAAA") }} className='bg-slate-400'>
@@ -379,13 +469,13 @@ export const Examinationmanager = () => {
                                                 </Button>
                                             </MenuHandler >
                                             <MenuList className='rounded-md z-[102]'>
-                                                <MenuItem className='z-[102]rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { }}>Add random by question group</MenuItem>
-                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { }}>Add manual</MenuItem>
+                                                <MenuItem className='z-[102]rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenRandomQuestion() }}>Add random by question group</MenuItem>
+                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenManualQuestion() }}>Add manual</MenuItem>
 
 
                                             </MenuList>
                                         </Menu>
-                                    </div> */}
+                                    </div>
                                     <ButtonE onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonE>
                                 </form>
                             </Modal.Body>
@@ -399,20 +489,53 @@ export const Examinationmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-
+                                    <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
                                     <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button className="bg-red-500" type='submit'>Delete</Button>
-                                        <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                        <ButtonE className="bg-red-500" type='submit'>Delete</ButtonE>
+                                        <ButtonE onClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonE>
                                     </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
                 }
+                {isShowRamdomQuestion && (
+                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
+                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-[1000px]" show={true} size="md" popup onClose={() => handleCloseShowChooseRandomQuestion()} >
+                            <Modal.Header >
+                                <h1>Choose question group</h1>
+                                <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
+                            </Modal.Header>
+                            <Modal.Body>
 
+                                <QuestionGroup id={idClassRoom} />
+                                <div className="flex justify-center">
 
+                                    <Button onClick={() => handleClose()} className="bg-blue-400">Submit</Button>
+                                </div>
+
+                            </Modal.Body>
+                        </Modal></>)
+                }
+                {isShowManualQuestion && (
+                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[102]'></div>
+                        <Modal className="top-0 left-0 right-0 z-[103] m-auto w-auto" show={true} size="md" popup onClose={() => handleCloseShowChooseManualQuestion()} >
+                            <Modal.Header >
+                                <h1>Choose question</h1>
+                                <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
+                            </Modal.Header>
+                            <Modal.Body>
+
+                                <Questionmanager id={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
+                                <div className="flex justify-center">
+                                    <Button onClick={() => { console.log(questionsSelect); handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
+                                </div>
+
+                            </Modal.Body>
+                        </Modal></>)
+                }
             </div >
         </ >
 

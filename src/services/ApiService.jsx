@@ -22,46 +22,111 @@ const getAllExamOfClassUrl = 'api/v1/multiple-choice-test/classroom';
 const addExamByIdClassroomUrl = 'api/v1/multiple-choice-test/create'
 const getAllActiveQuestionUrl = 'api/v1/question/question-group'
 const getAllInActiveQuestionUrl = 'api/v1/question/inactive/question-group'
-const addQuestionByQuestionGroupUrl='api/v1/question/create';
-const updateQuestionUrl='api/v1/question/update/{id}';
-const deleteQuestionUrl='api/v1/question/delete/{id}';
+const addQuestionByQuestionGroupUrl = 'api/v1/question/create';
+const updateQuestionUrl = 'api/v1/question/update/{id}';
+const deleteQuestionUrl = 'api/v1/question/delete/{id}';
+const deleteExamUrl = 'api/v1/multiple-choice-test/delete/{idExam}';
+const updateExamUrl = 'api/v1/multiple-choice-test/update/info/{idExam}';
+const getAllStudentScoreByIDExamUrl = 'api/v1/score/multiple-choice-test'
 
-export const deleteQuestionService=async(id)=>{
-      let accessToken=getAccessToken();
+export const getAllStudentScoreByIDExamService = async (id, page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllStudentScoreByIDExamUrlParam = getAllStudentScoreByIDExamUrl;
+      let queryParams = [];
+      if (id)
+            getAllStudentScoreByIDExamUrlParam += `/${id}`;
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllStudentScoreByIDExamUrlParam += '?' + queryParams.join('&');
+      }
+
       return await axios.request({
-            method:'put',
-            url:deleteQuestionUrl.replace('{id}',id),
-            headers:{
-                  'Authorization':`Bearer ${accessToken}`,
-                  'Content-Type':'application/json'
+            method: 'get',
+            url: getAllStudentScoreByIDExamUrlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
+export const updateExamService = async (body) => {
+      let { id, ...params } = body;
+
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            url: updateExamUrl.replace('{idExam}', id),
+            data: params,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
             }
       })
 }
 
-export const updateQuestionService=async(body)=>{
-      let {id,...params}=body;
-     
-      let accessToken=getAccessToken();
+export const deleteExamService = async (idExam) => {
+      let accessToken = getAccessToken();
       return await axios.request({
-            method:'put',
-            url:updateQuestionUrl.replace('{id}',id),
-            data:params,
-            headers:{
-                  'Authorization':`Bearer ${accessToken}`,
-                  'Content-Type':'application/json'
+            method: 'delete',
+            url: deleteExamUrl.replace('{idExam}', idExam),
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
             }
       })
 }
 
-export const addQuestionByQuestionGroupService= async(body)=>{
-      let accessToken=getAccessToken();
+export const deleteQuestionService = async (id) => {
+      let accessToken = getAccessToken();
       return await axios.request({
-            method:'post',
-            url:addQuestionByQuestionGroupUrl,
-            data:body,
-            headers:{
-                  'Authorization':`Bearer ${accessToken}`,
-                  'Content-Type':'application/json'
+            method: 'delete',
+            url: deleteQuestionUrl.replace('{id}', id),
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+            }
+      })
+}
+
+export const updateQuestionService = async (body) => {
+      let { id, ...params } = body;
+
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            url: updateQuestionUrl.replace('{id}', id),
+            data: params,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+            }
+      })
+}
+
+export const addQuestionByQuestionGroupService = async (body) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'post',
+            url: addQuestionByQuestionGroupUrl,
+            data: body,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
             }
       })
 }
@@ -157,6 +222,21 @@ export const convertDateToMiliseconds = (date) => {
       return dateChange.getTime();
 }
 
+export const setFormatDateYYYYMMDD = (milliseconds) => {
+      var date = new Date(milliseconds);
+      var day = date.getDate();
+      var month = date.getMonth() + 1;
+      var year = date.getFullYear();
+      var hours = date.getHours();
+      var minutes = date.getMinutes();
+
+      var formattedDay = day.toString().padStart(2, '0');
+      var formattedMonth = month.toString().padStart(2, '0');
+      var formattedHours = hours.toString().padStart(2, '0');
+      var formattedMinutes = minutes.toString().padStart(2, '0');
+      return year + '-' + formattedMonth + '-' + formattedDay + 'T' + formattedHours + ':' + formattedMinutes;
+}
+
 export const getFormattedDateTimeByMilisecond = (milliseconds) => {
       return convertMillisecondsToTime(milliseconds) + ' ' + getFormattedDate(milliseconds)
 }
@@ -191,11 +271,11 @@ export function convertMillisecondsToTime(milliseconds) {
       return formattedHours + ':' + formattedMinutes;
 }
 
-export const getAllExamOfClassService = async (id, isStarted, page, sortType, column, size, search) => {
+export const getAllExamOfClassService = async (id, isEnded, page, sortType, column, size, search) => {
       let getAllExamOfClassUrlParam = getAllExamOfClassUrl + `/${id}`;
       let queryParams = [];
-      if (isStarted) {
-            queryParams.push(`isStarted=${isStarted}`);
+      if (isEnded) {
+            queryParams.push(`isEnded=${isEnded}`);
       }
       if (page) {
             queryParams.push(`page=${page}`);

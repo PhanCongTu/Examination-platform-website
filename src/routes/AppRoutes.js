@@ -14,6 +14,7 @@ import { Studentmanager } from '../pages/Admin/Manager/Studentmanager'
 import { QuestionGroup } from '../pages/Admin/Manager/Questiongroupmanager'
 import { Examinationmanager } from '../pages/Admin/Manager/Examinationmanager'
 import { Questionmanager } from '../pages/Admin/Manager/Questionmanager'
+import { Scoremanager } from '../pages/Admin/Manager/Scoremanager'
 
 export const AppRoutes = () => {
 
@@ -34,6 +35,7 @@ export const AppRoutes = () => {
           <Route path={Path.AMEXAMINATIONMANAGER} element={<Examinationmanager />} />
           <Route path={Path.AMSTUDENTMANAGER} element={<Studentmanager />} />
           <Route path={Path.AMQUESTIONMANAGER} element={<Questionmanager />} />
+          <Route path={Path.AMSCOREMANAGER} element={<Scoremanager />} />
           <Route path={'/admin/student'} element={<Studentmanager showByIdClassRoom={false} />} />
         </Route>
       </Routes>

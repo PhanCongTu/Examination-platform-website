@@ -10,7 +10,8 @@ import {
     MenuList,
     MenuItem,
     Button as ButtonMenu,
-    input
+    input,
+    textarea
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
@@ -30,6 +31,7 @@ const ANSWER4 = 'answer4';
 const ID_QUESTION = 'id';
 export const Questionmanager = (props) => {
     const navigate = useNavigate();
+    const [contentQuestion, setContentQuestion] = useState('');
     const [listAnswer, setListAnswer] = useState([]);
     const [clickCount, setClickCount] = useState(1);
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
@@ -47,14 +49,20 @@ export const Questionmanager = (props) => {
     const [questionSelect, setQuestionSelect] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
-    const [isToggle, setIsToggle] = useState(false);
+    const [isChooseTrue, setChooseTrue] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
     const [answer, setAnswer] = useState('');
     const [selectedOption, setSelectedOption] = useState('');
+    const [listCheckBox, setListCheckBox] = useState([]);
+    const [isAllCheckBox, setIsAllCheckBox] = useState(true);
+
+    const handleInputContent = (event) => {
+        setContentQuestion(event.target.value);
+    }
 
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
-
+        setChooseTrue(true);
     };
 
     const showAnswer = useRef(null);
@@ -75,23 +83,53 @@ export const Questionmanager = (props) => {
             toast.error('Please enter answer', { position: toast.POSITION.TOP_RIGHT })
         }
         else {
-            const label = document.createElement('label');
-            const input = document.createElement('input');
-            input.type = 'radio';
-            input.name = 'options';
-            input.value = answer;
             const updatedListAnswer = [...listAnswer];
-            updatedListAnswer.push(answer);
-            setListAnswer(updatedListAnswer);
-            input.checked = selectedOption === input.value;
-            input.addEventListener('change', handleOptionChange);
+            if (listAnswer.length === 0) {
+                console.log("Khi lenght =0")
+                updatedListAnswer.push(answer);
+                const label = document.createElement('label');
+                const input = document.createElement('input');
+                input.type = 'radio';
+                input.name = 'options';
+                input.value = answer;
+                input.className = 'mr-[5px]';
+                label.className = 'flex items-center'
+                setListAnswer(updatedListAnswer);
+                input.checked = selectedOption === input.value;
+                input.addEventListener('change', handleOptionChange);
+                // Object.assign(input, form.register('asnwer' + clickCount));
+                label.appendChild(input);
+                label.appendChild(document.createTextNode(answer));
+                showAnswer.current.appendChild(label);
+                setClickCount(clickCount + 1);
+                setAnswer('');
+            }
+            else {
+                console.log("INDEX ", updatedListAnswer.indexOf(answer));
+                if (updatedListAnswer.indexOf(answer) === -1) {
+                    updatedListAnswer.push(answer);
+                    const label = document.createElement('label');
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = 'options';
+                    input.value = answer;
+                    input.className = 'mr-[5px]';
+                    label.className = 'flex items-center'
+                    setListAnswer(updatedListAnswer);
+                    console.log(listAnswer);
+                    input.checked = selectedOption === input.value;
+                    input.addEventListener('change', handleOptionChange);
+                    label.appendChild(input);
+                    label.appendChild(document.createTextNode(answer));
+                    showAnswer.current.appendChild(label);
+                    setClickCount(clickCount + 1);
+                    setAnswer('');
+                }
+                else {
+                    toast.error('Please enter an answer different from the one already given', toast.POSITION.TOP_RIGHT);
+                }
+            }
 
-            // Object.assign(input, form.register('asnwer' + clickCount));
-            label.appendChild(input);
-            label.appendChild(document.createTextNode(answer));
-            showAnswer.current.appendChild(label);
-            setClickCount(clickCount + 1);
-            setAnswer('');
         }
 
 
@@ -102,25 +140,45 @@ export const Questionmanager = (props) => {
     }
 
     const isChecked = (itemId) => {
-        // const filteredItems = listClassDelete.filter((item) => item === itemId);
-        // console.log(filteredItems.length > 0);
-        // return filteredItems.length > 0;
+        const filteredItems = listCheckBox.filter((item) => item === itemId);
+        console.log(filteredItems.length > 0);
+        return filteredItems.length > 0;
     };
 
     const handleCheckboxChange = (event, id, isAll) => {
-        if (isAll) {
-            // setListClassDelete(listAllQuestion.map((item, index) => {
-            //     return item.id;
-            // }));
-        } else {
+        if (isAll === true) {
+            setListCheckBox(listAllQuestion.map((item, index) => {
+                return item.id;
+            }));
+            if (props.setQuestionsSelect) {
+                props.setQuestionsSelect(listAllQuestion.map((item, index) => {
+                    return item.id;
+                }))
+            }
+            setIsAllCheckBox(!isAll);
+        } else if (isAll === false) {
+            setListCheckBox([]);
+            if (props.setQuestionsSelect) {
+                props.setQuestionsSelect([]);
+            }
+            setIsAllCheckBox(!isAll);
+        }
+        else {
             const isChecked = event.target.checked;
 
             if (isChecked) {
-                //setListClassDelete((prevSelected) => [...prevSelected, id]);
+                setListCheckBox((prevSelected) => [...prevSelected, id]);
+                if (props.setQuestionsSelect) {
+                    props.setQuestionsSelect([...listCheckBox, id]
+                    )
+                }
             } else {
-                // setListClassDelete((prevSelected) =>
-                //     prevSelected.filter((value) => value !== id)
-                // );
+                setListCheckBox((prevSelected) =>
+                    prevSelected.filter((value) => value !== id)
+                );
+                if (props.setQuestionsSelect) {
+                    props.setQuestionsSelect(listCheckBox.filter((value) => value !== id))
+                }
             }
         }
 
@@ -132,7 +190,7 @@ export const Questionmanager = (props) => {
     }
 
     const handleClose = () => {
-        console.log("handleClose", isAdd);
+        
         if (isEdit)
             setIsEdit(false);
         if (isAdd)
@@ -145,6 +203,7 @@ export const Questionmanager = (props) => {
         setSelectedOption('');
         setClickCount(1);
         setListAnswer([]);
+        setChooseTrue(false);
     }
 
     const handleClickAdd = () => {
@@ -158,11 +217,13 @@ export const Questionmanager = (props) => {
         criteriaMode: "firstError",
     })
 
+    // const { defaultValue,on ...otherProps } = form.register(CONTENT_QUESTION);
+
     const submitForm = (body) => {
         handleClose();
         console.log(body);
         const newBody = {
-            content: body.content,
+            content: contentQuestion,
             firstAnswer: {
                 answerContent: body.answer1
             },
@@ -178,26 +239,23 @@ export const Questionmanager = (props) => {
             },
             questionGroupId: body.questionGroupId
         }
-        listAnswer.map((item, index) => {
-            if (selectedOption === item) {
-                switch (index) {
-                    case 0:
-                        newBody.firstAnswer.isCorrect = true;
-                        break;
-                    case 1:
-                        newBody.secondAnswer.isCorrect = true;
-                        break;
-                    case 2:
-                        newBody.thirdAnswer.isCorrect = true;
-                        break;
-                    default:
-                        newBody.fourthAnswer.isCorrect = true;
-                        break;
-                }
-            }
-        })
-        console.log("New body", newBody);
+
         if (isEdit) {
+            switch (selectedOption) {
+                case 'firstAnswer':
+                    newBody.firstAnswer.isCorrect = true;
+                    break;
+                case 'secondAnswer':
+                    newBody.secondAnswer.isCorrect = true;
+                    break;
+                case 'thirdAnswer':
+                    newBody.thirdAnswer.isCorrect = true;
+                    break;
+                default:
+                    newBody.fourthAnswer.isCorrect = true;
+                    break;
+            }
+            console.log("New body", newBody);
             let { questionGroupId, ...newBodys } = newBody;
             newBodys.id = body.id;
             updateQuestionService(newBodys).then((res) => {
@@ -208,21 +266,41 @@ export const Questionmanager = (props) => {
             })
         }
 
-        if (isAdd)
+        if (isAdd) {
+            listAnswer.map((item, index) => {
+                if (selectedOption === item) {
+                    switch (index) {
+                        case 0:
+                            newBody.firstAnswer.isCorrect = true;
+                            break;
+                        case 1:
+                            newBody.secondAnswer.isCorrect = true;
+                            break;
+                        case 2:
+                            newBody.thirdAnswer.isCorrect = true;
+                            break;
+                        default:
+                            newBody.fourthAnswer.isCorrect = true;
+                            break;
+                    }
+                }
+            })
+            console.log("New body", newBody);
             addQuestionByQuestionGroupService(newBody).then((res) => {
                 toast.success('Add question successfuly', { position: toast.POSITION.TOP_RIGHT });
                 getAllQuestion();
             }).catch((error) => {
                 toast.error('Add question fail', { position: toast.POSITION.TOP_RIGHT });
             })
+        }
 
         if (isDelete)
-        deleteQuestionService(body.id).then((res) => {
-            toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
-            getAllQuestion();
-        }).catch((error) => {
-            toast.error('Delete question fail', { position: toast.POSITION.TOP_RIGHT });
-        })
+            deleteQuestionService(body.id).then((res) => {
+                toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                getAllQuestion();
+            }).catch((error) => {
+                toast.error('Delete question fail', { position: toast.POSITION.TOP_RIGHT });
+            })
 
         setActiveIndex(0);
 
@@ -302,6 +380,7 @@ export const Questionmanager = (props) => {
 
     const handleClickEdit = (item) => {
         console.log("IIII", item);
+        setContentQuestion(item.content);
         setIsEdit(true);
         setTimeout(() => {
             setQuestionSelect(item);
@@ -362,6 +441,8 @@ export const Questionmanager = (props) => {
     }
 
     const getAllQuestion = (page, sortType, column, size, search) => {
+        if(props.idQuestionSelect)
+            setListCheckBox(props.idQuestionSelect);
         if (isModeActive)
             getAllActiveQuestion(page, sortType, column, size, search);
         else
@@ -419,7 +500,7 @@ export const Questionmanager = (props) => {
                                     <tr>
                                         <th scope="col" className="p-4">
                                             <div className="flex items-center">
-                                                <input onChange={() => handleCheckboxChange(undefined, undefined, true)} id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
+                                                <input onChange={() => handleCheckboxChange(undefined, undefined, isAllCheckBox)} id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                                 <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                                             </div>
                                         </th>
@@ -495,7 +576,7 @@ export const Questionmanager = (props) => {
                                                                                 <FontAwesomeIcon icon={faBars} />
                                                                             </ButtonMenu>
                                                                         </MenuHandler>
-                                                                        <MenuList className='rounded-md z-[102]'>
+                                                                        <MenuList className='rounded-md z-[105]'>
                                                                             <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
                                                                             <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
 
@@ -529,60 +610,63 @@ export const Questionmanager = (props) => {
                     </div>
                 </div>
                 {isEdit && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[104]'></div>
+                        <Modal className="top-0 left-0 right-0 z-[105] m-auto w-[600px]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
+                                    
                                     <p className="text-center text-lg font-medium">Edit question</p>
-                                    <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} />
-                                    <InputField name='id' disabled form={form} defaultValue={props.id} />
+                                    <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                    <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
+                                    {/* <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} /> */}
+                                    <InputField name='id' disabled form={form} defaultValue={questionSelect.id} />
                                     <InputField name={ANSWER1} label="First Answer" form={form} defaultValue={questionSelect.firstAnswer}
                                         children={<><input
                                             className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                            type="checkbox"
+                                            type="radio"
                                             name="options"
-                                            value={questionSelect.firstAnswer}
-                                            checked={selectedOption === questionSelect.firstAnswer}
+                                            value={'firstAnswer'}
+                                            checked={selectedOption === 'firstAnswer'}
                                             onChange={handleOptionChange}
                                         /></>} />
-                                    <InputField name={ANSWER2} label="Second Answer" form={form} defaultValue={questionSelect.secondAnswer} 
-                                    children={<><input
-                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                        type="checkbox"
-                                        name="options"
-                                        value={questionSelect.secondAnswer}
-                                        checked={selectedOption === questionSelect.secondAnswer}
-                                        onChange={handleOptionChange}
-                                    /></>}/>
-                                    <InputField name={ANSWER3} label="Third Answer" form={form} defaultValue={questionSelect.thirdAnswer} 
-                                    children={<><input
-                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                        type="checkbox"
-                                        name="options"
-                                        value={questionSelect.thirdAnswer}
-                                        checked={selectedOption === questionSelect.thirdAnswer}
-                                        onChange={handleOptionChange}
-                                    /></>}/>
-                                    <InputField name={ANSWER4} label="Fourth Answer" form={form} defaultValue={questionSelect.fourthAnswer} 
-                                    children={<><input
-                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                        type="checkbox"
-                                        name="options"
-                                        value={questionSelect.fourthAnswer}
-                                        checked={selectedOption === questionSelect.fourthAnswer}
-                                        onChange={handleOptionChange}
-                                    /></>}/>
+                                    <InputField name={ANSWER2} label="Second Answer" form={form} defaultValue={questionSelect.secondAnswer}
+                                        children={<><input
+                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                            type="radio"
+                                            name="options"
+                                            value={'secondAnswer'}
+                                            checked={selectedOption === 'secondAnswer'}
+                                            onChange={handleOptionChange}
+                                        /></>} />
+                                    <InputField name={ANSWER3} label="Third Answer" form={form} defaultValue={questionSelect.thirdAnswer}
+                                        children={<><input
+                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                            type="radio"
+                                            name="options"
+                                            value={'thirdAnswer'}
+                                            checked={selectedOption === 'thirdAnswer'}
+                                            onChange={handleOptionChange}
+                                        /></>} />
+                                    <InputField name={ANSWER4} label="Fourth Answer" form={form} defaultValue={questionSelect.fourthAnswer}
+                                        children={<><input
+                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                            type="radio"
+                                            name="options"
+                                            value={'fourthAnswer'}
+                                            checked={selectedOption === 'fourthAnswer'}
+                                            onChange={handleOptionChange}
+                                        /></>} />
                                     <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
                 }
                 {isAdd && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[104]'></div>
+                        <Modal className="top-0 left-0 right-0 z-[105] m-auto w-[600px]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -594,7 +678,8 @@ export const Questionmanager = (props) => {
                                     <InputField name={ANSWER2} disabled form={form} defaultValue={listAnswer[1] || ''} />
                                     <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
                                     <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} />
-                                    <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={''} />
+                                    <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                    <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
                                     <div>
                                         <label className='block pb-1 text-sm font-medium text-gray-700'>
                                             Answer
@@ -615,8 +700,8 @@ export const Questionmanager = (props) => {
                         </Modal></>)
                 }
                 {isDelete && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/5 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[104]'></div>
+                        <Modal className="top-0 left-0 right-0 z-[105] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}

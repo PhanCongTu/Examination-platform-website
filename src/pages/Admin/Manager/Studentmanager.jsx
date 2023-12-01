@@ -294,9 +294,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </th>
                       </>))
                     }
-
-
-                    {!showByIdClassRoom && (<th scope="col" className="px-6 py-3">
+                    {showByIdClassRoom && (<th scope="col" className="px-6 py-3">
                       Action
                     </th>)}
                   </tr>
@@ -358,7 +356,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                         }
                                       </div>
                                     </td></>))}
-                                {!showByIdClassRoom && (
+                                {showByIdClassRoom && (
                                   <td className="px-6 py-4 flex ">
                                     <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
 

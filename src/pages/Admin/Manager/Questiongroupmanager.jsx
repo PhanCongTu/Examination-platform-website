@@ -19,7 +19,7 @@ const ID_QUESTIONGROUP = 'id';
 const ID_CLASSROOM = 'classroomId';
 
 export const QuestionGroup = (props) => {
-    const { id } = useParams();
+    let { id } = useParams();
     const [isShowQuestion, setIsShowQuestion] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
     const [isAdd, setIsAdd] = useState(false);
@@ -50,6 +50,8 @@ export const QuestionGroup = (props) => {
         setIsDelete(true);
         setQuestionGroupSelect(item);
     }
+
+    
 
     const handleClose = () => {
         setIsEdit(false);
@@ -192,6 +194,7 @@ export const QuestionGroup = (props) => {
     }
 
     const getAllActiveQuestionGroup = (page, sortType, column, size, search) => {
+       
         getAllActivateQuestionGroupService(id, page, sortType, column, size, search).then((res) => {
             console.log(listQuestionGroup);
             setlistQuestionGroup(res.content);
@@ -243,6 +246,9 @@ export const QuestionGroup = (props) => {
     }
 
     const getAllQuestionGroup = (page, sortType, column, size, search) => {
+        if(!id){
+            id=props.id;
+        }
         if (isModeActive)
             getAllActiveQuestionGroup(page, sortType, column, size, search);
         else
@@ -323,7 +329,8 @@ export const QuestionGroup = (props) => {
                                                                     <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[200px]">
-                                                                    {item.code}
+                                                                 
+                                                                    <p  className="cursor-pointer font-medium dark:text-blue-500 " title={item.code}>{item.code}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[62px]">
                                                                     <div className="flex items-center">

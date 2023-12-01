@@ -9,6 +9,7 @@ const Path = {
     AMSTUDENTMANAGER:'/admin/student/:idClassRoom',
     AMQUESTIONGROUPMANAGER:'/admin/questiongr/:id?',
     AMEXAMINATIONMANAGER:'/admin/examination/:idClassRoom?',
-    AMQUESTIONMANAGER:'/admin/question/:idClassRoom?'
+    AMQUESTIONMANAGER:'/admin/question/:idClassRoom?',
+    AMSCOREMANAGER:'/admin/score/:idExam?'
 }
 export default Path
