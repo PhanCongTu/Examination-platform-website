@@ -22,7 +22,7 @@ const PaginationNav = ({ pageNumbers, handlePrevious, handleNext, activeIndex, h
     console.log("III ", i);
     console.log("START ", start_index);
     console.log("END ", end_index);
-    const subarray = arr.slice(start_index, end_index+1);
+    const subarray = arr.slice(start_index, end_index + 1);
     console.log(subarray);
     return subarray;
   }
@@ -44,7 +44,7 @@ const PaginationNav = ({ pageNumbers, handlePrevious, handleNext, activeIndex, h
           return (
             <>
               <li>
-                <Link key={index} onClick={() => handleClickPage(item-1)} className={clsx("flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white", isActive(item -1) && '!bg-slate-500 text-white pointer-events-none ')}>{item}</Link>
+                <Link key={index} onClick={() => handleClickPage(item - 1)} className={clsx("flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white", isActive(item - 1) && '!bg-slate-500 text-white pointer-events-none ')}>{item}</Link>
               </li>
             </>
           )
