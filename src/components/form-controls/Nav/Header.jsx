@@ -25,14 +25,14 @@ export const Header = () => {
     };
 
     const dropdownRef = useRef(null);
+
+
     useEffect(() => {
         let accessToken = getAccessToken();
         let roles = getRoles();
-        if (accessToken && roles.includes(ROLE_STUDENT)) {
-            setIsStudent(true);
-        }
-        console.log(userInfor)
+        setIsStudent(accessToken && roles.includes(ROLE_STUDENT))
     }, [])
+
     useEffect(() => {
         const handleClickOutside = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
@@ -51,10 +51,13 @@ export const Header = () => {
     const toggleDropdown = () => {
         setShowDropdown(!showDropdown);
     };
+
+    /// Sign out
     const handleSignOut = () => {
+        setIsStudent(false)
         removeCredential();
         navigate(Path.HOME)
-        window.location.reload();
+        // window.location.reload();
     };
     return (
         <div className='shadow-[5px_9px_30px_4px_#00000024] rounded-b-md fixed z-50 w-full'>
