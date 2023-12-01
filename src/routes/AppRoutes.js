@@ -17,9 +17,9 @@ import { Examinationmanager } from '../pages/Admin/Manager/Examinationmanager'
 import MyClassroom from '../pages/User/MyClassrooms/MyClassrooms';
 import ClassroomDetail from '../pages/User/ClassrommDetail/ClassroomDetail'
 import PrepareTest from '../pages/User/PrepareTest/PrepareTest';
-import Student from '../pages/User/Student'
-import DoMCTest from '../pages/User/DoMCTest/DoMCTest'
-
+import Student from '../pages/User/Student';
+import DoMCTest from '../pages/User/DoMCTest/DoMCTest';
+import VerifyEmail from '../pages/VerifyEmail/VerifyEmail';
 export const AppRoutes = () => {
 
   return (
@@ -31,6 +31,7 @@ export const AppRoutes = () => {
         <Route path={Path.LOGIN} element={<Login />} />
         <Route path={Path.FORGOT} element={<ForgotPassword />} />
         <Route path={Path.LOGOUT} element={<Logout />} />
+        <Route path={Path.VERIFY_EMAIL} element={<VerifyEmail />} />
 
         <Route path='/my' element={<Student />} >
           <Route path={Path.MY_CLASSROOMS} element={<MyClassroom />} />
