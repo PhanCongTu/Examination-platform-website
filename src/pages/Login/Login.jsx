@@ -8,7 +8,7 @@ import Button from '../../components/form-controls/Button/Button';
 import 'react-toastify/dist/ReactToastify.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getAccessToken, getRoles, loginInService, saveCredential } from '../../services/ApiService';
+import { getAccessToken, getRoles, loginInService, removeCredential, saveCredential } from '../../services/ApiService';
 import Path from '../../utils/Path';
 import { ROLE_ADMIN } from '../../utils/Constant';
 
@@ -43,16 +43,17 @@ const Login = () => {
             resolver: yupResolver(yupObject)
       })
       useEffect(() => {
-            let accessToken = getAccessToken()
-            let roles = getRoles();
-            console.log(roles);
-            console.log(roles?.includes(ROLE_ADMIN));
-            if (accessToken) {
-                  if (roles.includes(ROLE_ADMIN))
-                        navigate(Path.AMCLASSMANAGER);
-                  else
-                        navigate(Path.HOME);
-            }
+            // let accessToken = getAccessToken()
+            // let roles = getRoles();
+            // console.log(roles);
+            // console.log(roles?.includes(ROLE_ADMIN));
+            // if (accessToken) {
+            //       if (roles?.includes(ROLE_ADMIN))
+            //             navigate(Path.AMCLASSMANAGER);
+            //       else
+            //             navigate(Path.HOME);
+            // }
+            removeCredential();
       }, [])
       const [errorMessage, setErrorMessage] = useState();
       // True nếu user nhận mình là giáo viên"

@@ -7,7 +7,7 @@ import PaginationNav from '../../../components/pagination/PaginationNav';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addStudentToClassService, getAllActiveStudentService, getAllStudentOfClassService, removeCredential } from '../../../services/ApiService';
+import { addStudentToClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 
 const ID_CLASSROOM = 'classroomId';
@@ -130,6 +130,32 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         removeCredential();
         navigate(Path.LOGIN);
       });
+    else if (!showByIdClassRoom && idClassRoom) {
+      getAllVerifiedStudentService(undefined, undefined, undefined, undefined, data).then((res) => {
+        setlistAllStudent(res.content);
+        setIsLast(res.last);
+        setIsFirst(res.first);
+        console.log("TOTAL PAGE", res.totalPages);
+        const pageNumbers2 = [];
+        for (let i = 1; i <= res.totalPages; i++) {
+          pageNumbers2.push(i);
+        }
+        setPageNumbers(pageNumbers2);
+        setTotalElements(res.totalElements);
+        setOffset(res.pageable.offset);
+        setNumberOfElements(res.numberOfElements);
+        console.log("numberOfElements", res.numberOfElements);
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        toast.error(`Search verified student fail !`, {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        console.log(error);
+        removeCredential();
+        navigate(Path.LOGIN);
+      });
+    }
     else {
       getAllActiveStudentService(undefined, undefined, undefined, undefined, data).then((res) => {
         setlistAllStudent(res.content);
@@ -156,14 +182,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         navigate(Path.LOGIN);
       });
     }
-  }
-
-  const handleClickEdit = (item) => {
-    console.log("IIII", item);
-    setTimeout(() => {
-      setStudentSelect(item);
-    });
-    console.log(item);
   }
 
   const getAllActiveStudent = async (page, sortType, column, size, search) => {
@@ -221,11 +239,40 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     });
   }
 
+  const getAllVerifiedStudent = (page, sortType, column, size, search) => {
+    getAllVerifiedStudentService(page, sortType, column, size, search).then((res) => {
+      setlistAllStudent(res.content);
+      setIsLast(res.last);
+      setIsFirst(res.first);
+      console.log("TOTAL PAGE", res.totalPages);
+      const pageNumbers2 = [];
+      for (let i = 1; i <= res.totalPages; i++) {
+        pageNumbers2.push(i);
+      }
+      setPageNumbers(pageNumbers2);
+      setTotalElements(res.totalElements);
+      setOffset(res.pageable.offset);
+      setNumberOfElements(res.numberOfElements);
+      console.log("numberOfElements", res.numberOfElements);
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      toast.error(`Get verified student fail !`, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      console.log(error);
+      removeCredential();
+      navigate(Path.LOGIN);
+    });
+  }
+
   const getAllStudent = (page, sortType, column, size, search) => {
     console.log("idClassRoom ", idClassRoom);
     console.log("showByIdClassRoom ", showByIdClassRoom);
     if (showByIdClassRoom && idClassRoom)
       getAllStudentOfClass(page, sortType, column, size, search);
+    else if (!showByIdClassRoom && idClassRoom)
+      getAllVerifiedStudent(page, sortType, column, size, search);
     else
       getAllActiveStudent(page, sortType, column, size, search);
 
@@ -294,7 +341,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </th>
                       </>))
                     }
-                    {showByIdClassRoom && (<th scope="col" className="px-6 py-3">
+                    {idClassRoom && (<th scope="col" className="px-6 py-3">
                       Action
                     </th>)}
                   </tr>
@@ -356,7 +403,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                         }
                                       </div>
                                     </td></>))}
-                                {showByIdClassRoom && (
+                                {idClassRoom && (
                                   <td className="px-6 py-4 flex ">
                                     <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
 
