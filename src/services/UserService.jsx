@@ -10,6 +10,35 @@ const createTestTracking = 'api/v1/test-tracking/my/create';
 const trackMyTest = 'api/v1/test-tracking/my';
 const submitMCTest = 'api/v1/score/submit-test';
 const getMyCore = 'api/v1/score/my';
+const sendEmailVerifyCode = 'api/email/send-verification';
+const verifyEmail = 'api/email/verify';
+
+export const verifyEmailService = async (code) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: verifyEmail,
+            data: { "code": code },
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+
+export const sendEmailVerifyCodeService = async () => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: sendEmailVerifyCode,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
 
 export const getMyCoreService = async (MCTestId) => {
       let accessToken = getAccessToken();
