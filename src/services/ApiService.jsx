@@ -27,7 +27,7 @@ export const addStudentToClassService = async (body) => {
             method: 'post',
             maxBodyLength: Infinity,
             url: addStudentToClassUrl,
-            data:body,
+            data: body,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"

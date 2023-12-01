@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getRefreshToken,  saveToken } from './ApiService';
+import { getRefreshToken, removeCredential, saveToken } from './ApiService';
 
 const instance = axios.create({
       baseURL: 'http://localhost:5000',
@@ -23,7 +23,7 @@ instance.interceptors.response.use(function (response) {
 
             console.log("resp")
             console.log(resp)
-           
+
             // const roles=getUserInfo().roles;
             // console.log(JSON.stringify(roles))
 
