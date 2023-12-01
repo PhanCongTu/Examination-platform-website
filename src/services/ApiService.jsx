@@ -28,6 +28,41 @@ const deleteQuestionUrl = 'api/v1/question/delete/{id}';
 const deleteExamUrl = 'api/v1/multiple-choice-test/delete/{idExam}';
 const updateExamUrl = 'api/v1/multiple-choice-test/update/info/{idExam}';
 const getAllStudentScoreByIDExamUrl = 'api/v1/score/multiple-choice-test'
+const getAllVerifiedStudentUrl='api/v1/student/verified';
+
+export const getAllVerifiedStudentService= async ( page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllVerifiedStudentUrlParam = getAllVerifiedStudentUrl;
+      let queryParams = [];
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllVerifiedStudentUrlParam += '?' + queryParams.join('&');
+      }
+
+      return await axios.request({
+            method: 'get',
+            url: getAllVerifiedStudentUrlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
 
 export const getAllStudentScoreByIDExamService = async (id, page, sortType, column, size, search) => {
       let accessToken = getAccessToken();

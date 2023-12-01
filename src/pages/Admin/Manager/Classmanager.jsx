@@ -378,8 +378,10 @@ export const Classmanager = () => {
                                         </li>
                                     </ul>
                                 </div> */}
-
+                                <div className='w-[150px]'>
                                 <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+
+                                </div>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
                                         <ButtonS handleOnClick={() => { handleSearch(searchData) }} >
@@ -403,22 +405,22 @@ export const Classmanager = () => {
                                                 <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                                             </div>
                                         </th> */}
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
                                             ID class
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]" >
+                                        <th scope="col" className="px-6 py-3 w-[300px]" >
                                             Class name
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                                        <th scope="col" className="px-6 py-3 w-[300px] ">
                                             Class code
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[65px]">
                                             Active
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[65px]">
                                             Private
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[62px]">
                                             Action
                                         </th>
 
@@ -445,16 +447,16 @@ export const Classmanager = () => {
                                                                         <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
                                                                     </div>
                                                                 </td> */}
-                                                                <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                     {item.id}
                                                                 </th>
                                                                 <td className="px-6 py-4 w-[300px] ">
-                                                                    <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.className}>{item.className}</p>
+                                                                    <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline w-[300px] line-clamp-1" title={item.className}>{item.className}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[300px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.classCode}>{item.classCode}</p>
+                                                                    <p className=" truncate font-medium w-[300px] line-clamp-1" title={item.classCode}>{item.classCode}</p>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[62px]">
+                                                                <td className="px-6 py-4 w-[65px]">
                                                                     <div className="flex items-center">
                                                                         {
                                                                             item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
@@ -463,7 +465,7 @@ export const Classmanager = () => {
                                                                         }
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[62px] ">
+                                                                <td className="px-6 py-4 w-[65px] ">
                                                                     <div className="flex items-center">
                                                                         {
                                                                             item.isPrivate === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
@@ -473,7 +475,7 @@ export const Classmanager = () => {
                                                                     </div>
                                                                 </td>
 
-                                                                <td className="px-6 py-4 w-[60px]">
+                                                                <td className="px-6 py-4 w-[62px]">
                                                                     <Menu >
                                                                         <MenuHandler>
                                                                             <Button className='bg-slate-400'>
@@ -517,7 +519,7 @@ export const Classmanager = () => {
                 </div>
                 {isEdit && (
                     <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -535,7 +537,7 @@ export const Classmanager = () => {
                 }
                 {isAdd && (
                     <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}

@@ -143,6 +143,9 @@ export const Scoremanager = () => {
                     <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
                       Summit date
                     </th>
+                    <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                      Total score
+                    </th>
                     <th scope="col" className="px-6 py-3">
                       Lated
                     </th>
@@ -165,7 +168,10 @@ export const Scoremanager = () => {
                                   <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.studentDisplayName}>{item.studentDisplayName}</p>
                                 </td>
                                 <td className="px-6 py-4 w-[300px] " >
-                                  <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.submittedDate)}>{getFormattedDateTimeByMilisecond(item.submittedDate)}</p>
+                                  <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.submittedDate)}>{getFormattedDateTimeByMilisecond(item.submittedDate)}</p>
+                                </td>
+                                <td className="px-6 py-4 w-[300px] " >
+                                  <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={item.totalScore}>{item.totalScore}</p>
                                 </td>
                                 <td className="px-6 py-4 w-[62px]">
                                   <div className="flex items-center">

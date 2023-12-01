@@ -101,8 +101,8 @@ const Register = () => {
 
                                     <InputField name={DISPLAY_NAME} label="Display name" form={form} />
                                     <InputField name={USERNAME} label="Username" form={form} />
-                                    <InputField name={PASSWORD} label="Password" form={form} />
-                                    <InputField name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
+                                    <InputField type='password' name={PASSWORD} label="Password" form={form} />
+                                    <InputField type='password' name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
                                     <InputField name={EMAIL} label="Email address" form={form} />
                                     <Toggle handleToggle={getToggle} >I am a teacher.</Toggle>
                                     {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
