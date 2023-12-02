@@ -154,7 +154,7 @@ export const Scoremanager = () => {
                 <tbody>
                   {
                     isLoading ? 'Loading ...' :
-                      (listAllScore.length !== 0 ? (
+                      (listAllScore.length !== 0 && (
                         listAllScore.map(
                           (item, index) => {
 
@@ -186,12 +186,18 @@ export const Scoremanager = () => {
                               </tr>
                             )
                           }
-                        )) : (<>
-                          <h1 className='text-sm pl-1'>Currently there is no score. Come back later.</h1>
-                        </>))
+                        )))
                   }
                 </tbody>
               </table>
+              {
+                isLoading ? (<>
+                  <h1 className='text-sm pl-1'>Loading...</h1>
+                </>) : (listAllScore.length === 0 && (<>
+                  <h1 className='text-sm pl-1'>Currently there is no score. Come back later.</h1>
+                </>))
+
+              }
 
               <PaginationNav
                 pageNumbers={pageNumbers}

@@ -298,11 +298,11 @@ export const QuestionGroup = (props) => {
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='items-center flex gap-4 justify-between mb-[14px]'>
 
-                                <div className='w-[100px]'>
+                                <div className='w-[200px]'>
                                     <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
 
                                 </div>
-                                <div className="relative">
+                                <div className="relative float-right">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
                                         <Button handleOnClick={() => { handleSearch(searchData) }} >
                                             <svg className="w-5 h-5 text-white " aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
@@ -311,80 +311,93 @@ export const QuestionGroup = (props) => {
                                     <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
 
                                 </div>
-                                <div className='flex gap-4  items-center justify-between'>
-                                    <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question group</Button>
-                                    {/* <Button className="bg-red-500" handleOnClick={() => { handleClickDelete() }}>Delete</Button> */}
-                                </div>
+                                {
+                                    !props.id && <div className='flex gap-4  items-center justify-between'>
+                                        <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question group</Button>
+                                    </div>
+                                }
+
                             </div>
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
 
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[200px]">
                                             ID question group
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[300px]">
                                             Question group name
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[300px]">
                                             Question group code
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[70px]">
                                             Enable
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Action
-                                        </th>
+                                        {
+                                            !props.id && <th scope="col" className="px-6 py-3 w-[150px]">
+                                                Action
+                                            </th>
+                                        }
+
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
                                         isLoading ? 'Loading ...' :
-                                            (listQuestionGroup.length !== 0 ? (
+                                            (listQuestionGroup.length !== 0 && (
                                                 listQuestionGroup.map(
                                                     (item, index) => {
 
                                                         return (
                                                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                <th scope="row" className="w-[120px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                <th scope="row" className="w-[200px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                     {item.id}
                                                                 </th>
-                                                                <td className="px-6 py-4 w-[200px]">
+                                                                <td className="px-6 py-4 w-[300px]">
                                                                     <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[200px]">
+                                                                <td className="px-6 py-4 w-[300px]">
 
                                                                     <p className="cursor-pointer font-medium dark:text-blue-500 " title={item.code}>{item.code}</p>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[62px]">
+                                                                <td className="px-6 py-4 w-[70px]">
                                                                     <div className="flex items-center">
                                                                         {
-                                                                            item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                                                            item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500"></div>
                                                                                 Active</>
-                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 "></div> Passive</>)
                                                                         }
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-6 py-4 flex w-[150px]">
-                                                                    {
-                                                                        isModeActive ? (<>
-                                                                            <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
-                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p></>)
-                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Active</p>)
-                                                                    }
+                                                                {
+                                                                    !props.id && <td className="px-6 py-4 flex w-[150px]">
+                                                                        {
+                                                                            isModeActive ? (<>
+                                                                                <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
+                                                                                <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p></>)
+                                                                                : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Active</p>)
+                                                                        }
 
 
-                                                                </td>
+                                                                    </td>
+                                                                }
+
                                                             </tr>
                                                         )
                                                     }
-                                                )) : (<>
-                                                    <h1 className='text-sm pl-1'>
-                                                        Currently there is no question group in the class. Come back later.</h1>
-                                                </>))
+                                                )))
                                     }
                                 </tbody>
                             </table>
+                            {
+                                isLoading ? (<>
+                                    <h1 className='text-sm pl-1'>Loading...</h1>
+                                </>) : (listQuestionGroup.length === 0 && (<>
+                                    <h1 className='text-sm pl-1'>
+                                        Currently there is no question group in the class. Come back later.</h1>
+                                </>))
+                            }
 
                             <PaginationNav
                                 pageNumbers={pageNumbers}
@@ -403,7 +416,7 @@ export const QuestionGroup = (props) => {
                 </div>
                 {isEdit && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -423,7 +436,7 @@ export const QuestionGroup = (props) => {
                 }
                 {isAdd && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -481,13 +494,16 @@ export const QuestionGroup = (props) => {
                 {
                     isShowQuestion && (
                         <>
-                            <Modal className="bg-opacity-60 z-[101] w-auto" show={true} theme={{ 'content': { 'base': 'w-[1200px]' } }} popup onClose={() => handleClose()} >
+                            <Modal className="bg-opacity-60 z-[101] w-auto" show={true} theme={{ 'content': { 'base': 'w-full m-10' } }} popup onClose={() => handleClose()} >
                                 <Modal.Header >
                                     <h1>Question of question group</h1>
                                     <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                                 </Modal.Header>
-                                <Modal.Body>
-                                    <Questionmanager id={questionGroupSelect.id} />
+                                <Modal.Body className='flex justify-center'>
+                                    <div className=''>
+
+                                        <Questionmanager id={questionGroupSelect.id} />
+                                    </div>
                                 </Modal.Body>
                             </Modal></>)
                 }

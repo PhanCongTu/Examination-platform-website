@@ -667,76 +667,80 @@ export const Questionmanager = (props) => {
                                 </thead>
                                 <tbody>
                                     {
-                                        isLoading ? 'Loading ...' :
-                                            (listAllQuestion.length !== 0 ? (
-                                                listAllQuestion.map(
-                                                    (item, index) => {
+                                        !isLoading &&
+                                        (listAllQuestion.length !== 0 && (
+                                            listAllQuestion.map(
+                                                (item, index) => {
 
-                                                        return (
-                                                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                <td className="w-4 p-4 ">
-                                                                    <div className="flex items-center">
-                                                                        <input
-                                                                            checked={isChecked(item.id)}
-                                                                            onChange={(e) => handleCheckboxChange(e, item.id)}
-                                                                            id={`checkbox-table-search-${index}`}
-                                                                            type="checkbox"
-                                                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                                                        />
-                                                                        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                                                                    </div>
-                                                                </td>
-                                                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                                                    {item.id}
-                                                                </th>
-                                                                <td className="px-6 py-4 w-[300px] ">
-                                                                    <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.content}>{item.content}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.firstAnswer}>{item.firstAnswer}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.secondAnswer}>{item.secondAnswer}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.thirdAnswer}>{item.thirdAnswer}</p>
-                                                                </td>
+                                                    return (
+                                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                            <td className="w-4 p-4 ">
+                                                                <div className="flex items-center">
+                                                                    <input
+                                                                        checked={isChecked(item.id)}
+                                                                        onChange={(e) => handleCheckboxChange(e, item.id)}
+                                                                        id={`checkbox-table-search-${index}`}
+                                                                        type="checkbox"
+                                                                        className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
+                                                                    />
+                                                                    <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
+                                                                </div>
+                                                            </td>
+                                                            <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                {item.id}
+                                                            </th>
+                                                            <td className="px-6 py-4 w-[300px] ">
+                                                                <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.content}>{item.content}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.firstAnswer}>{item.firstAnswer}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.secondAnswer}>{item.secondAnswer}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.thirdAnswer}>{item.thirdAnswer}</p>
+                                                            </td>
 
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.fourthAnswer}>{item.fourthAnswer}</p>
-                                                                </td>
-                                                                {
-                                                                    props.id && (<td className="px-6 py-4 w-[60px]">
-                                                                        <Menu >
-                                                                            <MenuHandler>
-                                                                                <ButtonMenu className='bg-slate-400'>
-                                                                                    <FontAwesomeIcon icon={faBars} />
-                                                                                </ButtonMenu>
-                                                                            </MenuHandler>
-                                                                            <MenuList className='rounded-md z-[105]'>
-                                                                                {
-                                                                                    isModeActive ? (<> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                        <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></>)
-                                                                                        : (<MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem>)
-                                                                                }
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.fourthAnswer}>{item.fourthAnswer}</p>
+                                                            </td>
+                                                            {
+                                                                props.id && (<td className="px-6 py-4 w-[60px]">
+                                                                    <Menu >
+                                                                        <MenuHandler>
+                                                                            <ButtonMenu className='bg-slate-400'>
+                                                                                <FontAwesomeIcon icon={faBars} />
+                                                                            </ButtonMenu>
+                                                                        </MenuHandler>
+                                                                        <MenuList className='rounded-md z-[105]'>
+                                                                            {
+                                                                                isModeActive ? (<> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></>)
+                                                                                    : (<MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem>)
+                                                                            }
 
 
-                                                                            </MenuList>
-                                                                        </Menu>
+                                                                        </MenuList>
+                                                                    </Menu>
 
-                                                                    </td>)
-                                                                }
+                                                                </td>)
+                                                            }
 
-                                                            </tr>
-                                                        )
-                                                    }
-                                                )) : (<>
-                                                    <h1 className='text-sm pl-1'>Currently there is no question. Come back later.</h1>
-                                                </>))
+                                                        </tr>
+                                                    )
+                                                }
+                                            )))
                                     }
                                 </tbody>
                             </table>
-
+                            {
+                                isLoading ? (<>
+                                    <h1 className='text-sm pl-1'>Loading...</h1>
+                                </>) : (listAllQuestion.length === 0 && (<>
+                                    <h1 className='text-sm pl-1'>Currently there is no question. Come back later.</h1>
+                                </>))
+                            }
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -754,7 +758,7 @@ export const Questionmanager = (props) => {
                 </div>
                 {isEdit && (
                     <>
-                        <Modal className="bg-opacity-60 z-[105] m-auto" show={true} theme={{ 'content': { 'base': 'w-[600px]' } }} popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[105] m-auto" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -809,7 +813,7 @@ export const Questionmanager = (props) => {
                 }
                 {isAdd && (
                     <>
-                        <Modal className="bg-opacity-60 z-[105] " show={true} theme={{ 'content': { 'base': 'w-[600px]' } }} popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[105] " show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}

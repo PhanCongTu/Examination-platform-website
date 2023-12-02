@@ -79,7 +79,7 @@ const Login = () => {
                         toast.error(`Log in fail !`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });
-                        setErrorMessage(error.response.data.message)
+                        setErrorMessage(error.message)
                   });
             // Nếu thành công thì chuyển đến trang Home
       };
