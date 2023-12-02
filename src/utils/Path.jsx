@@ -1,10 +1,11 @@
 const Path = {
-    HOME: '/',
+    HOME: '/home',
     LOGIN: '/login',
     REGISTER: '/register',
     FORGOT: '/forgot',
     LOGOUT: '/logout',
     VERIFY_EMAIL: '/verify-email',
+    MY_INFO: '/my/info',
     AMCLASSMANAGER: '/admin/class',
     AMTEACHERMANAGER: '/admin/teacher',
     AMSTUDENTMANAGER: '/admin/student/:idClassRoom?',
