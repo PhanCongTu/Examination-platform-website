@@ -4,15 +4,19 @@ import { Outlet, useNavigate } from 'react-router-dom'
 import { getAccessToken, getRoles } from '../../services/ApiService'
 import Path from '../../utils/Path'
 import { ROLE_ADMIN } from '../../utils/Constant'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 
 export const Admin = () => {
   const [isClick, setClick] = useState(false);
   let navigate = useNavigate();
   const sidebarRef = useRef(null);
+ 
   const handleClick = () => {
     setClick(true);
   }
+
   const handleOutsideClick = (event) => {
     if (sidebarRef.current && !sidebarRef.current.contains(event.target)) {
       setClick(false);
@@ -27,8 +31,8 @@ export const Admin = () => {
       document.removeEventListener('touchstart', handleOutsideClick);
     };
   }, []);
-  useEffect((
-  ) => {
+  useEffect(() => {
+    
     let accessToken = getAccessToken();
     let roles = getRoles();
     if (!accessToken || !roles.includes(ROLE_ADMIN)) {
@@ -50,7 +54,10 @@ export const Admin = () => {
         </div>)}
       </div>
 
-
+      <div onClick={() => navigate(-1)}
+        className='top 0 flex justify-start cursor-pointer w-fit rounded-lg p-5'>
+        <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back 
+      </div>
       {/* <div className={` m-auto ${isClick && 'pl-60'}`}>
       </div> */}
       <div className='m-auto' onClick={() => { setClick(false) }}>

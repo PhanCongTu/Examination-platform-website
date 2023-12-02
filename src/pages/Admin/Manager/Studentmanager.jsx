@@ -9,6 +9,7 @@ import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { addStudentToClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
+import clsx from 'clsx';
 
 const ID_CLASSROOM = 'classroomId';
 const ID_STUDENT = 'studentId';
@@ -315,7 +316,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                     <th scope="col" className="px-6 py-3 w-[150px]">
                       ID student
                     </th>
-                    <th scope="col" className="px-6 py-3 w-[300px] " >
+                    <th scope="col" className={clsx("px-6 py-3 w-[300px]", showByIdClassRoom===false && idClassRoom && 'w-[600px]')} >
                       Student name
                     </th>
                     {showByIdClassRoom ? (
@@ -341,7 +342,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </th>
                       </>))
                     }
-                    {idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
+                    {showByIdClassRoom===false && idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
                       Action
                     </th>)}
                   </tr>
@@ -359,7 +360,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                 <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                   {item.userID}
                                 </th>
-                                <td className="px-6 py-4 w-[300px] ">
+                                <td className={clsx("px-6 py-3 w-[300px]", showByIdClassRoom===false && idClassRoom && 'w-[600px]')}>
                                   <p className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.displayName}>{item.displayName}</p>
                                 </td>
                                 {showByIdClassRoom ? (<><td className="px-6 py-4 w-[200px] " >
@@ -403,7 +404,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                         }
                                       </div>
                                     </td></>))}
-                                {idClassRoom && (
+                                {showByIdClassRoom===false && idClassRoom && (
                                   <td className="px-6 py-4 flex w-[150px]">
                                     <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
 

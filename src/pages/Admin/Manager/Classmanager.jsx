@@ -41,7 +41,7 @@ export const Classmanager = () => {
     const [classSelect, setClassSelect] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
-    const [isToggle, setIsToggle] = useState(false);
+    const [isToggle, setIsToggle] = useState(true);
     const [isModeActive, setIsModeActivate] = useState(true);
     const [isChooseActive, setIsChooseActive] = useState(false);
     const initialValue = {
@@ -462,7 +462,7 @@ export const Classmanager = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        isLoading ? 'Loading ...' :
+                                        !isLoading &&
                                             (listAllClass.length !== 0 && (
                                                 listAllClass.map(
                                                     (item, index) => {
@@ -592,7 +592,7 @@ export const Classmanager = () => {
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={''} />
                                     <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={''} />
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={''} />
-                                    <Toggle handleToggle={setIsToggle} >Is Private</Toggle>
+                                    <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle>
                                     <ButtonS onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonS>
                                 </form>
                             </Modal.Body>
