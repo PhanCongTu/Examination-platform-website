@@ -10,18 +10,17 @@ import {
     MenuList,
     MenuItem,
     Button as ButtonMenu,
-    input,
-    textarea
+
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
-import { addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionService, getAllInActiveQuestionService, removeCredential, updateQuestionService } from '../../../services/ApiService';
+import { activeQuestionService, addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionByIdClassroomService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByIdClassroomService, getAllInActiveQuestionByQuestionGrIDService, removeCredential, updateQuestionService } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { createRoot } from 'react-dom/client';
+
 const CONTENT_QUESTION = 'content';
 const QUESTION_GROUP_ID = 'questionGroupId';
 const ANSWER1 = 'answer1';
@@ -55,6 +54,7 @@ export const Questionmanager = (props) => {
     const [selectedOption, setSelectedOption] = useState('');
     const [listCheckBox, setListCheckBox] = useState([]);
     const [isAllCheckBox, setIsAllCheckBox] = useState(true);
+    const [isChooseActive, setIsChooseActive] = useState(false);
 
     const handleInputContent = (event) => {
         setContentQuestion(event.target.value);
@@ -118,7 +118,7 @@ export const Questionmanager = (props) => {
                     setListAnswer(updatedListAnswer);
                     console.log(listAnswer);
                     input.checked = selectedOption === input.value;
-                    input.addEventListener('change', handleOptionChange);
+                    input.addEventListener('change', (event) => handleOptionChange(event));
                     label.appendChild(input);
                     label.appendChild(document.createTextNode(answer));
                     showAnswer.current.appendChild(label);
@@ -190,7 +190,6 @@ export const Questionmanager = (props) => {
     }
 
     const handleClose = () => {
-        
         if (isEdit)
             setIsEdit(false);
         if (isAdd)
@@ -199,6 +198,8 @@ export const Questionmanager = (props) => {
             setIsDelete(false);
         if (isQuestionGroupOpen)
             setIsQuestionGroupOpen(false);
+        if (isChooseActive)
+            setIsChooseActive(false);
         setAnswer('');
         setSelectedOption('');
         setClickCount(1);
@@ -259,8 +260,8 @@ export const Questionmanager = (props) => {
             let { questionGroupId, ...newBodys } = newBody;
             newBodys.id = body.id;
             updateQuestionService(newBodys).then((res) => {
-                toast.success('Edit question successfuly', { position: toast.POSITION.TOP_RIGHT });
                 getAllQuestion();
+                toast.success('Edit question successfuly', { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
                 toast.error('Edit question fail', { position: toast.POSITION.TOP_RIGHT });
             })
@@ -287,8 +288,8 @@ export const Questionmanager = (props) => {
             })
             console.log("New body", newBody);
             addQuestionByQuestionGroupService(newBody).then((res) => {
-                toast.success('Add question successfuly', { position: toast.POSITION.TOP_RIGHT });
                 getAllQuestion();
+                toast.success('Add question successfuly', { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
                 toast.error('Add question fail', { position: toast.POSITION.TOP_RIGHT });
             })
@@ -296,12 +297,18 @@ export const Questionmanager = (props) => {
 
         if (isDelete)
             deleteQuestionService(body.id).then((res) => {
-                toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
                 getAllQuestion();
+                toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
                 toast.error('Delete question fail', { position: toast.POSITION.TOP_RIGHT });
             })
-
+        if (isChooseActive)
+            activeQuestionService(body.id).then((res) => {
+                getAllQuestion();
+                toast.success('Active question successfuly', { position: toast.POSITION.TOP_RIGHT });
+            }).catch((error) => {
+                toast.error('Active question fail', { position: toast.POSITION.TOP_RIGHT });
+            })
         setActiveIndex(0);
 
     }
@@ -326,56 +333,118 @@ export const Questionmanager = (props) => {
 
     const handleSearch = (data) => {
         console.log("SEARCH");
-        if (isModeActive)
-            getAllActiveQuestionService(props.id, undefined, undefined, undefined, undefined, data).then((res) => {
-                setListAllQuestion(res.content);
-                setIsLast(res.last);
-                setIsFirst(res.first);
+        if (props.idClassroom)
+            if (isModeActive)
+                getAllActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, undefined, data).then((res) => {
+                    setListAllQuestion(res.content);
+                    setIsLast(res.last);
+                    setIsFirst(res.first);
 
-                const pageNumbers2 = [];
-                for (let i = 1; i <= res.totalPages; i++) {
-                    pageNumbers2.push(i);
-                }
-                setPageNumbers(pageNumbers2);
-                setTotalElements(res.totalElements);
-                setOffset(res.pageable.offset);
-                setNumberOfElements(res.numberOfElements);
-                console.log("numberOfElements", res.numberOfElements);
-                setIsLoading(false);
-            }).catch((error) => {
-                setIsLoading(false);
-                toast.error(`Search question active fail !`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-                console.log(error);
-                removeCredential();
-                navigate(Path.LOGIN);
-            });
+                    const pageNumbers2 = [];
+                    for (let i = 1; i <= res.totalPages; i++) {
+                        pageNumbers2.push(i);
+                    }
+                    setPageNumbers(pageNumbers2);
+                    setTotalElements(res.totalElements);
+                    setOffset(res.pageable.offset);
+                    setNumberOfElements(res.numberOfElements);
+                    console.log("numberOfElements", res.numberOfElements);
+                    setIsLoading(false);
+                }).catch((error) => {
+                    setIsLoading(false);
+                    toast.error(`Search question active fail !`, {
+                        position: toast.POSITION.TOP_RIGHT,
+                    });
+                    console.log(error);
+                    removeCredential();
+                    navigate(Path.LOGIN);
+                })
+            else
+                getAllInActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, undefined, data).then((res) => {
+                    setListAllQuestion(res.content);
+                    setIsLast(res.last);
+                    setIsFirst(res.first);
+
+                    const pageNumbers2 = [];
+                    for (let i = 1; i <= res.totalPages; i++) {
+                        pageNumbers2.push(i);
+                    }
+                    setPageNumbers(pageNumbers2);
+                    setTotalElements(res.totalElements);
+                    setOffset(res.pageable.offset);
+                    setNumberOfElements(res.numberOfElements);
+                    console.log("numberOfElements", res.numberOfElements);
+                    setIsLoading(false);
+                }).catch((error) => {
+                    setIsLoading(false);
+                    toast.error(`Get question inactive fail !`, {
+                        position: toast.POSITION.TOP_RIGHT,
+                    });
+                    console.log(error);
+                    removeCredential();
+                    navigate(Path.LOGIN);
+                })
         else
-            getAllInActiveQuestionService(props.id, undefined, undefined, undefined, undefined, data).then((res) => {
-                setListAllQuestion(res.content);
-                setIsLast(res.last);
-                setIsFirst(res.first);
+            if (isModeActive)
+                getAllActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, undefined, data).then((res) => {
+                    setListAllQuestion(res.content);
+                    setIsLast(res.last);
+                    setIsFirst(res.first);
 
-                const pageNumbers2 = [];
-                for (let i = 1; i <= res.totalPages; i++) {
-                    pageNumbers2.push(i);
-                }
-                setPageNumbers(pageNumbers2);
-                setTotalElements(res.totalElements);
-                setOffset(res.pageable.offset);
-                setNumberOfElements(res.numberOfElements);
-                console.log("numberOfElements", res.numberOfElements);
-                setIsLoading(false);
-            }).catch((error) => {
-                setIsLoading(false);
-                toast.error(`Search question inactive fail !`, {
-                    position: toast.POSITION.TOP_RIGHT,
+                    const pageNumbers2 = [];
+                    for (let i = 1; i <= res.totalPages; i++) {
+                        pageNumbers2.push(i);
+                    }
+                    setPageNumbers(pageNumbers2);
+                    setTotalElements(res.totalElements);
+                    setOffset(res.pageable.offset);
+                    setNumberOfElements(res.numberOfElements);
+                    console.log("numberOfElements", res.numberOfElements);
+                    setIsLoading(false);
+                }).catch((error) => {
+                    setIsLoading(false);
+                    toast.error(`Search question active fail !`, {
+                        position: toast.POSITION.TOP_RIGHT,
+                    });
+                    console.log(error);
+                    removeCredential();
+                    navigate(Path.LOGIN);
                 });
-                console.log(error);
-                removeCredential();
-                navigate(Path.LOGIN);
-            });
+            else
+                getAllInActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, undefined, data).then((res) => {
+                    setListAllQuestion(res.content);
+                    setIsLast(res.last);
+                    setIsFirst(res.first);
+
+                    const pageNumbers2 = [];
+                    for (let i = 1; i <= res.totalPages; i++) {
+                        pageNumbers2.push(i);
+                    }
+                    setPageNumbers(pageNumbers2);
+                    setTotalElements(res.totalElements);
+                    setOffset(res.pageable.offset);
+                    setNumberOfElements(res.numberOfElements);
+                    console.log("numberOfElements", res.numberOfElements);
+                    setIsLoading(false);
+                }).catch((error) => {
+                    setIsLoading(false);
+                    toast.error(`Search question inactive fail !`, {
+                        position: toast.POSITION.TOP_RIGHT,
+                    });
+                    console.log(error);
+                    removeCredential();
+                    navigate(Path.LOGIN);
+                });
+    }
+
+    const handleClickActive = (item) => {
+        console.log("IIII", item);
+
+        setIsChooseActive(true);
+        setTimeout(() => {
+            setQuestionSelect(item);
+        });
+        console.log(item);
     }
 
     const handleClickEdit = (item) => {
@@ -388,8 +457,8 @@ export const Questionmanager = (props) => {
         console.log(item);
     }
 
-    const getAllInActiveQuestion = async (page, sortType, column, size, search) => {
-        getAllInActiveQuestionService(props.id, page, sortType, column, size, search).then((res) => {
+    const getAllInActiveQuestionByQuestionGrID = async (page, sortType, column, size, search) => {
+        getAllInActiveQuestionByQuestionGrIDService(props.id, page, sortType, column, size, search).then((res) => {
             setListAllQuestion(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
@@ -413,8 +482,9 @@ export const Questionmanager = (props) => {
             navigate(Path.LOGIN);
         });
     }
-    const getAllActiveQuestion = async (page, sortType, column, size, search) => {
-        getAllActiveQuestionService(props.id, page, sortType, column, size, search).then((res) => {
+
+    const getAllActiveQuestionByQuestionGrID = async (page, sortType, column, size, search) => {
+        getAllActiveQuestionByQuestionGrIDService(props.id, page, sortType, column, size, search).then((res) => {
             setListAllQuestion(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
@@ -440,13 +510,73 @@ export const Questionmanager = (props) => {
         });
     }
 
+    const getAllActiveQuestionByIdClassroom = async (page, sortType, column, size, search) => {
+        getAllActiveQuestionByIdClassroomService(props.idClassroom, page, sortType, column, size, search).then((res) => {
+            setListAllQuestion(res.content);
+            setIsLast(res.last);
+            setIsFirst(res.first);
+
+            const pageNumbers2 = [];
+            for (let i = 1; i <= res.totalPages; i++) {
+                pageNumbers2.push(i);
+            }
+            setPageNumbers(pageNumbers2);
+            setTotalElements(res.totalElements);
+            setOffset(res.pageable.offset);
+            setNumberOfElements(res.numberOfElements);
+            console.log("numberOfElements", res.numberOfElements);
+            setIsLoading(false);
+        }).catch((error) => {
+            setIsLoading(false);
+            toast.error(`Get question active fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            console.log(error);
+            removeCredential();
+            navigate(Path.LOGIN);
+        });
+    }
+
+    const getAllInActiveQuestionByIdClassroom = async (page, sortType, column, size, search) => {
+        getAllInActiveQuestionByIdClassroomService(props.idClassroom, page, sortType, column, size, search).then((res) => {
+            setListAllQuestion(res.content);
+            setIsLast(res.last);
+            setIsFirst(res.first);
+
+            const pageNumbers2 = [];
+            for (let i = 1; i <= res.totalPages; i++) {
+                pageNumbers2.push(i);
+            }
+            setPageNumbers(pageNumbers2);
+            setTotalElements(res.totalElements);
+            setOffset(res.pageable.offset);
+            setNumberOfElements(res.numberOfElements);
+            console.log("numberOfElements", res.numberOfElements);
+            setIsLoading(false);
+        }).catch((error) => {
+            setIsLoading(false);
+            toast.error(`Get question inactive fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+            console.log(error);
+            removeCredential();
+            navigate(Path.LOGIN);
+        });
+    }
+
     const getAllQuestion = (page, sortType, column, size, search) => {
-        if(props.idQuestionSelect)
+        if (props.idQuestionSelect)
             setListCheckBox(props.idQuestionSelect);
-        if (isModeActive)
-            getAllActiveQuestion(page, sortType, column, size, search);
+        if (props.idClassroom)
+            if (isModeActive)
+                getAllActiveQuestionByIdClassroom(page, sortType, column, size, search);
+            else
+                getAllInActiveQuestionByIdClassroom(page, sortType, column, size, search);
         else
-            getAllInActiveQuestion(page, sortType, column, size, search);
+            if (isModeActive)
+                getAllActiveQuestionByQuestionGrID(page, sortType, column, size, search);
+            else
+                getAllInActiveQuestionByQuestionGrID(page, sortType, column, size, search);
     }
 
     const isActive = (index) => {
@@ -455,7 +585,7 @@ export const Questionmanager = (props) => {
 
     useEffect(() => {
 
-        if (props.id)
+        if (props.id || props.idClassroom)
             getAllQuestion();
         else
             navigate(Path.AMCLASSMANAGER);
@@ -490,41 +620,48 @@ export const Questionmanager = (props) => {
                                     <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
 
                                 </div>
-                                <div className='flex gap-4  items-center justify-between'>
-                                    <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question</Button>
+                                {props.id &&
+                                    <div className='flex gap-4  items-center justify-between'>
 
-                                </div>
+                                        <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question</Button>
+
+                                    </div>
+                                }
+
                             </div>
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        <th scope="col" className="p-4">
+                                        <th scope="col" className="p-4 w-4">
                                             <div className="flex items-center">
                                                 <input onChange={() => handleCheckboxChange(undefined, undefined, isAllCheckBox)} id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
                                                 <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                                             </div>
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
+                                        <th scope="col" className="px-6 py-3 w-[70px]">
                                             ID question
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]" >
+                                        <th scope="col" className="px-6 py-3 w-[300px] " >
                                             Question
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
                                             First answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
                                             Second answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
                                             Third answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
                                             Fourth answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3">
-                                            Action
-                                        </th>
+                                        {
+                                            props.id && (<th scope="col" className="px-6 py-3 w-[70px]">
+                                                Action
+                                            </th>)
+                                        }
+
 
                                     </tr>
                                 </thead>
@@ -537,7 +674,7 @@ export const Questionmanager = (props) => {
 
                                                         return (
                                                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                <td className="w-4 p-4">
+                                                                <td className="w-4 p-4 ">
                                                                     <div className="flex items-center">
                                                                         <input
                                                                             checked={isChecked(item.id)}
@@ -549,7 +686,7 @@ export const Questionmanager = (props) => {
                                                                         <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
                                                                     </div>
                                                                 </td>
-                                                                <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                     {item.id}
                                                                 </th>
                                                                 <td className="px-6 py-4 w-[300px] ">
@@ -568,27 +705,33 @@ export const Questionmanager = (props) => {
                                                                 <td className="px-6 py-4 w-[150px] " >
                                                                     <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.fourthAnswer}>{item.fourthAnswer}</p>
                                                                 </td>
+                                                                {
+                                                                    props.id && (<td className="px-6 py-4 w-[60px]">
+                                                                        <Menu >
+                                                                            <MenuHandler>
+                                                                                <ButtonMenu className='bg-slate-400'>
+                                                                                    <FontAwesomeIcon icon={faBars} />
+                                                                                </ButtonMenu>
+                                                                            </MenuHandler>
+                                                                            <MenuList className='rounded-md z-[105]'>
+                                                                                {
+                                                                                    isModeActive ? (<> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                        <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></>)
+                                                                                        : (<MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem>)
+                                                                                }
 
-                                                                <td className="px-6 py-4 w-[60px]">
-                                                                    <Menu >
-                                                                        <MenuHandler>
-                                                                            <ButtonMenu className='bg-slate-400'>
-                                                                                <FontAwesomeIcon icon={faBars} />
-                                                                            </ButtonMenu>
-                                                                        </MenuHandler>
-                                                                        <MenuList className='rounded-md z-[105]'>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
 
-                                                                        </MenuList>
-                                                                    </Menu>
+                                                                            </MenuList>
+                                                                        </Menu>
 
-                                                                </td>
+                                                                    </td>)
+                                                                }
+
                                                             </tr>
                                                         )
                                                     }
                                                 )) : (<>
-                                                    <h1 className='text-sm'>Currently there is no question. Come back later.</h1>
+                                                    <h1 className='text-sm pl-1'>Currently there is no question. Come back later.</h1>
                                                 </>))
                                     }
                                 </tbody>
@@ -610,14 +753,14 @@ export const Questionmanager = (props) => {
                     </div>
                 </div>
                 {isEdit && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[104]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[105] m-auto w-[600px]" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[105] m-auto" show={true} theme={{ 'content': { 'base': 'w-[600px]' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-                                    
+
                                     <p className="text-center text-lg font-medium">Edit question</p>
                                     <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
                                     <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
@@ -630,7 +773,7 @@ export const Questionmanager = (props) => {
                                             name="options"
                                             value={'firstAnswer'}
                                             checked={selectedOption === 'firstAnswer'}
-                                            onChange={handleOptionChange}
+                                            onChange={(event) => handleOptionChange(event)}
                                         /></>} />
                                     <InputField name={ANSWER2} label="Second Answer" form={form} defaultValue={questionSelect.secondAnswer}
                                         children={<><input
@@ -639,7 +782,7 @@ export const Questionmanager = (props) => {
                                             name="options"
                                             value={'secondAnswer'}
                                             checked={selectedOption === 'secondAnswer'}
-                                            onChange={handleOptionChange}
+                                            onChange={(event) => handleOptionChange(event)}
                                         /></>} />
                                     <InputField name={ANSWER3} label="Third Answer" form={form} defaultValue={questionSelect.thirdAnswer}
                                         children={<><input
@@ -648,7 +791,7 @@ export const Questionmanager = (props) => {
                                             name="options"
                                             value={'thirdAnswer'}
                                             checked={selectedOption === 'thirdAnswer'}
-                                            onChange={handleOptionChange}
+                                            onChange={(event) => handleOptionChange(event)}
                                         /></>} />
                                     <InputField name={ANSWER4} label="Fourth Answer" form={form} defaultValue={questionSelect.fourthAnswer}
                                         children={<><input
@@ -657,7 +800,7 @@ export const Questionmanager = (props) => {
                                             name="options"
                                             value={'fourthAnswer'}
                                             checked={selectedOption === 'fourthAnswer'}
-                                            onChange={handleOptionChange}
+                                            onChange={(event) => handleOptionChange(event)}
                                         /></>} />
                                     <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
                                 </form>
@@ -665,8 +808,8 @@ export const Questionmanager = (props) => {
                         </Modal></>)
                 }
                 {isAdd && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[104]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[105] m-auto w-[600px]" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[105] " show={true} theme={{ 'content': { 'base': 'w-[600px]' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -694,14 +837,14 @@ export const Questionmanager = (props) => {
                                     </div>
                                     <div ref={showAnswer} className='showAnswer flex flex-col' >
                                     </div>
-                                    <Button onClick={() => handleClose()} className={clsx(clickCount <= 4 ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
+                                    <Button onClick={() => handleClose()} className={clsx((clickCount <= 4 || !isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
                 }
                 {isDelete && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[104]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[105] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[105] " show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -719,7 +862,26 @@ export const Questionmanager = (props) => {
                             </Modal.Body>
                         </Modal></>)
                 }
-
+                {isChooseActive && (
+                    <>
+                        <Modal className="bg-opacity-60 z-[105] " show={true} size="md" popup onClose={() => handleClose()} >
+                            <Modal.Header />
+                            <Modal.Body>
+                                <form onSubmit={form.handleSubmit(submitForm)}
+                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                >
+                                    <InputField name={ID_QUESTION} disabled form={form} defaultValue={questionSelect.id} />
+                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Confirm </p>
+                                    <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
+                                    <div className='invisible py-3'></div>
+                                    <div className='flex gap-3'>
+                                        <Button className="bg-red-500" type='submit'>Confirm</Button>
+                                        <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                    </div>
+                                </form>
+                            </Modal.Body>
+                        </Modal></>)
+                }
 
             </div >
         </ >

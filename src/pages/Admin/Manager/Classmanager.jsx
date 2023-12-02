@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { addActiveClassService, deleteActiveClassService, getAllActiveClassService, getAllUnActiveClassService, removeCredential, updateActiveClassService } from '../../../services/ApiService'
+import { activeClassroomService, addActiveClassService, deleteActiveClassService, getAllActiveClassService, getAllUnActiveClassService, removeCredential, updateActiveClassService } from '../../../services/ApiService'
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import InputField from '../../../components/form-controls/InputField/InputField';
 import ButtonS from '../../../components/form-controls/Button/Button';
-import { Modal, } from 'flowbite-react';
+import { Modal, CustomFlowbiteTheme } from 'flowbite-react';
 import Toggle from '../../../components/form-controls/Toggle/Toggle';
 
 import PaginationNav from '../../../components/pagination/PaginationNav';
@@ -43,13 +43,20 @@ export const Classmanager = () => {
     const [isDelete, setIsDelete] = useState(false);
     const [isToggle, setIsToggle] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
-
+    const [isChooseActive, setIsChooseActive] = useState(false);
     const initialValue = {
         [CLASS_CODE]: '',
         [CLASS_NAME]: '',
         [IS_PRIVATE]: '',
         [ID_CLASS]: ''
     };
+
+    const customTheme = {
+        root: {
+            base: ''
+        }
+    };
+
     const handleShowStudent = (item) => {
         navigate(`/admin/student/${item.id}`)
     }
@@ -86,7 +93,7 @@ export const Classmanager = () => {
     const handleClickOpenQuestionGroup = (item) => {
         navigate(`/admin/questiongr/${item.id}`)
     }
-    
+
     const handleClickDelete = (item) => {
         setIsDelete(true);
         setClassSelect(item);
@@ -102,6 +109,8 @@ export const Classmanager = () => {
             setIsDelete(false);
         if (isQuestionGroupOpen)
             setIsQuestionGroupOpen(false);
+        if (isChooseActive)
+            setIsChooseActive(false);
     }
 
     const handleClickAdd = () => {
@@ -152,6 +161,19 @@ export const Classmanager = () => {
                 getAllClass();
             }).catch((error) => {
                 toast.error(`Delete class fail !`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            })
+        if(isChooseActive)
+            activeClassroomService(body.id).then((res) => {
+                console.log(body);
+                console.log("Response: " + res);
+                toast.success(`Active class successfully!`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+                getAllClass();
+            }).catch((error) => {
+                toast.error(`Active class fail !`, {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -233,6 +255,15 @@ export const Classmanager = () => {
 
     }
 
+    const handleClickActive = (item) => {
+        console.log("IIII", item);
+        setIsChooseActive(true);
+        setTimeout(() => {
+            setClassSelect(item);
+        });
+        console.log(item);
+    }
+
     const handleClickEdit = (item) => {
         console.log("IIII", item);
         setIsEdit(true);
@@ -272,6 +303,7 @@ export const Classmanager = () => {
             console.log(error);
         });
     }
+
     const getAllUnActivateClass = async (page, sortType, column, size, search) => {
         getAllUnActiveClassService(page, sortType, column, size, search).then((res) => {
             setlistAllClass(res.content);
@@ -300,12 +332,14 @@ export const Classmanager = () => {
             navigate(Path.LOGIN);
         });
     }
+
     const getAllClass = (page, sortType, column, size, search) => {
         if (isModeActive)
             getAllActiveClass(page, sortType, column, size, search);
         else
             getAllUnActivateClass(page, sortType, column, size, search);
     }
+
     const isActive = (index) => {
         return index === activeIndex;
     };
@@ -379,7 +413,7 @@ export const Classmanager = () => {
                                     </ul>
                                 </div> */}
                                 <div className='w-[150px]'>
-                                <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
 
                                 </div>
                                 <div className="relative">
@@ -483,11 +517,17 @@ export const Classmanager = () => {
                                                                             </Button>
                                                                         </MenuHandler>
                                                                         <MenuList className='rounded-md'>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
+                                                                            {
+                                                                                isModeActive ? (<><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
+                                                                                </>)
+                                                                                    : (<MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem>)
+                                                                            }
+
+
                                                                         </MenuList>
                                                                     </Menu>
 
@@ -496,7 +536,7 @@ export const Classmanager = () => {
                                                         )
                                                     }
                                                 )) : (<>
-                                                    <h1 className='text-sm'>Currently there is no class. Come back later.</h1>
+                                                    <h1 className='text-sm pl-1'>Currently there is no class. Come back later.</h1>
                                                 </>))
                                     }
                                 </tbody>
@@ -518,8 +558,8 @@ export const Classmanager = () => {
                     </div>
                 </div>
                 {isEdit && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -536,8 +576,8 @@ export const Classmanager = () => {
                         </Modal></>)
                 }
                 {isAdd && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" theme={customTheme} show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -554,8 +594,8 @@ export const Classmanager = () => {
                         </Modal></>)
                 }
                 {isDelete && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/5 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -573,7 +613,26 @@ export const Classmanager = () => {
                             </Modal.Body>
                         </Modal></>)
                 }
-
+                {isChooseActive && (
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                            <Modal.Header />
+                            <Modal.Body>
+                                <form onSubmit={form.handleSubmit(submitForm)}
+                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                >
+                                    <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
+                                    <p className="text-center text-[20px] font-medium text-green-300 uppercase"> Confirm </p>
+                                    <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
+                                    <div className='invisible py-3'></div>
+                                    <div className='flex gap-3'>
+                                        <ButtonS className="bg-red-500" type='submit'>Submit</ButtonS>
+                                        <ButtonS onClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
+                                    </div>
+                                </form>
+                            </Modal.Body>
+                        </Modal></>)
+                }
 
             </div >
         </ >

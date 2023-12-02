@@ -28,9 +28,122 @@ const deleteQuestionUrl = 'api/v1/question/delete/{id}';
 const deleteExamUrl = 'api/v1/multiple-choice-test/delete/{idExam}';
 const updateExamUrl = 'api/v1/multiple-choice-test/update/info/{idExam}';
 const getAllStudentScoreByIDExamUrl = 'api/v1/score/multiple-choice-test'
-const getAllVerifiedStudentUrl='api/v1/student/verified';
+const getAllVerifiedStudentUrl = 'api/v1/student/verified';
+const getAllActiveQuestionByIdClassroomUrl = 'api/v1/question/classroom';
+const getAllInActiveQuestionByIdClassroomUrl = 'api/v1/question/inactive/classroom';
+const activeClassroomUrl = 'api/v1/classroom/active/{idClassroom}';
+const activeQuestionGroupUrl = 'api/v1/question-group/active/{idQuestionGr}';
+const activeQuestionUrl = 'api/v1/question/active/{idQuestion}';
 
-export const getAllVerifiedStudentService= async ( page, sortType, column, size, search) => {
+export const activeQuestionService = async (id) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            url: activeQuestionUrl.replace('{idQuestion}', id),
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+            }
+      })
+}
+
+export const activeQuestionGroupService = async (id) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            url: activeQuestionGroupUrl.replace('{idQuestionGr}', id),
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+            }
+      })
+}
+
+export const activeClassroomService = async (id) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            url: activeClassroomUrl.replace('{idClassroom}', id),
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': 'application/json'
+            }
+      })
+}
+
+export const getAllInActiveQuestionByIdClassroomService = async (id, page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllInActiveQuestionByIdClassroomUrlParam = getAllInActiveQuestionByIdClassroomUrl;
+      let queryParams = [];
+      if (id)
+            getAllInActiveQuestionByIdClassroomUrlParam += `/${id}`;
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllInActiveQuestionByIdClassroomUrlParam += '?' + queryParams.join('&');
+      }
+
+      return await axios.request({
+            method: 'get',
+            url: getAllInActiveQuestionByIdClassroomUrlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
+
+export const getAllActiveQuestionByIdClassroomService = async (id, page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllActiveQuestionByIdClassroomUrlParam = getAllActiveQuestionByIdClassroomUrl;
+      let queryParams = [];
+      if (id)
+            getAllActiveQuestionByIdClassroomUrlParam += `/${id}`;
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllActiveQuestionByIdClassroomUrlParam += '?' + queryParams.join('&');
+      }
+
+      return await axios.request({
+            method: 'get',
+            url: getAllActiveQuestionByIdClassroomUrlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
+
+export const getAllVerifiedStudentService = async (page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
       let getAllVerifiedStudentUrlParam = getAllVerifiedStudentUrl;
       let queryParams = [];
@@ -166,7 +279,7 @@ export const addQuestionByQuestionGroupService = async (body) => {
       })
 }
 
-export const getAllInActiveQuestionService = async (id, page, sortType, column, size, search) => {
+export const getAllInActiveQuestionByQuestionGrIDService = async (id, page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
       let getAllInActiveQuestionUrlParam = getAllInActiveQuestionUrl;
       if (id)
@@ -202,7 +315,7 @@ export const getAllInActiveQuestionService = async (id, page, sortType, column, 
       })
 }
 
-export const getAllActiveQuestionService = async (id, page, sortType, column, size, search) => {
+export const getAllActiveQuestionByQuestionGrIDService = async (id, page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
       let getAllActiveQuestionUrlParam = getAllActiveQuestionUrl;
       if (id)

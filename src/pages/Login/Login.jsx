@@ -53,6 +53,7 @@ const Login = () => {
             //       else
             //             navigate(Path.HOME);
             // }
+            document.title = "Login";
             removeCredential();
       }, [])
       const [errorMessage, setErrorMessage] = useState();
