@@ -12,6 +12,56 @@ const submitMCTest = 'api/v1/score/submit-test';
 const getMyCore = 'api/v1/score/my';
 const sendEmailVerifyCode = 'api/email/send-verification';
 const verifyEmail = 'api/email/verify';
+const myInfomation = 'api/my-info';
+const updateUserProfile = 'api/user/update';
+const changePassword = 'api/change-password';
+
+export const changePasswordService = async (oldPassword, newPassword) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: changePassword,
+            data: {
+                  oldPassword,
+                  newPassword
+            },
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+
+export const updateUserProfileService = async (displayName, emailAddress) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'put',
+            maxBodyLength: Infinity,
+            url: updateUserProfile,
+            data: {
+                  emailAddress,
+                  displayName
+            },
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+
+export const myInfomationService = async () => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: myInfomation,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
 
 export const verifyEmailService = async (code) => {
       let accessToken = getAccessToken();

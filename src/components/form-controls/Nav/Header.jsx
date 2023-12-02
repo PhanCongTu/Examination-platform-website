@@ -103,12 +103,19 @@ export const Header = () => {
                                         </div>
                                         <ul className="py-2" aria-labelledby="user-menu-button">
                                             <li>
-                                                <NavLink className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                <NavLink to={Path.MY_INFO}
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                                     Update my infomation</NavLink>
                                             </li>
                                             <li>
-                                                <NavLink className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                <NavLink
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
                                                     Change password</NavLink>
+                                            </li>
+                                            <li>
+                                                <NavLink to={Path.VERIFY_EMAIL}
+                                                    className="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">
+                                                    Verify email address</NavLink>
                                             </li>
                                             <li>
                                                 <div onClick={() => handleSignOut()} className="cursor-pointer border-t-2 border-[#000] block px-4 py-2 font-bold text-sm text-red-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">

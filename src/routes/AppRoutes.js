@@ -22,13 +22,15 @@ import PrepareTest from '../pages/User/PrepareTest/PrepareTest';
 import Student from '../pages/User/Student';
 import DoMCTest from '../pages/User/DoMCTest/DoMCTest';
 import VerifyEmail from '../pages/User/VerifyEmail/VerifyEmail';
+import MyInfo from '../pages/User/MyInfo/MyInfo'
 export const AppRoutes = () => {
 
   return (
     <div className=''>
       <Routes>
 
-        <Route path={Path.HOME} element={<Home />} exact />
+        <Route path={'/'} element={<Home />} exact />
+        <Route path={Path.HOME} element={<Home />} />
         <Route path={Path.REGISTER} element={<Register />} />
         <Route path={Path.LOGIN} element={<Login />} />
         <Route path={Path.FORGOT} element={<ForgotPassword />} />
@@ -41,6 +43,7 @@ export const AppRoutes = () => {
           <Route path={Path.PREPARE_TEST} element={<PrepareTest />} />
           <Route path={Path.DO_MC_TEST} element={<DoMCTest />} />
           <Route path={Path.SCORE_DETAIL} element={<ScoreDetail />} />
+          <Route path={Path.MY_INFO} element={<MyInfo />} />
         </Route>
         <Route path='/admin' element={<Admin />}>
           <Route path={Path.AMCLASSMANAGER} element={<Classmanager />} />
