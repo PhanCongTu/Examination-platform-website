@@ -61,6 +61,7 @@ function Home() {
             isSameDay(new Date(test.endDate), selectedDay)
       )
       useEffect(() => {
+
             getMy2WeeksAroundMCTestService()
                   .then(response => {
                         setMCTest(response)
