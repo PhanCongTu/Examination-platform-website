@@ -22,8 +22,8 @@ const ForgotPassword = () => {
       // https://viblo.asia/p/react-hook-form-xu-ly-form-de-dang-hon-bao-gio-het-RnB5pAdDKPG
       const initialValue = {
             [EMAIL]: '',
-            [PASSWORD]:'',
-            [CONFIRMPASSWORD]:''
+            [PASSWORD]: '',
+            [CONFIRMPASSWORD]: ''
       };
 
       const yupObject = yup.object().shape({
@@ -138,8 +138,8 @@ const ForgotPassword = () => {
 
                                           <InputField name="code" label="Code verify" form={form} children={<Button className="bg-blue-800 w-fit h-auto ml-[5px]" children="Send code again" handleOnClick={(event) => handlerSendCode(event)} />} >
                                           </InputField>
-                                          <InputField name={PASSWORD} label="Password" form={form} />
-                                          <InputField name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
+                                          <InputField type="password" name={PASSWORD} label="Password" form={form} />
+                                          <InputField type="password" name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
                                           {errorMessage && <><p className="text-sm text-red-500">{errorMessage}</p></>}
                                           <Button handleOnClick={() => { console.log("DDDDDD") }} className="bg-blue-800" type='submit' >Save password</Button>
                                     </form>

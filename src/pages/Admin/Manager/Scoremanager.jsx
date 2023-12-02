@@ -134,19 +134,19 @@ export const Scoremanager = () => {
               <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 w-[62px]">
                       ID score
                     </th>
-                    <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]" >
+                    <th scope="col" className="px-6 py-3 w-[300px]" >
                       Student name
                     </th>
-                    <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                    <th scope="col" className="px-6 py-3 w-[300px]">
                       Summit date
                     </th>
-                    <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                    <th scope="col" className="px-6 py-3 w-[300px]">
                       Total score
                     </th>
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 w-[62px]">
                       Lated
                     </th>
                   </tr>
@@ -187,7 +187,7 @@ export const Scoremanager = () => {
                             )
                           }
                         )) : (<>
-                          <h1 className='text-sm'>Currently there is no score. Come back later.</h1>
+                          <h1 className='text-sm pl-1'>Currently there is no score. Come back later.</h1>
                         </>))
                   }
                 </tbody>

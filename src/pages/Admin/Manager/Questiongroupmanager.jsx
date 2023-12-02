@@ -7,7 +7,7 @@ import InputField from '../../../components/form-controls/InputField/InputField'
 import Button from '../../../components/form-controls/Button/Button';
 import { Modal } from 'flowbite-react';
 import Toggle from '../../../components/form-controls/Toggle/Toggle';
-import { addQuestionGroupService, deleteQuestionGroupService, getAllActivateQuestionGroupService, getAllUnActiveQuestionGroupService, removeCredential, updateQuestionGroupService } from '../../../services/ApiService';
+import { activeQuestionGroupService, addQuestionGroupService, deleteQuestionGroupService, getAllActivateQuestionGroupService, getAllUnActiveQuestionGroupService, removeCredential, updateQuestionGroupService } from '../../../services/ApiService';
 import PaginationNav from '../../../components/pagination/PaginationNav';
 import Path from '../../../utils/Path';
 import { Questionmanager } from './Questionmanager';
@@ -36,6 +36,8 @@ export const QuestionGroup = (props) => {
     const [questionGroupSelect, setQuestionGroupSelect] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
+    const [isChooseActionActive, setIsChooseActionActive] = useState(false);
+
     const navigate = useNavigate();
 
     const initialValue = {
@@ -51,8 +53,6 @@ export const QuestionGroup = (props) => {
         setQuestionGroupSelect(item);
     }
 
-    
-
     const handleClose = () => {
         setIsEdit(false);
         setIsAdd(false);
@@ -64,7 +64,7 @@ export const QuestionGroup = (props) => {
         console.log("ADDD");
         setIsAdd(true);
     }
-    
+
     const form = useForm({
         mode: 'onSubmit',
         defaultValues: initialValue,
@@ -113,7 +113,17 @@ export const QuestionGroup = (props) => {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
-
+        if (isChooseActionActive)
+            activeQuestionGroupService(body.id).then((res) => {
+                toast.success(`Active question group successfully!`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+                getAllQuestionGroup();
+            }).catch((error) => {
+                toast.error(`Active question group fail !`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            })
         handleClose();
         setActiveIndex(0);
     }
@@ -184,6 +194,15 @@ export const QuestionGroup = (props) => {
             });
     }
 
+    const handleClickActive = (item) => {
+        console.log("IIII", item);
+        setIsChooseActionActive(true);
+        setTimeout(() => {
+            setQuestionGroupSelect(item);
+        });
+        console.log(item);
+    }
+
     const handleClickEdit = (item) => {
         console.log("IIII", item);
         setIsEdit(true);
@@ -194,7 +213,7 @@ export const QuestionGroup = (props) => {
     }
 
     const getAllActiveQuestionGroup = (page, sortType, column, size, search) => {
-       
+
         getAllActivateQuestionGroupService(id, page, sortType, column, size, search).then((res) => {
             console.log(listQuestionGroup);
             setlistQuestionGroup(res.content);
@@ -215,9 +234,12 @@ export const QuestionGroup = (props) => {
             toast.error(`Get question group fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
+            removeCredential();
+            navigate(Path.LOGIN);
         }
         );
     }
+
     const getAllUnActiveQuestionGroup = (page, sortType, column, size, search) => {
         getAllUnActiveQuestionGroupService(id, page, sortType, column, size, search).then((res) => {
             console.log(listQuestionGroup);
@@ -246,8 +268,8 @@ export const QuestionGroup = (props) => {
     }
 
     const getAllQuestionGroup = (page, sortType, column, size, search) => {
-        if(!id){
-            id=props.id;
+        if (!id) {
+            id = props.id;
         }
         if (isModeActive)
             getAllActiveQuestionGroup(page, sortType, column, size, search);
@@ -276,8 +298,10 @@ export const QuestionGroup = (props) => {
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='items-center flex gap-4 justify-between mb-[14px]'>
 
+                                <div className='w-[100px]'>
+                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
 
-                                <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+                                </div>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
                                         <Button handleOnClick={() => { handleSearch(searchData) }} >
@@ -329,8 +353,8 @@ export const QuestionGroup = (props) => {
                                                                     <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[200px]">
-                                                                 
-                                                                    <p  className="cursor-pointer font-medium dark:text-blue-500 " title={item.code}>{item.code}</p>
+
+                                                                    <p className="cursor-pointer font-medium dark:text-blue-500 " title={item.code}>{item.code}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[62px]">
                                                                     <div className="flex items-center">
@@ -342,14 +366,20 @@ export const QuestionGroup = (props) => {
                                                                     </div>
                                                                 </td>
                                                                 <td className="px-6 py-4 flex w-[150px]">
-                                                                    <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
-                                                                    <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p>
+                                                                    {
+                                                                        isModeActive ? (<>
+                                                                            <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
+                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p></>)
+                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Active</p>)
+                                                                    }
+
+
                                                                 </td>
                                                             </tr>
                                                         )
                                                     }
                                                 )) : (<>
-                                                    <h1 className='text-sm'>
+                                                    <h1 className='text-sm pl-1'>
                                                         Currently there is no question group in the class. Come back later.</h1>
                                                 </>))
                                     }
@@ -372,8 +402,8 @@ export const QuestionGroup = (props) => {
                     </div>
                 </div>
                 {isEdit && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -392,8 +422,8 @@ export const QuestionGroup = (props) => {
                         </Modal></>)
                 }
                 {isAdd && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -409,8 +439,8 @@ export const QuestionGroup = (props) => {
                         </Modal></>)
                 }
                 {isDelete && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -428,16 +458,36 @@ export const QuestionGroup = (props) => {
                             </Modal.Body>
                         </Modal></>)
                 }
+                {isChooseActionActive && (
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                            <Modal.Header />
+                            <Modal.Body>
+                                <form onSubmit={form.handleSubmit(submitForm)}
+                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                >
+                                    <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
+                                    <p className="text-center text-[20px] font-medium text-green-400 uppercase"> Confirm </p>
+                                    <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
+                                    <div className='invisible py-3'></div>
+                                    <div className='flex gap-3'>
+                                        <Button className="bg-blue-400" type='submit'>Confirm</Button>
+                                        <Button onClick={() => handleClose()} className=" bg-red-500">Cancel</Button>
+                                    </div>
+                                </form>
+                            </Modal.Body>
+                        </Modal></>)
+                }
                 {
                     isShowQuestion && (
-                        <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                            <Modal className="top-0 left-0 right-0 z-[101] m-auto w-auto" show={true} size="md" popup onClose={() => handleClose()} >
+                        <>
+                            <Modal className="bg-opacity-60 z-[101] w-auto" show={true} theme={{ 'content': { 'base': 'w-[1200px]' } }} popup onClose={() => handleClose()} >
                                 <Modal.Header >
                                     <h1>Question of question group</h1>
                                     <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                                 </Modal.Header>
                                 <Modal.Body>
-                                    <Questionmanager id={questionGroupSelect.id}/>
+                                    <Questionmanager id={questionGroupSelect.id} />
                                 </Modal.Body>
                             </Modal></>)
                 }

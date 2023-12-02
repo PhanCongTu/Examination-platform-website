@@ -405,7 +405,7 @@ export const Examinationmanager = () => {
                                                 )) : (<>
                                                     <tfoot>
                                                         <tr>
-                                                            <h1 className='text-sm'>Currently there is no exam. Come back later.</h1>
+                                                            <h1 className='text-sm pl-1'>Currently there is no exam. Come back later.</h1>
                                                         </tr>
                                                     </tfoot>
                                                 </>))
@@ -429,8 +429,8 @@ export const Examinationmanager = () => {
                     </div>
                 </div>
                 {isEdit && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -448,8 +448,8 @@ export const Examinationmanager = () => {
                         </Modal></>)
                 }
                 {isAdd && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -482,8 +482,8 @@ export const Examinationmanager = () => {
                         </Modal></>)
                 }
                 {isDelete && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[101] " show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -502,13 +502,13 @@ export const Examinationmanager = () => {
                         </Modal></>)
                 }
                 {isShowRamdomQuestion && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[101] m-auto w-[1000px]" show={true} size="md" popup onClose={() => handleCloseShowChooseRandomQuestion()} >
+                    <>
+                        <Modal className=" bg-opacity-60 z-[103]" show={true} theme={{'content':{'base':'w-[1000px]'}}}  popup onClose={() => handleCloseShowChooseRandomQuestion()} >
                             <Modal.Header >
                                 <h1>Choose question group</h1>
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                             </Modal.Header>
-                            <Modal.Body>
+                            <Modal.Body className=''>
 
                                 <QuestionGroup id={idClassRoom} />
                                 <div className="flex justify-center">
@@ -520,15 +520,15 @@ export const Examinationmanager = () => {
                         </Modal></>)
                 }
                 {isShowManualQuestion && (
-                    <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[102]'></div>
-                        <Modal className="top-0 left-0 right-0 z-[103] m-auto w-auto" show={true} size="md" popup onClose={() => handleCloseShowChooseManualQuestion()} >
+                    <>
+                        <Modal className="bg-opacity-60 z-[103]" show={true} theme={{'content':{'base':'w-[1000px]'}}} popup onClose={() => handleCloseShowChooseManualQuestion()} >
                             <Modal.Header >
                                 <h1>Choose question</h1>
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                             </Modal.Header>
                             <Modal.Body>
 
-                                <Questionmanager id={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
+                                <Questionmanager idClassroom={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
                                 <div className="flex justify-center">
                                     <Button onClick={() => { console.log(questionsSelect); handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
                                 </div>

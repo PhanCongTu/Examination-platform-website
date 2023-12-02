@@ -412,7 +412,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                             )
                           }
                         )) : (<>
-                          <h1 className='text-sm'>Currently there is no student. Come back later.</h1>
+                          <h1 className='text-sm pl-1'>Currently there is no student. Come back later.</h1>
                         </>))
                   }
                 </tbody>
@@ -433,8 +433,8 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
           </div>
         </div>
         {isAdd && (
-          <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-            <Modal className="top-[1%] left-[7%] right-0 z-[101] m-auto w-[500px]" show={true} size="md" popup onClose={() => handleClose()} >
+          <>
+            <Modal className="bg-opacity-60 z-[101]" show={true} theme={{'content':{'base':'w-[450px]'}}} popup onClose={() => handleClose()} >
               <Modal.Header >
                 <div className='flex justify-center mr-[3px]'>
                   <div className='flex uppercase !text-center text-[23px] font-black'>Add student to class</div>
@@ -449,8 +449,8 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
             </Modal></>)
         }
         {isAddConfirm && (
-          <><div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-            <Modal className="top-1/5 left-[100px] right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={() => handleClose()} >
+          <>
+            <Modal className="bg-opacity-60  z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
               <Modal.Header />
               <Modal.Body>
                 <form onSubmit={form.handleSubmit(submitForm)}
