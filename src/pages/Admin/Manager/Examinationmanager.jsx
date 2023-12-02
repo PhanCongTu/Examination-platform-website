@@ -176,7 +176,7 @@ export const Examinationmanager = () => {
             setListAllExam(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
-            
+
             console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
@@ -355,7 +355,7 @@ export const Examinationmanager = () => {
                                 <tbody>
                                     {
                                         isLoading ? 'Loading ...' :
-                                            (listAllExam.length !== 0 ? (
+                                            (listAllExam.length !== 0 && (
                                                 listAllExam.map(
                                                     (item, index) => {
 
@@ -369,14 +369,14 @@ export const Examinationmanager = () => {
                                                                     <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.testName}>{item.testName}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.startDate)}>{getFormattedDateTimeByMilisecond(item.startDate)}</p>
+                                                                    <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.startDate)}>{getFormattedDateTimeByMilisecond(item.startDate)}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.endDate)}>{getFormattedDateTimeByMilisecond(item.endDate)}</p>
+                                                                    <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.endDate)}>{getFormattedDateTimeByMilisecond(item.endDate)}</p>
                                                                 </td>
 
                                                                 <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.testingTime}>{item.testingTime}</p>
+                                                                    <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.testingTime}>{item.testingTime}</p>
                                                                 </td>
                                                                 <td className="px-6 py-4 w-[60px]">
                                                                     <Menu >
@@ -392,9 +392,6 @@ export const Examinationmanager = () => {
                                                                                     <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
                                                                                 </>)
                                                                             }
-
-
-
                                                                         </MenuList>
                                                                     </Menu>
 
@@ -402,17 +399,18 @@ export const Examinationmanager = () => {
                                                             </tr>
                                                         )
                                                     }
-                                                )) : (<>
-                                                    <tfoot>
-                                                        <tr>
-                                                            <h1 className='text-sm pl-1'>Currently there is no exam. Come back later.</h1>
-                                                        </tr>
-                                                    </tfoot>
-                                                </>))
+                                                )))
                                     }
                                 </tbody>
                             </table>
+                            {
+                                isLoading ? (<>
+                                    <h1 className='text-sm pl-1'>Loading...</h1>
+                                </>) : (listAllExam.length === 0 && (<>
+                                    <h1 className='text-sm pl-1'>Currently there is no exam. Come back later.</h1>
+                                </>))
 
+                            }
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -430,7 +428,7 @@ export const Examinationmanager = () => {
                 </div>
                 {isEdit && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -449,7 +447,7 @@ export const Examinationmanager = () => {
                 }
                 {isAdd && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }}popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -503,15 +501,17 @@ export const Examinationmanager = () => {
                 }
                 {isShowRamdomQuestion && (
                     <>
-                        <Modal className=" bg-opacity-60 z-[103]" show={true} theme={{'content':{'base':'w-[1000px]'}}}  popup onClose={() => handleCloseShowChooseRandomQuestion()} >
+                        <Modal className=" bg-opacity-60 z-[103]" show={true} theme={{ 'content': { 'base': 'w-[1000px]' } }} popup onClose={() => handleCloseShowChooseRandomQuestion()} >
                             <Modal.Header >
                                 <h1>Choose question group</h1>
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                             </Modal.Header>
-                            <Modal.Body className=''>
+                            <Modal.Body className='flex justify-center flex-col'>
+                                <div className='flex justify-center'>
+                                    <QuestionGroup id={idClassRoom} />
+                                </div>
 
-                                <QuestionGroup id={idClassRoom} />
-                                <div className="flex justify-center">
+                                <div className="flex justify-center p-4 ">
 
                                     <Button onClick={() => handleClose()} className="bg-blue-400">Submit</Button>
                                 </div>
@@ -521,7 +521,7 @@ export const Examinationmanager = () => {
                 }
                 {isShowManualQuestion && (
                     <>
-                        <Modal className="bg-opacity-60 z-[103]" show={true} theme={{'content':{'base':'w-[1000px]'}}} popup onClose={() => handleCloseShowChooseManualQuestion()} >
+                        <Modal className="bg-opacity-60 z-[103]" show={true} theme={{ 'content': { 'base': 'w-[1000px]' } }} popup onClose={() => handleCloseShowChooseManualQuestion()} >
                             <Modal.Header >
                                 <h1>Choose question</h1>
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
@@ -529,7 +529,7 @@ export const Examinationmanager = () => {
                             <Modal.Body>
 
                                 <Questionmanager idClassroom={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
-                                <div className="flex justify-center">
+                                <div className="flex justify-center p-4">
                                     <Button onClick={() => { console.log(questionsSelect); handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
                                 </div>
 

@@ -312,36 +312,36 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                   <tr>
 
-                    <th scope="col" className="px-6 py-3">
+                    <th scope="col" className="px-6 py-3 w-[150px]">
                       ID student
                     </th>
-                    <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]" >
+                    <th scope="col" className="px-6 py-3 w-[300px] " >
                       Student name
                     </th>
                     {showByIdClassRoom ? (
                       <>
-                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                        <th scope="col" className="px-6 py-3 w-[200px]">
                           Email
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 w-[200px]">
                           Email Verified
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 w-[70px]">
                           Active
                         </th>
                       </>) : (!idClassRoom && (<>
-                        <th scope="col" className="px-6 py-3 min-w-[200px] m-w-[200px]">
+                        <th scope="col" className="px-6 py-3 w-[200px]">
                           Email
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 w-[200px]">
                           Email Verified
                         </th>
-                        <th scope="col" className="px-6 py-3">
+                        <th scope="col" className="px-6 py-3 w-[70px]">
                           Active
                         </th>
                       </>))
                     }
-                    {idClassRoom && (<th scope="col" className="px-6 py-3">
+                    {idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
                       Action
                     </th>)}
                   </tr>
@@ -349,23 +349,23 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                 <tbody>
                   {
                     isLoading ? 'Loading ...' :
-                      (listAllStudent.length !== 0 ? (
+                      (listAllStudent.length !== 0 && (
                         listAllStudent.map(
                           (item, index) => {
 
                             return (
                               <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
-                                <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                   {item.userID}
                                 </th>
-                                <td className="px-6 py-4 w-[200px] min-w-[200px] m-w-[200px]">
-                                  <p className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.displayName}>{item.displayName}</p>
+                                <td className="px-6 py-4 w-[300px] ">
+                                  <p className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.displayName}>{item.displayName}</p>
                                 </td>
-                                {showByIdClassRoom ? (<><td className="px-6 py-4 w-[200px] min-w-[200px] m-w-[200px]" >
+                                {showByIdClassRoom ? (<><td className="px-6 py-4 w-[200px] " >
                                   <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.emailAddress}>{item.emailAddress}</p>
                                 </td>
-                                  <td className="px-6 py-4">
+                                  <td className="px-6 py-4 w-[200px]">
                                     <div className="flex items-center">
                                       {
                                         item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
@@ -374,7 +374,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                       }
                                     </div>
                                   </td>
-                                  <td className="px-6 py-4">
+                                  <td className="px-6 py-4 w-[70px]">
                                     <div className="flex items-center">
                                       {
                                         item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
@@ -382,10 +382,10 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                         ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
                                       }
                                     </div>
-                                  </td></>) : (!idClassRoom && (<><td className="px-6 py-4 w-[200px] min-w-[200px] m-w-[200px]" >
+                                  </td></>) : (!idClassRoom && (<><td className="px-6 py-4 w-[200px] " >
                                     <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.emailAddress}>{item.emailAddress}</p>
                                   </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 w-[200px]">
                                       <div className="flex items-center">
                                         {
                                           item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
@@ -394,7 +394,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                         }
                                       </div>
                                     </td>
-                                    <td className="px-6 py-4">
+                                    <td className="px-6 py-4 w-[70px]">
                                       <div className="flex items-center">
                                         {
                                           item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
@@ -404,19 +404,27 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                       </div>
                                     </td></>))}
                                 {idClassRoom && (
-                                  <td className="px-6 py-4 flex ">
+                                  <td className="px-6 py-4 flex w-[150px]">
                                     <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
 
                                   </td>)}
                               </tr>
                             )
                           }
-                        )) : (<>
-                          <h1 className='text-sm pl-1'>Currently there is no student. Come back later.</h1>
-                        </>))
+                        )
+                      )
+                      )
                   }
                 </tbody>
               </table>
+              {
+                isLoading ? (<>
+                  <h1 className='text-sm pl-1'>Loading...</h1>
+                </>) : (listAllStudent.length === 0 && (<>
+                  <h1 className='text-sm pl-1'>Currently there is no student. Come back later.</h1>
+                </>))
+              }
+
               <PaginationNav
                 pageNumbers={pageNumbers}
                 handlePrevious={handlePrevious}
@@ -434,16 +442,16 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         </div>
         {isAdd && (
           <>
-            <Modal className="bg-opacity-60 z-[101]" show={true} theme={{'content':{'base':'w-[450px]'}}} popup onClose={() => handleClose()} >
+            <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => handleClose()} >
               <Modal.Header >
                 <div className='flex justify-center mr-[3px]'>
                   <div className='flex uppercase !text-center text-[23px] font-black'>Add student to class</div>
                 </div>
                 <hr className=" border mx-3 border-gray-300 !outline-none " />
               </Modal.Header>
-              <Modal.Body>
-                <div className='flex justify-center'>
-                  <Studentmanager showByIdClassRoom={false} />
+              <Modal.Body className='flex justify-center w-full'>
+                <div className='flex justify-center '>
+                  <Studentmanager  showByIdClassRoom={false} />
                 </div>
               </Modal.Body>
             </Modal></>)

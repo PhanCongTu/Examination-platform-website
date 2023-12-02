@@ -412,7 +412,7 @@ export const Classmanager = () => {
                                         </li>
                                     </ul>
                                 </div> */}
-                                <div className='w-[150px]'>
+                                <div className='w-[150px] z-0'>
                                     <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
 
                                 </div>
@@ -448,13 +448,13 @@ export const Classmanager = () => {
                                         <th scope="col" className="px-6 py-3 w-[300px] ">
                                             Class code
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[65px]">
+                                        <th scope="col" className="px-6 py-3 w-[70px]">
                                             Active
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[65px]">
+                                        <th scope="col" className="px-6 py-3 w-[70px]">
                                             Private
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[62px]">
+                                        <th scope="col" className="px-6 py-3 w-[70px]">
                                             Action
                                         </th>
 
@@ -463,7 +463,7 @@ export const Classmanager = () => {
                                 <tbody>
                                     {
                                         isLoading ? 'Loading ...' :
-                                            (listAllClass.length !== 0 ? (
+                                            (listAllClass.length !== 0 && (
                                                 listAllClass.map(
                                                     (item, index) => {
 
@@ -490,7 +490,7 @@ export const Classmanager = () => {
                                                                 <td className="px-6 py-4 w-[300px] " >
                                                                     <p className=" truncate font-medium w-[300px] line-clamp-1" title={item.classCode}>{item.classCode}</p>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[65px]">
+                                                                <td className="px-6 py-4 w-[70px]">
                                                                     <div className="flex items-center">
                                                                         {
                                                                             item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
@@ -499,7 +499,7 @@ export const Classmanager = () => {
                                                                         }
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[65px] ">
+                                                                <td className="px-6 py-4 w-[70px] ">
                                                                     <div className="flex items-center">
                                                                         {
                                                                             item.isPrivate === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
@@ -509,7 +509,7 @@ export const Classmanager = () => {
                                                                     </div>
                                                                 </td>
 
-                                                                <td className="px-6 py-4 w-[62px]">
+                                                                <td className="px-6 py-4 w-[70px]">
                                                                     <Menu >
                                                                         <MenuHandler>
                                                                             <Button className='bg-slate-400'>
@@ -535,13 +535,18 @@ export const Classmanager = () => {
                                                             </tr>
                                                         )
                                                     }
-                                                )) : (<>
-                                                    <h1 className='text-sm pl-1'>Currently there is no class. Come back later.</h1>
-                                                </>))
+                                                )))
                                     }
                                 </tbody>
                             </table>
+                            {
+                                isLoading ? (<>
+                                    <h1 className='text-sm pl-1'>Loading...</h1>
+                                </>) : (listAllClass.length === 0 && (<>
+                                    <h1 className='text-sm pl-1'>Currently there is no class. Come back later.</h1>
+                                </>))
 
+                            }
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -559,7 +564,7 @@ export const Classmanager = () => {
                 </div>
                 {isEdit && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -577,7 +582,7 @@ export const Classmanager = () => {
                 }
                 {isAdd && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" theme={customTheme} show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" theme={{ 'content': { 'base': 'w-1/2 m-10' } }} show={true}  popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
