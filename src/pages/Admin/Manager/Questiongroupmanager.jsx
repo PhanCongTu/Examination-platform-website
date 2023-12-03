@@ -344,49 +344,49 @@ export const QuestionGroup = (props) => {
                                 </thead>
                                 <tbody>
                                     {
-                                        isLoading ? 'Loading ...' :
-                                            (listQuestionGroup.length !== 0 && (
-                                                listQuestionGroup.map(
-                                                    (item, index) => {
+                                        !isLoading &&
+                                        (listQuestionGroup.length !== 0 && (
+                                            listQuestionGroup.map(
+                                                (item, index) => {
 
-                                                        return (
-                                                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                <th scope="row" className="w-[200px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                                                    {item.id}
-                                                                </th>
-                                                                <td className="px-6 py-4 w-[300px]">
-                                                                    <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
+                                                    return (
+                                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                            <th scope="row" className="w-[200px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                {item.id}
+                                                            </th>
+                                                            <td className="px-6 py-4 w-[300px]">
+                                                                <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[300px]">
+
+                                                                <p className="cursor-pointer font-medium dark:text-blue-500 " title={item.code}>{item.code}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[70px]">
+                                                                <div className="flex items-center">
+                                                                    {
+                                                                        item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500"></div>
+                                                                            Active</>
+                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 "></div> Passive</>)
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            {
+                                                                !props.id && <td className="px-6 py-4 flex w-[150px]">
+                                                                    {
+                                                                        isModeActive ? (<>
+                                                                            <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
+                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p></>)
+                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Active</p>)
+                                                                    }
+
+
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[300px]">
+                                                            }
 
-                                                                    <p className="cursor-pointer font-medium dark:text-blue-500 " title={item.code}>{item.code}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[70px]">
-                                                                    <div className="flex items-center">
-                                                                        {
-                                                                            item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500"></div>
-                                                                                Active</>
-                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 "></div> Passive</>)
-                                                                        }
-                                                                    </div>
-                                                                </td>
-                                                                {
-                                                                    !props.id && <td className="px-6 py-4 flex w-[150px]">
-                                                                        {
-                                                                            isModeActive ? (<>
-                                                                                <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
-                                                                                <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p></>)
-                                                                                : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Active</p>)
-                                                                        }
-
-
-                                                                    </td>
-                                                                }
-
-                                                            </tr>
-                                                        )
-                                                    }
-                                                )))
+                                                        </tr>
+                                                    )
+                                                }
+                                            )))
                                     }
                                 </tbody>
                             </table>

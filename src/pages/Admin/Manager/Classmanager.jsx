@@ -516,19 +516,19 @@ export const Classmanager = () => {
                                                                                 <FontAwesomeIcon icon={faBars} />
                                                                             </Button>
                                                                         </MenuHandler>
-                                                                        <MenuList className='rounded-md'>
+                                                                        
                                                                             {
-                                                                                isModeActive ? (<><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
                                                                                     <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
                                                                                     <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
                                                                                     <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
                                                                                     <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
-                                                                                </>)
-                                                                                    : (<MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem>)
+                                                                                    </MenuList>)
+                                                                                    : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem></MenuList>)
                                                                             }
 
 
-                                                                        </MenuList>
+                                                                        
                                                                     </Menu>
 
                                                                 </td>

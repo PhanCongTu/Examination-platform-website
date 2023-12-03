@@ -349,7 +349,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                 </thead>
                 <tbody>
                   {
-                    isLoading ? 'Loading ...' :
+                    !isLoading && 
                       (listAllStudent.length !== 0 && (
                         listAllStudent.map(
                           (item, index) => {
