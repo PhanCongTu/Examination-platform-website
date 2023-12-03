@@ -805,7 +805,7 @@ export const Questionmanager = (props) => {
                                             checked={selectedOption === 'fourthAnswer'}
                                             onChange={(event) => handleOptionChange(event)}
                                         /></>} />
-                                    <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
+                                    <Button onClick={() => handleClose()} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
