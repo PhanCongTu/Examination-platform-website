@@ -354,7 +354,7 @@ export const Examinationmanager = () => {
                                 </thead>
                                 <tbody>
                                     {
-                                        isLoading ? 'Loading ...' :
+                                        !isLoading &&
                                             (listAllExam.length !== 0 && (
                                                 listAllExam.map(
                                                     (item, index) => {
@@ -521,14 +521,16 @@ export const Examinationmanager = () => {
                 }
                 {isShowManualQuestion && (
                     <>
-                        <Modal className="bg-opacity-60 z-[103]" show={true} theme={{ 'content': { 'base': 'w-[1000px]' } }} popup onClose={() => handleCloseShowChooseManualQuestion()} >
+                        <Modal className="bg-opacity-60 z-[103]" show={true} theme={{ 'content': { 'base': 'w-[1200px] ' } }} popup onClose={() => handleCloseShowChooseManualQuestion()} >
                             <Modal.Header >
                                 <h1>Choose question</h1>
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                             </Modal.Header>
                             <Modal.Body>
-
+                                <div className='flex justify-center'> 
                                 <Questionmanager idClassroom={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
+
+                                </div>
                                 <div className="flex justify-center p-4">
                                     <Button onClick={() => { console.log(questionsSelect); handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
                                 </div>
