@@ -568,14 +568,14 @@ export const Questionmanager = (props) => {
             setListCheckBox(props.idQuestionSelect);
         if (props.idClassroom)
             if (isModeActive)
-                getAllActiveQuestionByIdClassroom(page, sortType, column, size, search);
+                getAllActiveQuestionByIdClassroom(page, sortType, column, size=6, search);
             else
-                getAllInActiveQuestionByIdClassroom(page, sortType, column, size, search);
+                getAllInActiveQuestionByIdClassroom(page, sortType, column, size=6, search);
         else
             if (isModeActive)
-                getAllActiveQuestionByQuestionGrID(page, sortType, column, size, search);
+                getAllActiveQuestionByQuestionGrID(page, sortType, column, size=6, search);
             else
-                getAllInActiveQuestionByQuestionGrID(page, sortType, column, size, search);
+                getAllInActiveQuestionByQuestionGrID(page, sortType, column, size=6, search);
     }
 
     const isActive = (index) => {
@@ -660,7 +660,7 @@ export const Questionmanager = (props) => {
                                                 Action
                                             </th>)
                                         }
-
+                                        
 
                                     </tr>
                                 </thead>

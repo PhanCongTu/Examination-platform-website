@@ -273,7 +273,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     if (showByIdClassRoom && idClassRoom)
       getAllStudentOfClass(page, sortType, column, size, search);
     else if (!showByIdClassRoom && idClassRoom)
-      getAllVerifiedStudent(page, sortType, column, size, search);
+      getAllVerifiedStudent(page, sortType, column, size=6, search);
     else
       getAllActiveStudent(page, sortType, column, size, search);
 
