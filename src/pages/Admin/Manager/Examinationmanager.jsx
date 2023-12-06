@@ -520,7 +520,7 @@ export const Examinationmanager = () => {
                             </Modal.Header>
                             <Modal.Body className='flex justify-center flex-col'>
                                 <div className='flex justify-center'>
-                                    <QuestionGroup id={idClassRoom} chooseQuestionGroup={setChooseQuestionByQr} />
+                                    <QuestionGroup id={idClassRoom} chooseQuestionGroup={setChooseQuestionByQr} listQuestionGrChoose={chooseQuestionByQuestionGr}/>
                                 </div>
 
                                 <div className="flex justify-center p-4 ">
