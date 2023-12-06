@@ -37,6 +37,7 @@ export const QuestionGroup = (props) => {
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
     const [isChooseActionActive, setIsChooseActionActive] = useState(false);
+    const [valueNumberOfQuestion,setValueNumberOfQuestion]=useState({});
 
     const navigate = useNavigate();
 
@@ -56,31 +57,40 @@ export const QuestionGroup = (props) => {
     const handleEnterNumberQuestion = (event, item) => {
         let value = event.target.value;
         if (value !== '') {
-            props.chooseQuestionGroup((preValue)=> {
-                const existingQuestionGroup = preValue.find((group) => group.questionGroupId === Number(item.id));
-                if (existingQuestionGroup) {
-                    return preValue.map((group) => {
-                        if (group.questionGroupId === Number(item.id)) {
-                            return {
-                                ...group,
+            console.log(item.totalQuestion,value);
+            if(item.totalQuestion<Number(value)){
+                toast.error(`Number question of question group is ${item.totalQuestion}.Please enter again.`,toast.POSITION.TOP_RIGHT);
+                event.target.value='';
+                
+            }
+            else{
+                props.chooseQuestionGroup((preValue) => {
+                    const existingQuestionGroup = preValue.find((group) => group.questionGroupId === Number(item.id));
+                    if (existingQuestionGroup) {
+                        return preValue.map((group) => {
+                            if (group.questionGroupId === Number(item.id)) {
+                                return {
+                                    ...group,
+                                    numberOfQuestion: value
+                                };
+                            }
+                            return group;
+                        });
+                    } else {
+                        return [
+                            ...preValue,
+                            {
+                                questionGroupId: Number(item.id),
                                 numberOfQuestion: value
-                            };
-                        }
-                        return group;
-                    });
-                } else {
-                    return [
-                        ...preValue,
-                        {
-                            questionGroupId: Number(item.id),
-                            numberOfQuestion: value
-                        }
-                    ];
-                }
-            })
-        }else{
+                            }
+                        ];
+                    }
+                })
+            }
+            
+        } else {
             console.log(value);
-            props.chooseQuestionGroup((preValue)=>preValue.filter((valueS)=>valueS.questionGroupId!=Number(item.id)))
+            props.chooseQuestionGroup((preValue) => preValue.filter((valueS) => valueS.questionGroupId != Number(item.id)))
         }
     }
 
@@ -158,6 +168,18 @@ export const QuestionGroup = (props) => {
             })
         handleClose();
         setActiveIndex(0);
+    }
+
+    const handleShowDefaultValue = (id) => {
+        console.log("VVVVVVVVVVVVVVVVVV");
+        console.log(valueNumberOfQuestion);
+        console.log(id);
+        const foundItem = valueNumberOfQuestion.find((item) => item.questionGroupId == Number(id));
+        if (foundItem) {
+            console.log("AAAAAAA ",foundItem);
+            return foundItem.numberOfQuestion;
+        }
+        return null;
     }
 
     const handleClickPage = (index) => {
@@ -303,6 +325,7 @@ export const QuestionGroup = (props) => {
         if (!id) {
             id = props.id;
             size = 6;
+            setValueNumberOfQuestion(props.listQuestionGrChoose)
         }
         if (isModeActive)
             getAllActiveQuestionGroup(page, sortType, column, size, search);
@@ -393,7 +416,7 @@ export const QuestionGroup = (props) => {
                                                                 {item.id}
                                                             </th>
                                                             <td className="px-6 py-4 w-[300px]">
-                                                                <p onClick={() => { if(!props.id) handleShowQuestion(item); }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
+                                                                <p onClick={() => { if (!props.id) handleShowQuestion(item); }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
                                                             </td>
                                                             <td className="px-6 py-4 w-[300px]">
 
@@ -426,7 +449,7 @@ export const QuestionGroup = (props) => {
                                                                         className=' border-black-100 border'
                                                                         type="number"
                                                                         onChange={(event) => { handleEnterNumberQuestion(event, item) }}
-
+                                                                        defaultValue={handleShowDefaultValue(item.id)}
                                                                     />
                                                                 </td>
                                                             }
