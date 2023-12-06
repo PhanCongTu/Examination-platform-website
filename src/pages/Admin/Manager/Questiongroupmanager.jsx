@@ -56,10 +56,28 @@ export const QuestionGroup = (props) => {
     const handleEnterNumberQuestion = (event, item) => {
         let value = event.target.value;
         if (value !== '') {
-            props.chooseQuestionGroup((preValue)=>[...preValue,{
-                questionGroupId:Number(item.id),
-                numberOfQuestion:value
-            }])
+            props.chooseQuestionGroup((preValue)=> {
+                const existingQuestionGroup = preValue.find((group) => group.questionGroupId === Number(item.id));
+                if (existingQuestionGroup) {
+                    return preValue.map((group) => {
+                        if (group.questionGroupId === Number(item.id)) {
+                            return {
+                                ...group,
+                                numberOfQuestion: value
+                            };
+                        }
+                        return group;
+                    });
+                } else {
+                    return [
+                        ...preValue,
+                        {
+                            questionGroupId: Number(item.id),
+                            numberOfQuestion: value
+                        }
+                    ];
+                }
+            })
         }else{
             console.log(value);
             props.chooseQuestionGroup((preValue)=>preValue.filter((valueS)=>valueS.questionGroupId!=Number(item.id)))
@@ -375,7 +393,7 @@ export const QuestionGroup = (props) => {
                                                                 {item.id}
                                                             </th>
                                                             <td className="px-6 py-4 w-[300px]">
-                                                                <p onClick={() => { handleShowQuestion(item) }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
+                                                                <p onClick={() => { if(!props.id) handleShowQuestion(item); }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline" title={item.name}>{item.name}</p>
                                                             </td>
                                                             <td className="px-6 py-4 w-[300px]">
 
