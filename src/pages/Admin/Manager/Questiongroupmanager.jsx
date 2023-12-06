@@ -53,11 +53,25 @@ export const QuestionGroup = (props) => {
         setQuestionGroupSelect(item);
     }
 
+    const handleEnterNumberQuestion = (event, item) => {
+        let value = event.target.value;
+        if (value !== '') {
+            props.chooseQuestionGroup((preValue)=>[...preValue,{
+                questionGroupId:Number(item.id),
+                numberOfQuestion:value
+            }])
+        }else{
+            console.log(value);
+            props.chooseQuestionGroup((preValue)=>preValue.filter((valueS)=>valueS.questionGroupId!=Number(item.id)))
+        }
+    }
+
     const handleClose = () => {
         setIsEdit(false);
         setIsAdd(false);
         setIsDelete(false);
         setIsShowQuestion(false);
+        setIsChooseActionActive(false);
     }
 
     const handleClickAdd = () => {
@@ -270,6 +284,7 @@ export const QuestionGroup = (props) => {
     const getAllQuestionGroup = (page, sortType, column, size, search) => {
         if (!id) {
             id = props.id;
+            size = 6;
         }
         if (isModeActive)
             getAllActiveQuestionGroup(page, sortType, column, size, search);
@@ -339,6 +354,11 @@ export const QuestionGroup = (props) => {
                                                 Action
                                             </th>
                                         }
+                                        {
+                                            props.id && <th scope="col" className="px-6 py-3 w-[300px]">
+                                                Number question
+                                            </th>
+                                        }
 
                                     </tr>
                                 </thead>
@@ -382,11 +402,21 @@ export const QuestionGroup = (props) => {
 
                                                                     </td>
                                                                 }
+                                                            {
+                                                                props.id && <td className="px-6 py-4 w-[300px]">
+                                                                    <input
+                                                                        className=' border-black-100 border'
+                                                                        type="number"
+                                                                        onChange={(event) => { handleEnterNumberQuestion(event, item) }}
 
-                                                            </tr>
-                                                        )
-                                                    }
-                                                )))
+                                                                    />
+                                                                </td>
+                                                            }
+
+                                                        </tr>
+                                                    )
+                                                }
+                                            )))
                                     }
                                 </tbody>
                             </table>

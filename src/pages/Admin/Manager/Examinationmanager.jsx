@@ -31,7 +31,7 @@ const ID_CLASSROOM = 'classroomId';
 export const Examinationmanager = () => {
     const { idClassRoom } = useParams();
     const navigate = useNavigate();
-
+    const [chooseQuestionByQuestionGr, setChooseQuestionByQr] = useState([]);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
     const [listAllExam, setListAllExam] = useState([]);
@@ -74,6 +74,7 @@ export const Examinationmanager = () => {
         if (isDelete)
             setIsDelete(false);
         setQuestionsSelect([]);
+        setChooseQuestionByQr([]);
     }
 
     const handleShowStudentScore = (item) => {
@@ -82,10 +83,12 @@ export const Examinationmanager = () => {
 
     const handleCloseShowChooseRandomQuestion = () => {
         setIsShowRandomQuestion(false);
+        setQuestionsSelect([]);
     }
 
     const handleCloseShowChooseManualQuestion = () => {
         setIsShowManualQuestion(false);
+        setChooseQuestionByQr([]);
     }
 
     const handleOpenManualQuestion = () => {
@@ -114,10 +117,19 @@ export const Examinationmanager = () => {
             updateExam(newBody);
         }
         if (isAdd) {
-            let { id, ...newBody } = body;
-            newBody = { ...newBody, questionIds: questionsSelect };
-            console.log(newBody);
-            addExamByIdClassroom(newBody);
+            if (convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate) >= 0) {
+                console.log(convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate));
+                toast.error("Please choose end date must be after start date", toast.POSITION.TOP_RIGHT);
+            } else {
+                let { id, ...newBody } = body;
+                if (questionsSelect.length != 0)
+                    newBody = { ...newBody, questionIds: questionsSelect };
+                else
+                    newBody = { ...newBody, randomQuestions: chooseQuestionByQuestionGr };
+                console.log(newBody);
+                addExamByIdClassroom(newBody);
+            }
+
 
         }
         if (isDelete)
@@ -355,51 +367,51 @@ export const Examinationmanager = () => {
                                 <tbody>
                                     {
                                         isLoading ? 'Loading ...' :
-                                            (listAllExam.length !== 0 && (
-                                                listAllExam.map(
-                                                    (item, index) => {
+                                        (listAllExam.length !== 0 && (
+                                            listAllExam.map(
+                                                (item, index) => {
 
-                                                        return (
-                                                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                    return (
+                                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
-                                                                <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                                                    {item.id}
-                                                                </th>
-                                                                <td className="px-6 py-4 w-[300px] ">
-                                                                    <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.testName}>{item.testName}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.startDate)}>{getFormattedDateTimeByMilisecond(item.startDate)}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.endDate)}>{getFormattedDateTimeByMilisecond(item.endDate)}</p>
-                                                                </td>
+                                                            <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                {item.id}
+                                                            </th>
+                                                            <td className="px-6 py-4 w-[300px] ">
+                                                                <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.testName}>{item.testName}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.startDate)}>{getFormattedDateTimeByMilisecond(item.startDate)}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.endDate)}>{getFormattedDateTimeByMilisecond(item.endDate)}</p>
+                                                            </td>
 
-                                                                <td className="px-6 py-4 w-[150px] " >
-                                                                    <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.testingTime}>{item.testingTime}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[60px]">
-                                                                    <Menu >
-                                                                        <MenuHandler>
-                                                                            <Button className='bg-slate-400'>
-                                                                                <FontAwesomeIcon icon={faBars} />
-                                                                            </Button>
-                                                                        </MenuHandler>
-                                                                        <MenuList className='rounded-md'>
-                                                                            {
-                                                                                checkExamStart.indexOf(item.id) > -1 ? <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>Show student score has joined exam</MenuItem> : (<>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
-                                                                                </>)
-                                                                            }
-                                                                        </MenuList>
-                                                                    </Menu>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.testingTime}>{item.testingTime}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[60px]">
+                                                                <Menu >
+                                                                    <MenuHandler>
+                                                                        <Button className='bg-slate-400'>
+                                                                            <FontAwesomeIcon icon={faBars} />
+                                                                        </Button>
+                                                                    </MenuHandler>
+                                                                    <MenuList className='rounded-md'>
+                                                                        {
+                                                                            checkExamStart.indexOf(item.id) > -1 ? <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>Show student score has joined exam</MenuItem> : (<>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
+                                                                            </>)
+                                                                        }
+                                                                    </MenuList>
+                                                                </Menu>
 
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    }
-                                                )))
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            )))
                                     }
                                 </tbody>
                             </table>
@@ -447,7 +459,7 @@ export const Examinationmanager = () => {
                 }
                 {isAdd && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }}popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
@@ -508,12 +520,12 @@ export const Examinationmanager = () => {
                             </Modal.Header>
                             <Modal.Body className='flex justify-center flex-col'>
                                 <div className='flex justify-center'>
-                                    <QuestionGroup id={idClassRoom} />
+                                    <QuestionGroup id={idClassRoom} chooseQuestionGroup={setChooseQuestionByQr} />
                                 </div>
 
                                 <div className="flex justify-center p-4 ">
 
-                                    <Button onClick={() => handleClose()} className="bg-blue-400">Submit</Button>
+                                    <Button onClick={() => handleCloseShowChooseRandomQuestion()} className="bg-blue-400">Submit</Button>
                                 </div>
 
                             </Modal.Body>
@@ -527,7 +539,6 @@ export const Examinationmanager = () => {
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                             </Modal.Header>
                             <Modal.Body>
-
                                 <Questionmanager idClassroom={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
                                 <div className="flex justify-center p-4">
                                     <Button onClick={() => { console.log(questionsSelect); handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
