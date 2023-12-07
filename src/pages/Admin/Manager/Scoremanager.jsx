@@ -153,7 +153,7 @@ export const Scoremanager = () => {
                 </thead>
                 <tbody>
                   {
-                    isLoading ? 'Loading ...' :
+                    !isLoading &&
                       (listAllScore.length !== 0 && (
                         listAllScore.map(
                           (item, index) => {

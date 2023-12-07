@@ -37,9 +37,11 @@ function MyInfo() {
                         navigate(Path.LOGIN)
                   })
       }
+      
       const handleToggleUpdateEmail = () => {
             setToggleUpdateEmail(pre => !pre)
       }
+
       const handleChangeDisplayName = (value) => {
             setDisplayName(value)
       }

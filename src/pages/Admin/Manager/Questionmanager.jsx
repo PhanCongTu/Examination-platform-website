@@ -268,6 +268,7 @@ export const Questionmanager = (props) => {
         }
 
         if (isAdd) {
+            
             listAnswer.map((item, index) => {
                 if (selectedOption === item) {
                     switch (index) {
@@ -451,9 +452,7 @@ export const Questionmanager = (props) => {
         console.log("IIII", item);
         setContentQuestion(item.content);
         setIsEdit(true);
-        setTimeout(() => {
             setQuestionSelect(item);
-        });
         console.log(item);
     }
 
@@ -713,15 +712,15 @@ export const Questionmanager = (props) => {
                                                                                 <FontAwesomeIcon icon={faBars} />
                                                                             </ButtonMenu>
                                                                         </MenuHandler>
-                                                                        <MenuList className='rounded-md z-[105]'>
+                                                                        
                                                                             {
-                                                                                isModeActive ? (<> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></>)
-                                                                                    : (<MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem>)
+                                                                                isModeActive ? (<MenuList className='rounded-md z-[105]'> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></MenuList>)
+                                                                                    : (<MenuList className='rounded-md z-[105]'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem></MenuList>)
                                                                             }
 
 
-                                                                        </MenuList>
+                                                                        
                                                                     </Menu>
 
                                                                 </td>)
@@ -764,7 +763,7 @@ export const Questionmanager = (props) => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-
+                                    
                                     <p className="text-center text-lg font-medium">Edit question</p>
                                     <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
                                     <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
@@ -806,7 +805,7 @@ export const Questionmanager = (props) => {
                                             checked={selectedOption === 'fourthAnswer'}
                                             onChange={(event) => handleOptionChange(event)}
                                         /></>} />
-                                    <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
+                                    <Button onClick={() => handleClose()} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
