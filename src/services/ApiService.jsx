@@ -34,6 +34,22 @@ const getAllInActiveQuestionByIdClassroomUrl = 'api/v1/question/inactive/classro
 const activeClassroomUrl = 'api/v1/classroom/active/{idClassroom}';
 const activeQuestionGroupUrl = 'api/v1/question-group/active/{idQuestionGr}';
 const activeQuestionUrl = 'api/v1/question/active/{idQuestion}';
+const deleteStudentOfClassroomUrl = 'api/v1/student/remove-from-class'
+
+export const deleteStudentOfClassroomService = async (body) => {
+
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'delete',
+            maxBodyLength: Infinity,
+            url: deleteStudentOfClassroomUrl,
+            headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+            data: body
+      })
+}
 
 export const activeQuestionService = async (id) => {
       let accessToken = getAccessToken();

@@ -7,7 +7,7 @@ import PaginationNav from '../../../components/pagination/PaginationNav';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addStudentToClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
+import { addStudentToClassService, deleteStudentOfClassroomService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import clsx from 'clsx';
 
@@ -30,6 +30,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   const [studentSelect, setStudentSelect] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const [checkShowByIdClassroom, setCheckShowByIdClassroom] = useState(false);
+  const [isDelete, setIsDelete] = useState(false);
   const navigate = useNavigate();
   const initialValue = {
     [ID_CLASSROOM]: '',
@@ -43,11 +44,17 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setIsAdd(false);
     if (isAddConfirm)
       setIsAddConfirm(false);
-
+    if(isDelete)
+      setIsDelete(false);
   }
 
   const handleClickAdd = () => {
     setIsAdd(true);
+  }
+
+  const handleClickDelete = (item) => {
+    setIsDelete(true);
+    setStudentSelect(item);
   }
 
   const handleClickAddConfirm = (item) => {
@@ -67,6 +74,24 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     console.log(body);
     if (isAddConfirm)
       addStudentToClass(body);
+    else if(isDelete)
+      deleteStudentOfClassroom(body);
+  }
+
+  const deleteStudentOfClassroom=(body)=>{
+      deleteStudentOfClassroomService(body).then((res) => {
+        getAllStudentOfClass();
+  
+        toast.success('Delete student of class successfuly', {
+          position: toast.POSITION.TOP_RIGHT
+        })
+      }).catch((error) => {
+        toast.error('Delete student of class fail', {
+          position: toast.POSITION.TOP_RIGHT
+        })
+        removeCredential();
+        navigate(Path.LOGIN);
+      })
   }
 
   const addStudentToClass = (body) => {
@@ -273,7 +298,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     if (showByIdClassRoom && idClassRoom)
       getAllStudentOfClass(page, sortType, column, size, search);
     else if (!showByIdClassRoom && idClassRoom)
-      getAllVerifiedStudent(page, sortType, column, size=6, search);
+      getAllVerifiedStudent(page, sortType, column, size = 6, search);
     else
       getAllActiveStudent(page, sortType, column, size, search);
 
@@ -343,7 +368,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </th>
                       </>))
                     }
-                    {showByIdClassRoom === false && idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
+                    { idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
                       Action
                     </th>)}
                   </tr>
@@ -408,8 +433,19 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                               {showByIdClassRoom === false && idClassRoom && (
                                 <td className="px-6 py-4 flex w-[150px]">
                                   <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
+                                  
 
-                                </td>)}
+                                </td>)
+                                
+                              }
+                               {showByIdClassRoom === true && idClassRoom && (
+                                <td className="px-6 py-4 flex w-[150px]">
+                  
+                                  <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p>
+
+                                </td>)
+                                
+                              }
                             </tr>
                           )
                         }
@@ -444,7 +480,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         </div>
         {isAdd && (
           <>
-            <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => {  handleClose() }} >
+            <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => { handleClose() }} >
               <Modal.Header >
                 <div className='flex justify-center mr-[3px]'>
                   <div className='flex uppercase !text-center text-[23px] font-black'>Add student to class</div>
@@ -474,6 +510,28 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <div className='flex gap-3'>
                     <Button className="bg-blue-500" type='submit'>Confirm</Button>
                     <Button onClick={() => handleClose()} className="bg-yellow-300">Cancel</Button>
+                  </div>
+                </form>
+              </Modal.Body>
+            </Modal></>)
+        }
+
+{isDelete && (
+          <>
+            <Modal className="bg-opacity-60  z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+              <Modal.Header />
+              <Modal.Body>
+                <form onSubmit={form.handleSubmit(submitForm)}
+                  className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                >
+                  <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
+                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.userID} />
+                  <p className="text-center text-[20px] font-medium text-yellow-400 uppercase"> Alert </p>
+                  <h1 className='text-[16px] text-center'>Are you sure want to remove this student from your current classroom?</h1>
+                  <div className='invisible py-3'></div>
+                  <div className='flex gap-3'>
+                    <Button className="bg-red-500" type='submit'>Confirm</Button>
+                    <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
                   </div>
                 </form>
               </Modal.Body>
