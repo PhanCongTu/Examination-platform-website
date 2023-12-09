@@ -18,7 +18,7 @@ import {
     Button
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
 const CLASS_CODE = 'classCode';
 const CLASS_NAME = 'className';
 const IS_PRIVATE = 'isPrivate';
@@ -164,7 +164,7 @@ export const Classmanager = () => {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
-        if(isChooseActive)
+        if (isChooseActive)
             activeClassroomService(body.id).then((res) => {
                 console.log(body);
                 console.log("Response: " + res);
@@ -352,6 +352,7 @@ export const Classmanager = () => {
 
     return (
         <>
+
             <div className=" p-4 h-full w-full flex-row flex">
                 <div className="p-4 dark:border-gray-700">
                     <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
@@ -463,13 +464,13 @@ export const Classmanager = () => {
                                 <tbody>
                                     {
                                         !isLoading &&
-                                            (listAllClass.length !== 0 && (
-                                                listAllClass.map(
-                                                    (item, index) => {
+                                        (listAllClass.length !== 0 && (
+                                            listAllClass.map(
+                                                (item, index) => {
 
-                                                        return (
-                                                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                {/* <td className="w-4 p-4">
+                                                    return (
+                                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                            {/* <td className="w-4 p-4">
                                                                     <div className="flex items-center">
                                                                         <input
                                                                             checked={isChecked(item.id)}
@@ -481,72 +482,65 @@ export const Classmanager = () => {
                                                                         <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
                                                                     </div>
                                                                 </td> */}
-                                                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                                                    {item.id}
-                                                                </th>
-                                                                <td className="px-6 py-4 w-[300px] ">
-                                                                    <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline w-[300px] line-clamp-1" title={item.className}>{item.className}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[300px] " >
-                                                                    <p className=" truncate font-medium w-[300px] line-clamp-1" title={item.classCode}>{item.classCode}</p>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[70px]">
-                                                                    <div className="flex items-center">
-                                                                        {
-                                                                            item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                                                                Active</>
-                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
-                                                                        }
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-6 py-4 w-[70px] ">
-                                                                    <div className="flex items-center">
-                                                                        {
-                                                                            item.isPrivate === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                                                                                Private</>
-                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div> Public</>)
-                                                                        }
-                                                                    </div>
-                                                                </td>
+                                                            <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                {item.id}
+                                                            </th>
+                                                            <td className="px-6 py-4 w-[300px] ">
+                                                                <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline w-[300px] line-clamp-1" title={item.className}>{item.className}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[300px] " >
+                                                                <p className=" truncate font-medium w-[300px] line-clamp-1" title={item.classCode}>{item.classCode}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[70px]">
+                                                                <div className="flex items-center">
+                                                                    {
+                                                                        item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                                                            Active</>
+                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                                                    }
+                                                                </div>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[70px] ">
+                                                                <div className="flex items-center">
+                                                                    {
+                                                                        item.isPrivate === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
+                                                                            Private</>
+                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div> Public</>)
+                                                                    }
+                                                                </div>
+                                                            </td>
 
-                                                                <td className="px-6 py-4 w-[70px]">
-                                                                    <Menu >
-                                                                        <MenuHandler>
-                                                                            <Button className='bg-slate-400'>
-                                                                                <FontAwesomeIcon icon={faBars} />
-                                                                            </Button>
-                                                                        </MenuHandler>
-                                                                        
-                                                                            {
-                                                                                isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
-                                                                                    </MenuList>)
-                                                                                    : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem></MenuList>)
-                                                                            }
+                                                            <td className="px-6 py-4 w-[70px]">
+                                                                <Menu >
+                                                                    <MenuHandler>
+                                                                        <Button className='bg-slate-400'>
+                                                                            <FontAwesomeIcon icon={faBars} />
+                                                                        </Button>
+                                                                    </MenuHandler>
+
+                                                                    {
+                                                                        isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
+                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
+                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
+                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
+                                                                        </MenuList>)
+                                                                            : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem></MenuList>)
+                                                                    }
 
 
-                                                                        
-                                                                    </Menu>
 
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    }
-                                                )))
+                                                                </Menu>
+
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                }
+                                            )))
                                     }
                                 </tbody>
                             </table>
-                            {
-                                isLoading ? (<>
-                                    <h1 className='text-sm pl-1'>Loading...</h1>
-                                </>) : (listAllClass.length === 0 && (<>
-                                    <h1 className='text-sm pl-1'>Currently there is no class. Come back later.</h1>
-                                </>))
 
-                            }
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -561,6 +555,23 @@ export const Classmanager = () => {
                                 isActive={isActive} />
                         </div>
                     </div>
+                    {
+                        isLoading ? (<>
+                            <h1 className='text-sm pl-1'>Loading...</h1>
+                        </>) : (listAllClass.length === 0 && (<>
+                            <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
+                                <div className="text-center">
+                                    <h1
+                                        className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                                    >
+                                        Uh-oh!
+                                    </h1>
+                                    <p className="mt-4 text-gray-500">We cannot find any classroom.</p>
+                                </div>
+                            </div>
+                        </>))
+
+                    }
                 </div>
                 {isEdit && (
                     <>
@@ -582,7 +593,7 @@ export const Classmanager = () => {
                 }
                 {isAdd && (
                     <>
-                        <Modal className="bg-opacity-60 z-[101]" theme={{ 'content': { 'base': 'w-1/2 m-10' } }} show={true}  popup onClose={() => handleClose()} >
+                        <Modal className="bg-opacity-60 z-[101]" theme={{ 'content': { 'base': 'w-1/2 m-10' } }} show={true} popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}

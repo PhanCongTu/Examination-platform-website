@@ -69,6 +69,7 @@ function ScoreDetail() {
                                                                         Uh-oh!
                                                                   </h1>
                                                                   <p className="mt-4 text-gray-500">We cannot find any result of this test.</p>
+                                                                  <p className="my-2 text-gray-500">Maybe you didn't take this exam!</p>
                                                             </div>
                                                       </div>
                                                 </>

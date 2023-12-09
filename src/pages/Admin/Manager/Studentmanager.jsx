@@ -10,6 +10,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { addStudentToClassService, deleteStudentOfClassroomService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import clsx from 'clsx';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 const ID_CLASSROOM = 'classroomId';
 const ID_STUDENT = 'studentId';
@@ -44,7 +46,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setIsAdd(false);
     if (isAddConfirm)
       setIsAddConfirm(false);
-    if(isDelete)
+    if (isDelete)
       setIsDelete(false);
   }
 
@@ -74,24 +76,24 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     console.log(body);
     if (isAddConfirm)
       addStudentToClass(body);
-    else if(isDelete)
+    else if (isDelete)
       deleteStudentOfClassroom(body);
   }
 
-  const deleteStudentOfClassroom=(body)=>{
-      deleteStudentOfClassroomService(body).then((res) => {
-        getAllStudentOfClass();
-  
-        toast.success('Delete student of class successfuly', {
-          position: toast.POSITION.TOP_RIGHT
-        })
-      }).catch((error) => {
-        toast.error('Delete student of class fail', {
-          position: toast.POSITION.TOP_RIGHT
-        })
-        removeCredential();
-        navigate(Path.LOGIN);
+  const deleteStudentOfClassroom = (body) => {
+    deleteStudentOfClassroomService(body).then((res) => {
+      getAllStudentOfClass();
+
+      toast.success('Delete student of class successfuly', {
+        position: toast.POSITION.TOP_RIGHT
       })
+    }).catch((error) => {
+      toast.error('Delete student of class fail', {
+        position: toast.POSITION.TOP_RIGHT
+      })
+      removeCredential();
+      navigate(Path.LOGIN);
+    })
   }
 
   const addStudentToClass = (body) => {
@@ -321,6 +323,10 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
           <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
             <div className=" overflow-auto shadow-md sm:rounded-lg">
               <div className='items-center flex gap-4 justify-between mb-[14px]'>
+                <div onClick={() => navigate(-1)}
+                  className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
+                  <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                </div>
                 {/* <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle> */}
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
@@ -368,7 +374,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </th>
                       </>))
                     }
-                    { idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
+                    {idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
                       Action
                     </th>)}
                   </tr>
@@ -433,18 +439,18 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                               {showByIdClassRoom === false && idClassRoom && (
                                 <td className="px-6 py-4 flex w-[150px]">
                                   <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
-                                  
+
 
                                 </td>)
-                                
+
                               }
-                               {showByIdClassRoom === true && idClassRoom && (
+                              {showByIdClassRoom === true && idClassRoom && (
                                 <td className="px-6 py-4 flex w-[150px]">
-                  
+
                                   <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p>
 
                                 </td>)
-                                
+
                               }
                             </tr>
                           )
@@ -455,13 +461,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   }
                 </tbody>
               </table>
-              {
-                isLoading ? (<>
-                  <h1 className='text-sm pl-1'>Loading...</h1>
-                </>) : (listAllStudent.length === 0 && (<>
-                  <h1 className='text-sm pl-1'>Currently there is no student. Come back later.</h1>
-                </>))
-              }
+
 
               <PaginationNav
                 pageNumbers={pageNumbers}
@@ -477,6 +477,22 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                 isActive={isActive} />
             </div>
           </div>
+          {
+            isLoading ? (<>
+              <h1 className='text-sm pl-1'>Loading...</h1>
+            </>) : (listAllStudent.length === 0 && (<>
+              <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
+                <div className="text-center">
+                  <h1
+                    className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                  >
+                    Uh-oh!
+                  </h1>
+                  <p className="mt-4 text-gray-500">We cannot find any students.</p>
+                </div>
+              </div>
+            </>))
+          }
         </div>
         {isAdd && (
           <>
@@ -516,7 +532,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
             </Modal></>)
         }
 
-{isDelete && (
+        {isDelete && (
           <>
             <Modal className="bg-opacity-60  z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
               <Modal.Header />

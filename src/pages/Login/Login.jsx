@@ -64,10 +64,6 @@ const Login = () => {
 
             loginInService(body)
                   .then((response) => {
-                        console.log(response);
-                        toast.success(`Log in successfully!`, {
-                              position: toast.POSITION.TOP_RIGHT,
-                        });
                         saveCredential(response)
                         let roles = getRoles();// Lưu thông tin user vào local sto
                         if (roles.includes(ROLE_ADMIN))
@@ -79,7 +75,7 @@ const Login = () => {
                         toast.error(`Log in fail !`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });
-                        setErrorMessage(error.message)
+                        setErrorMessage(error?.response?.data?.message)
                   });
             // Nếu thành công thì chuyển đến trang Home
       };

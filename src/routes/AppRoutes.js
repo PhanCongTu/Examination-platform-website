@@ -6,7 +6,6 @@ import Register from '../pages/Register/Register'
 import Login from '../pages/Login/Login'
 import ForgotPassword from '../pages/Forgot/ForgotPassword'
 import ScoreDetail from '../pages/User/ScoreDetail/ScoreDetail'
-import { Logout } from '../pages/Logout/Logout'
 import PageNotFound from '../pages/PageNotFound'
 
 import { Admin } from '../pages/Admin/Admin'
@@ -23,6 +22,7 @@ import Student from '../pages/User/Student';
 import DoMCTest from '../pages/User/DoMCTest/DoMCTest';
 import VerifyEmail from '../pages/User/VerifyEmail/VerifyEmail';
 import MyInfo from '../pages/User/MyInfo/MyInfo'
+import MyAllScores from '../pages/User/MyAllScores/MyAllScores'
 export const AppRoutes = () => {
 
   return (
@@ -34,7 +34,6 @@ export const AppRoutes = () => {
         <Route path={Path.REGISTER} element={<Register />} />
         <Route path={Path.LOGIN} element={<Login />} />
         <Route path={Path.FORGOT} element={<ForgotPassword />} />
-        <Route path={Path.LOGOUT} element={<Logout />} />
         <Route path={Path.VERIFY_EMAIL} element={<VerifyEmail />} />
 
         <Route path='/my' element={<Student />} >
@@ -44,6 +43,7 @@ export const AppRoutes = () => {
           <Route path={Path.DO_MC_TEST} element={<DoMCTest />} />
           <Route path={Path.SCORE_DETAIL} element={<ScoreDetail />} />
           <Route path={Path.MY_INFO} element={<MyInfo />} />
+          <Route path={Path.MY_ALL_SCORES} element={<MyAllScores />} />
         </Route>
         <Route path='/admin' element={<Admin />}>
           <Route path={Path.AMCLASSMANAGER} element={<Classmanager />} />
