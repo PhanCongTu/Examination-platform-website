@@ -6,6 +6,8 @@ import { getAllStudentScoreByIDExamService, getFormattedDateTimeByMilisecond, re
 import Path from '../../../utils/Path';
 
 import { useNavigate, useParams } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 export const Scoremanager = () => {
   const navigate = useNavigate();
@@ -118,6 +120,10 @@ export const Scoremanager = () => {
 
             <div className=" overflow-auto shadow-md sm:rounded-lg">
               <div className='items-center flex gap-4 justify-between mb-[14px]'>
+                <div onClick={() => navigate(-1)}
+                  className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
+                  <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                </div>
                 <div className="relative">
                   <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
                     <Button handleOnClick={() => { handleSearch(searchData) }} >
@@ -154,50 +160,43 @@ export const Scoremanager = () => {
                 <tbody>
                   {
                     !isLoading &&
-                      (listAllScore.length !== 0 && (
-                        listAllScore.map(
-                          (item, index) => {
+                    (listAllScore.length !== 0 && (
+                      listAllScore.map(
+                        (item, index) => {
 
-                            return (
-                              <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                          return (
+                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
-                                <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                  {item.id}
-                                </th>
-                                <td className="px-6 py-4 w-[300px] ">
-                                  <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.studentDisplayName}>{item.studentDisplayName}</p>
-                                </td>
-                                <td className="px-6 py-4 w-[300px] " >
-                                  <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.submittedDate)}>{getFormattedDateTimeByMilisecond(item.submittedDate)}</p>
-                                </td>
-                                <td className="px-6 py-4 w-[300px] " >
-                                  <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={item.totalScore}>{item.totalScore}</p>
-                                </td>
-                                <td className="px-6 py-4 w-[62px]">
-                                  <div className="flex items-center">
-                                    {
-                                      item.isLate === false ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                        Early</>
-                                      ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2">Late</div> </>)
-                                    }
-                                  </div>
-                                </td>
+                              <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                {item.id}
+                              </th>
+                              <td className="px-6 py-4 w-[300px] ">
+                                <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.studentDisplayName}>{item.studentDisplayName}</p>
+                              </td>
+                              <td className="px-6 py-4 w-[300px] " >
+                                <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.submittedDate)}>{getFormattedDateTimeByMilisecond(item.submittedDate)}</p>
+                              </td>
+                              <td className="px-6 py-4 w-[300px] " >
+                                <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={item.totalScore}>{item.totalScore}</p>
+                              </td>
+                              <td className="px-6 py-4 w-[62px]">
+                                <div className="flex items-center">
+                                  {
+                                    item.isLate === false ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                      Early</>
+                                    ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2">Late</div> </>)
+                                  }
+                                </div>
+                              </td>
 
-                              </tr>
-                            )
-                          }
-                        )))
+                            </tr>
+                          )
+                        }
+                      )))
                   }
                 </tbody>
               </table>
-              {
-                isLoading ? (<>
-                  <h1 className='text-sm pl-1'>Loading...</h1>
-                </>) : (listAllScore.length === 0 && (<>
-                  <h1 className='text-sm pl-1'>Currently there is no score. Come back later.</h1>
-                </>))
 
-              }
 
               <PaginationNav
                 pageNumbers={pageNumbers}
@@ -213,6 +212,23 @@ export const Scoremanager = () => {
                 isActive={isActive} />
             </div>
           </div>
+          {
+            isLoading ? (<>
+              <h1 className='text-sm pl-1'>Loading...</h1>
+            </>) : (listAllScore.length === 0 && (<>
+              <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
+                <div className="text-center">
+                  <h1
+                    className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                  >
+                    Uh-oh!
+                  </h1>
+                  <p className="mt-4 text-gray-500">We cannot find scores of any student.</p>
+                </div>
+              </div>
+            </>))
+
+          }
         </div>
       </div>
 

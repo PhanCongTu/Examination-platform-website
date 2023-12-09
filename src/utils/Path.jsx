@@ -3,7 +3,6 @@ const Path = {
     LOGIN: '/login',
     REGISTER: '/register',
     FORGOT: '/forgot',
-    LOGOUT: '/logout',
     VERIFY_EMAIL: '/verify-email',
     MY_INFO: '/my/info',
     AMCLASSMANAGER: '/admin/class',
@@ -18,5 +17,6 @@ const Path = {
     PREPARE_TEST: '/my/prepare-test/:testId',
     DO_MC_TEST: '/my/do-mc-test',
     SCORE_DETAIL: '/my/score-detail/:testId',
+    MY_ALL_SCORES: '/my/all-scores'
 }
 export default Path

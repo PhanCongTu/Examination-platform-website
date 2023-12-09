@@ -171,35 +171,30 @@ function ClassroomDetail() {
                               {MCTests?.length > 0 ?
                                     <>
 
-                                          <div className=' flex justify-start flex-wrap gap-7  px-20 md:px-10 sm:px-32'>
+                                          <div className='pt-3 flex justify-start flex-wrap gap-2  px-20 md:px-10 sm:px-32'>
                                                 {MCTests?.map((MCTest, key) => {
-                                                      return <Card key={key} className={`mt-6 w-full px-5 py-2 bg-slate-100 
-            ${isSameDay(MCTest.endDate, today) ? ' text-black bg-red-400 rounded-lg ' : ''}
-            ${isSameDay(MCTest.endDate, tomorrow) ? ' text-black bg-yellow-100 rounded-lg ' : ''}`}>
+                                                      return <Card onClick={() => navigate(Path.PREPARE_TEST.replace(':testId', MCTest.id))}
+                                                            key={key} className={` hover:bg-slate-300 w-full px-5 py-2 bg-slate-100 rounded-md border-[2px] border-gray-300
+            ${isSameDay(MCTest.endDate, today) ? ' text-black bg-red-400 ' : ''}
+            ${isSameDay(MCTest.endDate, tomorrow) ? ' text-black bg-yellow-100 ' : ''}`}>
                                                             <CardBody className=''>
 
                                                                   <Typography variant="h5" color="blue-gray" className="flex items-center">
                                                                         {MCTest.testName}
                                                                   </Typography>
-                                                                  <div className='flex justify-start items-center pt-2 '>
+                                                                  <div className='flex justify-end items-center pt-2 '>
                                                                         <Typography className="flex items-center px-10 ">
-                                                                              Time to start: {format(MCTest.startDate, `h:mm a (dd/MM) `)}
+                                                                              <strong>Time to start: </strong> {format(MCTest.startDate, `h:mm a (dd/MM) `)}
                                                                         </Typography>
                                                                         <Typography className={`flex items-center px-10 `}>
-                                                                              Time to end: {format(MCTest.endDate, `h:mm a (dd/MM) `)}
+                                                                              <strong>Time to end: </strong>{format(MCTest.endDate, `h:mm a (dd/MM) `)}
                                                                         </Typography>
                                                                         <Typography className="flex items-center px-1" >
-                                                                              Test duration: {MCTest.testingTime} minutes
+                                                                              <strong>Test duration:</strong> {MCTest.testingTime} minutes
                                                                         </Typography>
                                                                   </div>
 
                                                             </CardBody>
-                                                            <CardFooter className="pt-0 flex justify-end">
-
-                                                                  <NavLink to={Path.PREPARE_TEST.replace(':testId', MCTest.id)}
-                                                                        className="bg-black px-5 py-2 rounded-xl text-white" >Detail</NavLink>
-
-                                                            </CardFooter>
                                                       </Card>
                                                 })}
 

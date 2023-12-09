@@ -10,7 +10,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import Toggle from '../../../components/form-controls/Toggle/Toggle'
 import PaginationNav from '../../../components/pagination/PaginationNav'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import {
     Menu,
     MenuHandler,
@@ -320,7 +320,10 @@ export const Examinationmanager = () => {
 
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='items-center flex gap-4 justify-between mb-[14px]'>
-
+                                <div onClick={() => navigate(-1)}
+                                    className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
+                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                                </div>
                                 <div className='w-[100px]'>
 
                                     <Toggle checked={isEnded} handleToggle={setIsEnded} >{isEnded ? 'Ended' : 'Pending'}</Toggle>
@@ -415,14 +418,7 @@ export const Examinationmanager = () => {
                                     }
                                 </tbody>
                             </table>
-                            {
-                                isLoading ? (<>
-                                    <h1 className='text-sm pl-1'>Loading...</h1>
-                                </>) : (listAllExam.length === 0 && (<>
-                                    <h1 className='text-sm pl-1'>Currently there is no exam. Come back later.</h1>
-                                </>))
 
-                            }
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -436,7 +432,26 @@ export const Examinationmanager = () => {
                                 isLast={isLast}
                                 isActive={isActive} />
                         </div>
+
                     </div>
+                    {
+                        isLoading ? (<>
+                            <h1 className='text-sm pl-1'>Loading...</h1>
+                        </>) : (listAllExam.length === 0 && (
+                            <>
+                                <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
+                                    <div className="text-center">
+                                        <h1
+                                            className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                                        >
+                                            Uh-oh!
+                                        </h1>
+                                        <p className="mt-4 text-gray-500">We cannot find any exam in this classroom.</p>
+                                    </div>
+                                </div>
+                            </>))
+
+                    }
                 </div>
                 {isEdit && (
                     <>
@@ -550,6 +565,7 @@ export const Examinationmanager = () => {
                             </Modal.Body>
                         </Modal></>)
                 }
+
             </div >
         </ >
 

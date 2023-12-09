@@ -116,7 +116,7 @@ function MyClassrooms() {
                               </div>
                               <div className='flex justify-start flex-wrap gap-7  px-20 md:px-10 sm:px-32'>
                                     {classrooms?.map((classroom, key) => {
-                                          return <Card key={key} className="mt-6 w-72 p-5 ">
+                                          return <Card key={key} className="hover:border-black border-[2px] mt-6 w-72 p-5 rounded-sm ">
                                                 <CardHeader color="blue-gray" className=" h-32">
                                                       <img
                                                             className="h-32 w-72"
@@ -134,11 +134,12 @@ function MyClassrooms() {
                                                 </CardBody>
                                                 <CardFooter className="pt-0 flex justify-end">
 
-                                                      <NavLink className="bg-black px-5 py-2 rounded-xl text-white" to={Path.CLASSROOM_DETAIL.replace(':classroomId', classroom.id)}>Detail</NavLink>
+                                                      <NavLink className="bg-black px-5 py-2 rounded-md text-white" to={Path.CLASSROOM_DETAIL.replace(':classroomId', classroom.id)}>Detail</NavLink>
 
                                                 </CardFooter>
                                           </Card>
                                     })}
+
                                     {classrooms?.length == 0 || classrooms === undefined ?
                                           <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                                                 <div className="text-center">

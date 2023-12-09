@@ -53,12 +53,12 @@ export const Admin = () => {
           <Sidebar handleOnClick={setClick} />
         </div>)}
       </div>
-      {
+      {/* {
         location.pathname !== '/admin/class' && (<div onClick={() => navigate(-1)}
-          className='top 0 flex justify-start cursor-pointer w-fit rounded-lg p-5'>
-          <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back
+          className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
+          <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
         </div>)
-      }
+      } */}
 
       {/* <div className={` m-auto ${isClick && 'pl-60'}`}>
       </div> */}

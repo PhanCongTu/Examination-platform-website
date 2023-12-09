@@ -15,6 +15,47 @@ const verifyEmail = 'api/email/verify';
 const myInfomation = 'api/my-info';
 const updateUserProfile = 'api/user/update';
 const changePassword = 'api/change-password';
+const getAllMyScore = 'api/v1/score/my';
+
+export const getAllMyScoreService = async (dateFrom, dateTo, page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllMyScoreParam = getAllMyScore;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (dateFrom) {
+            queryParams.push(`dateFrom=${dateFrom}`);
+      }
+      if (dateTo) {
+            queryParams.push(`dateTo=${dateTo}`);
+      }
+      if (queryParams.length > 0) {
+            getAllMyScoreParam += '?' + queryParams.join('&');
+      }
+      console.log(getAllMyScoreParam)
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: getAllMyScoreParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
 
 export const changePasswordService = async (oldPassword, newPassword) => {
       let accessToken = getAccessToken();

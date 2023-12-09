@@ -13,7 +13,7 @@ import {
 
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { activeQuestionService, addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionByIdClassroomService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByIdClassroomService, getAllInActiveQuestionByQuestionGrIDService, removeCredential, updateQuestionService } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import { toast } from 'react-toastify';
@@ -268,7 +268,7 @@ export const Questionmanager = (props) => {
         }
 
         if (isAdd) {
-            
+
             listAnswer.map((item, index) => {
                 if (selectedOption === item) {
                     switch (index) {
@@ -452,7 +452,7 @@ export const Questionmanager = (props) => {
         console.log("IIII", item);
         setContentQuestion(item.content);
         setIsEdit(true);
-            setQuestionSelect(item);
+        setQuestionSelect(item);
         console.log(item);
     }
 
@@ -568,14 +568,14 @@ export const Questionmanager = (props) => {
             setListCheckBox(props.idQuestionSelect);
         if (props.idClassroom)
             if (isModeActive)
-                getAllActiveQuestionByIdClassroom(page, sortType, column, size=6, search);
+                getAllActiveQuestionByIdClassroom(page, sortType, column, size = 6, search);
             else
-                getAllInActiveQuestionByIdClassroom(page, sortType, column, size=6, search);
+                getAllInActiveQuestionByIdClassroom(page, sortType, column, size = 6, search);
         else
             if (isModeActive)
-                getAllActiveQuestionByQuestionGrID(page, sortType, column, size=6, search);
+                getAllActiveQuestionByQuestionGrID(page, sortType, column, size = 6, search);
             else
-                getAllInActiveQuestionByQuestionGrID(page, sortType, column, size=6, search);
+                getAllInActiveQuestionByQuestionGrID(page, sortType, column, size = 6, search);
     }
 
     const isActive = (index) => {
@@ -605,7 +605,6 @@ export const Questionmanager = (props) => {
 
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='items-center flex gap-4 justify-between mb-[14px]'>
-
                                 <div className='w-[150px]'>
                                     <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
                                 </div>
@@ -660,7 +659,7 @@ export const Questionmanager = (props) => {
                                                 Action
                                             </th>)
                                         }
-                                        
+
 
                                     </tr>
                                 </thead>
@@ -712,15 +711,15 @@ export const Questionmanager = (props) => {
                                                                                 <FontAwesomeIcon icon={faBars} />
                                                                             </ButtonMenu>
                                                                         </MenuHandler>
-                                                                        
-                                                                            {
-                                                                                isModeActive ? (<MenuList className='rounded-md z-[105]'> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></MenuList>)
-                                                                                    : (<MenuList className='rounded-md z-[105]'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem></MenuList>)
-                                                                            }
+
+                                                                        {
+                                                                            isModeActive ? (<MenuList className='rounded-md z-[105]'> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></MenuList>)
+                                                                                : (<MenuList className='rounded-md z-[105]'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem></MenuList>)
+                                                                        }
 
 
-                                                                        
+
                                                                     </Menu>
 
                                                                 </td>)
@@ -733,13 +732,6 @@ export const Questionmanager = (props) => {
                                     }
                                 </tbody>
                             </table>
-                            {
-                                isLoading ? (<>
-                                    <h1 className='text-sm pl-1'>Loading...</h1>
-                                </>) : (listAllQuestion.length === 0 && (<>
-                                    <h1 className='text-sm pl-1'>Currently there is no question. Come back later.</h1>
-                                </>))
-                            }
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -754,6 +746,22 @@ export const Questionmanager = (props) => {
                                 isActive={isActive} />
                         </div>
                     </div>
+                    {
+                        isLoading ? (<>
+                            <h1 className='text-sm pl-1'>Loading...</h1>
+                        </>) : (listAllQuestion.length === 0 && (<>
+                            <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
+                                <div className="text-center">
+                                    <h1
+                                        className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                                    >
+                                        Uh-oh!
+                                    </h1>
+                                    <p className="mt-4 text-gray-500">We cannot find any question.</p>
+                                </div>
+                            </div>
+                        </>))
+                    }
                 </div>
                 {isEdit && (
                     <>
@@ -763,7 +771,7 @@ export const Questionmanager = (props) => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-                                    
+
                                     <p className="text-center text-lg font-medium">Edit question</p>
                                     <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
                                     <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>

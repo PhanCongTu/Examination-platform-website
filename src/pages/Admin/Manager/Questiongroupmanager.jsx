@@ -11,6 +11,8 @@ import { activeQuestionGroupService, addQuestionGroupService, deleteQuestionGrou
 import PaginationNav from '../../../components/pagination/PaginationNav';
 import Path from '../../../utils/Path';
 import { Questionmanager } from './Questionmanager';
+import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 const QUESTIONGROUP_CODE = 'code';
 const QUESTIONGROUP_NAME = 'name';
@@ -59,7 +61,7 @@ export const QuestionGroup = (props) => {
         if (value !== '') {
             console.log(item.totalQuestion, value);
             if (item.totalQuestion < Number(value)) {
-                toast.error(`Number question of question group is ${item.totalQuestion}.Please enter again.`, toast.POSITION.TOP_RIGHT);
+                // toast.error(`Number question of question group is ${item.totalQuestion}.Please enter again.`, toast.POSITION.TOP_RIGHT);
                 event.target.value = '';
 
             }
@@ -196,7 +198,7 @@ export const QuestionGroup = (props) => {
         setActiveIndex(index + 1);
         getAllQuestionGroup(index + 1);
     }
-
+    console.log(listQuestionGroup);
     const handleSearch = (data) => {
         console.log("SEARCH");
         if (isModeActive)
@@ -353,7 +355,10 @@ export const QuestionGroup = (props) => {
                     <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='items-center flex gap-4 justify-between mb-[14px]'>
-
+                                <div onClick={() => navigate(-1)}
+                                    className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
+                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                                </div>
                                 <div className='w-[200px]'>
                                     <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
 
@@ -389,6 +394,9 @@ export const QuestionGroup = (props) => {
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[70px]">
                                             Enable
+                                        </th>
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
+                                            Total question
                                         </th>
                                         {
                                             !props.id && <th scope="col" className="px-6 py-3 w-[150px]">
@@ -431,6 +439,10 @@ export const QuestionGroup = (props) => {
                                                                     }
                                                                 </div>
                                                             </td>
+                                                            <td className="px-6 py-4 w-[150px]">
+
+                                                                <p className="cursor-pointer font-medium flex justify-center dark:text-blue-500 ">{item.totalQuestion}</p>
+                                                            </td>
                                                             {
                                                                 !props.id && <td className="px-6 py-4 flex w-[150px]">
                                                                     {
@@ -461,15 +473,6 @@ export const QuestionGroup = (props) => {
                                     }
                                 </tbody>
                             </table>
-                            {
-                                isLoading ? (<>
-                                    <h1 className='text-sm pl-1'>Loading...</h1>
-                                </>) : (listQuestionGroup.length === 0 && (<>
-                                    <h1 className='text-sm pl-1'>
-                                        Currently there is no question group in the class. Come back later.</h1>
-                                </>))
-                            }
-
                             <PaginationNav
                                 pageNumbers={pageNumbers}
                                 handlePrevious={handlePrevious}
@@ -484,6 +487,22 @@ export const QuestionGroup = (props) => {
                                 isActive={isActive} />
                         </div>
                     </div>
+                    {
+                        isLoading ? (<>
+                            <h1 className='text-sm pl-1'>Loading...</h1>
+                        </>) : (listQuestionGroup.length === 0 && (<>
+                            <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
+                                <div className="text-center">
+                                    <h1
+                                        className="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
+                                    >
+                                        Uh-oh!
+                                    </h1>
+                                    <p className="mt-4 text-gray-500">We cannot find any question group.</p>
+                                </div>
+                            </div>
+                        </>))
+                    }
                 </div>
                 {isEdit && (
                     <>

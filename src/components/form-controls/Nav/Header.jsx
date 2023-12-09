@@ -169,7 +169,8 @@ export const Header = () => {
                                 </li>
 
                                 <li >
-                                    <NavLink className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                    <NavLink to={Path.MY_ALL_SCORES}
+                                        className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
                                         <div className="font-semibold">Score</div>
                                         <span className="text-sm text-gray-500 dark:text-gray-400">Check the results of the examinations.</span>
                                     </NavLink >
