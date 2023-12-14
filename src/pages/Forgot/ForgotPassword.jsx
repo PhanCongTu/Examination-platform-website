@@ -58,7 +58,6 @@ const ForgotPassword = () => {
       const [email, setEmail] = useState('');
 
       const submitForm = (body) => {
-            console.log("RESET");
             if (body.password === body.confirmPassword) {
                   resetPasswordService(body, email).then((res) => {
                         toast.success(`Reset password successfully!`, {
@@ -141,7 +140,7 @@ const ForgotPassword = () => {
                                           <InputField type="password" name={PASSWORD} label="Password" form={form} />
                                           <InputField type="password" name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
                                           {errorMessage && <><p className="text-sm text-red-500">{errorMessage}</p></>}
-                                          <Button handleOnClick={() => { console.log("DDDDDD") }} className="bg-blue-800" type='submit' >Save password</Button>
+                                          <Button className="bg-blue-800" type='submit' >Save password</Button>
                                     </form>
 
                               )

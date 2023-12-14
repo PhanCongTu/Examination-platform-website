@@ -9,12 +9,10 @@ function InputField(props) {
   const [checkDefaultValue, setCheckDefault] = useState(true);
   useEffect(() => {
     if (defaultValue === '') {
-      console.log("SSSSS ", defaultValue);
       form.setValue(name, '');
       setCheckDefault(false);
     } else {
       if (defaultValue) {
-        console.log("AAAAA ", defaultValue);
         form.setValue(name, defaultValue);
         setCheckDefault(false);
       }
@@ -39,8 +37,9 @@ function InputField(props) {
           />
 
           {children}
-          {hasError && <p className="text-sm text-red-500">{hasError?.message}</p>}
+
         </div>
+        {hasError && <p className="text-sm text-red-500">{hasError?.message}</p>}
       </div>
     </>
   );

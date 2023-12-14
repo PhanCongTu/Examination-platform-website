@@ -16,7 +16,7 @@ const myInfomation = 'api/my-info';
 const updateUserProfile = 'api/user/update';
 const changePassword = 'api/change-password';
 const getAllMyScore = 'api/v1/score/my';
-
+const getScoreOfStudent = 'api/v1/score/student';
 export const getAllMyScoreService = async (dateFrom, dateTo, page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
       let getAllMyScoreParam = getAllMyScore;
@@ -45,7 +45,6 @@ export const getAllMyScoreService = async (dateFrom, dateTo, page, sortType, col
       if (queryParams.length > 0) {
             getAllMyScoreParam += '?' + queryParams.join('&');
       }
-      console.log(getAllMyScoreParam)
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
@@ -127,6 +126,24 @@ export const sendEmailVerifyCodeService = async () => {
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
+            }
+      })
+}
+
+export const getScoreOfStudentService = async (studentId, multipleChoiceTestId) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: getScoreOfStudent,
+
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            },
+            data: {
+                  studentId,
+                  multipleChoiceTestId
             }
       })
 }
@@ -234,8 +251,6 @@ export const getMCTestsOfClassroomService = async (classroomId, page, sortType, 
       if (queryParams.length > 0) {
             getMCTestsOfClassroomParam += '?' + queryParams.join('&');
       }
-      console.log("getMCTestsOfClassroomParam")
-      console.log(getMCTestsOfClassroomParam)
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,

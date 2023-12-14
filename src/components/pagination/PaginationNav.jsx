@@ -6,7 +6,6 @@ const PaginationNav = ({ pageNumbers, handlePrevious, handleNext, activeIndex, h
   function getSubarray(arr, i) {
     const n = arr.length;
     let start_index, end_index;
-    console.log("SSSSNN ", n)
     if (n <= 5) {
       start_index = 0;
       end_index = n - 1;
@@ -19,11 +18,7 @@ const PaginationNav = ({ pageNumbers, handlePrevious, handleNext, activeIndex, h
         end_index = Math.min(start_index + 4, n - 1);
       }
     }
-    console.log("III ", i);
-    console.log("START ", start_index);
-    console.log("END ", end_index);
     const subarray = arr.slice(start_index, end_index + 1);
-    console.log(subarray);
     return subarray;
   }
   return (
@@ -46,7 +41,7 @@ const PaginationNav = ({ pageNumbers, handlePrevious, handleNext, activeIndex, h
             return (
               <>
                 <li>
-                  <Link key={index} onClick={() => handleClickPage(item - 1)} className={clsx("flex items-center justify-center p-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white", isActive(item - 1) && '!bg-slate-500 text-white pointer-events-none ')}>{item}</Link>
+                  <Link key={index} onClick={() => handleClickPage(item - 1)} className={clsx("flex items-center justify-center p-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white", isActive(item - 1) && '!bg-gray-200 text-black font-bold pointer-events-none ')}>{item}</Link>
                 </li>
               </>
             )

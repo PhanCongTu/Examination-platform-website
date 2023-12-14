@@ -36,7 +36,6 @@ export const Admin = () => {
     let accessToken = getAccessToken();
     let roles = getRoles();
     if (!accessToken || !roles.includes(ROLE_ADMIN)) {
-      console.log("CHUA DANG NHAP");
       navigate(Path.LOGIN);
     }
   }, [])

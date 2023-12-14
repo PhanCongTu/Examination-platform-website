@@ -46,10 +46,11 @@ function PrepareTest() {
                         {MCTest ?
                               <>
                                     <div className='bg-slate-200 mt-5 select-none pl-16'>
-                                          <h2 className='text-[40px] pt-5 flex justify-start items-center'>Class name: {MCTest.className}
+                                          <h2 className='text-[40px] pt-5 flex justify-start items-center'>{MCTest.className}
 
                                           </h2>
-                                          <h4 className='text-[25px] pb-5 flex justify-start items-center'>Class code: {MCTest.classCode}</h4>
+                                          <h4 className='text-[20px] pb-5 flex justify-start items-center'>({MCTest.classCode})</h4>
+                                          <h4 className='text-[18px] pb-5 flex justify-start items-center'>{MCTest.classDescription}</h4>
                                     </div>
                                     <div className='bg-white opacity-100 flex justify-center pt-16 pb-10 '>
                                           <div className=" w-1/2 flex flex-col items-center bg-slate-100 border border-gray-200 rounded-lg shadow md:flex-row md:max-w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
@@ -64,6 +65,8 @@ function PrepareTest() {
                                                             }
 
                                                       </h5>
+                                                      <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 select-none">
+                                                            <strong>Description:</strong> {MCTest.testDescription}</p>
                                                       <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 select-none">
                                                             <strong>Opend:</strong> {format(MCTest.startDate, 'MMM dd, yyy  h:mm a')}</p>
                                                       <p className="mb-3 font-normal text-gray-700 dark:text-gray-400 select-none">

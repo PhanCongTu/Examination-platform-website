@@ -24,7 +24,6 @@ export const Scoremanager = () => {
   const { idExam } = useParams();
 
   const handleClickPage = (index) => {
-    console.log("INDEX ", index);
     setActiveIndex(index);
     getAllScore(index);
   };
@@ -40,12 +39,10 @@ export const Scoremanager = () => {
   }
 
   const handleSearch = (data) => {
-    console.log("SEARCH");
     getAllStudentScoreByIDExamService(idExam, undefined, undefined, undefined, undefined, data).then((res) => {
       setListAllScore(res.content);
       setIsLast(res.last);
       setIsFirst(res.first);
-      console.log("TOTAL PAGE", res.totalPages);
       const pageNumbers2 = [];
       for (let i = 1; i <= res.totalPages; i++) {
         pageNumbers2.push(i);
@@ -54,14 +51,12 @@ export const Scoremanager = () => {
       setTotalElements(res.totalElements);
       setOffset(res.pageable.offset);
       setNumberOfElements(res.numberOfElements);
-      console.log("numberOfElements", res.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
       toast.error(`Get score fail !`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log(error);
       removeCredential();
       navigate(Path.LOGIN);
     });
@@ -73,7 +68,6 @@ export const Scoremanager = () => {
       setListAllScore(res.content);
       setIsLast(res.last);
       setIsFirst(res.first);
-      console.log("TOTAL PAGE", res.totalPages);
       const pageNumbers2 = [];
       for (let i = 1; i <= res.totalPages; i++) {
         pageNumbers2.push(i);
@@ -82,14 +76,12 @@ export const Scoremanager = () => {
       setTotalElements(res.totalElements);
       setOffset(res.pageable.offset);
       setNumberOfElements(res.numberOfElements);
-      console.log("numberOfElements", res.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
       toast.error(`Get score fail !`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log(error);
       removeCredential();
       navigate(Path.LOGIN);
     });
@@ -116,10 +108,13 @@ export const Scoremanager = () => {
     <>
       <div className=" p-4 h-full w-full flex-row flex">
         <div className="p-4 dark:border-gray-700">
-          <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
+          <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
+            Score manager
+          </div>
+          <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
 
             <div className=" overflow-auto shadow-md sm:rounded-lg">
-              <div className='items-center flex gap-4 justify-between mb-[14px]'>
+              <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
                 <div onClick={() => navigate(-1)}
                   className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
                   <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
@@ -165,7 +160,9 @@ export const Scoremanager = () => {
                         (item, index) => {
 
                           return (
-                            <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                            <tr key={index}
+                              onClick={() => navigate(Path.AMSCOREDETAILMANAGER, { state: { studentId: item.studentId, testId: item.testId } })}
+                              className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
                               <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                 {item.id}

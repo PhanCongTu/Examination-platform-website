@@ -53,8 +53,6 @@ function MyAllScores() {
       const getAllMyScores = (dateFrom, dateTo, page, sortType, column, size, search) => {
             getAllMyScoreService(dateFrom, dateTo, page, sortType, column, size, search)
                   .then(res => {
-                        console.log("res")
-                        console.log(res)
                         setMyScores(res.content)
                         setTotalElements(res.totalElements)
                         setTotalPages(res.totalPages)

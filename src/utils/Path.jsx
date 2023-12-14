@@ -12,6 +12,7 @@ const Path = {
     AMEXAMINATIONMANAGER: '/admin/examination/:idClassRoom?',
     AMQUESTIONMANAGER: '/admin/question/:idClassRoom?',
     AMSCOREMANAGER: '/admin/score/:idExam?',
+    AMSCOREDETAILMANAGER: '/admin/score-detail?',
     MY_CLASSROOMS: '/my/classrooms',
     CLASSROOM_DETAIL: '/my/classroom-detail/:classroomId',
     PREPARE_TEST: '/my/prepare-test/:testId',

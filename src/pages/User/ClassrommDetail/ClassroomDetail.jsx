@@ -61,8 +61,6 @@ function ClassroomDetail() {
                         setPage(res.number)
                         setTotalPages(res.totalPages)
                         setTotalElements(res.totalElements)
-                        console.log(classroomId, page, sortType, column, size, search, isEnded)
-                        console.log(res)
                   })
                   .catch(err => {
                         setMCTests([])
@@ -112,11 +110,12 @@ function ClassroomDetail() {
                                     <>
                                           <div className='bg-white opacity-100 flex justify-center pb-10'>
 
-                                                <div className=" flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row md:max-w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
+                                                <div className=" flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                                                       <img className="px-2 object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={classroomAVT} alt="" />
                                                       <div className="flex flex-col justify-between p-4 leading-normal">
-                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">Class name: {classroom.className}</h5>
-                                                            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">Class code: {classroom.classCode}</p>
+                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{classroom.className}</h5>
+                                                            <p className="mb-3 font-bold text-gray-700 dark:text-gray-400">{classroom.classCode}</p>
+                                                            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{classroom.description}</p>
                                                       </div>
                                                 </div>
 
@@ -175,8 +174,8 @@ function ClassroomDetail() {
                                                 {MCTests?.map((MCTest, key) => {
                                                       return <Card onClick={() => navigate(Path.PREPARE_TEST.replace(':testId', MCTest.id))}
                                                             key={key} className={` hover:bg-slate-300 w-full px-5 py-2 bg-slate-100 rounded-md border-[2px] border-gray-300
-            ${isSameDay(MCTest.endDate, today) ? ' text-black bg-red-400 ' : ''}
-            ${isSameDay(MCTest.endDate, tomorrow) ? ' text-black bg-yellow-100 ' : ''}`}>
+            ${isSameDay(MCTest.endDate, today) ? ' text-black border-red-500' : ''}
+            ${isSameDay(MCTest.endDate, tomorrow) ? ' text-black border-yellow-100 ' : ''}`}>
                                                             <CardBody className=''>
 
                                                                   <Typography variant="h5" color="blue-gray" className="flex items-center">

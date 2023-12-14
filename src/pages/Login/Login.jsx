@@ -43,16 +43,6 @@ const Login = () => {
             resolver: yupResolver(yupObject)
       })
       useEffect(() => {
-            // let accessToken = getAccessToken()
-            // let roles = getRoles();
-            // console.log(roles);
-            // console.log(roles?.includes(ROLE_ADMIN));
-            // if (accessToken) {
-            //       if (roles?.includes(ROLE_ADMIN))
-            //             navigate(Path.AMCLASSMANAGER);
-            //       else
-            //             navigate(Path.HOME);
-            // }
             document.title = "Login";
             removeCredential();
       }, [])

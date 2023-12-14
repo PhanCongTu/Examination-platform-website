@@ -21,12 +21,15 @@ import {
 import { DatePicker } from '../../../components/form-controls/Datepicker/DatePicker'
 import { QuestionGroup } from './Questiongroupmanager'
 import { Questionmanager } from './Questionmanager'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup';
 const ID_EXAM = 'id';
 const EXAM_NAME = 'testName';
 const START_DATE = 'startDate';
 const END_DATE = 'endDate';
 const EXAM_TEST_TIME = 'testingTime';
 const ID_CLASSROOM = 'classroomId';
+const DESCRIPTION = 'description';
 
 export const Examinationmanager = () => {
     const { idClassRoom } = useParams();
@@ -57,16 +60,32 @@ export const Examinationmanager = () => {
         [START_DATE]: '',
         [EXAM_NAME]: '',
         [END_DATE]: '',
-        [EXAM_TEST_TIME]: ''
+        [EXAM_TEST_TIME]: '',
+        [DESCRIPTION]: ''
     };
-
+    const yupObject = yup.object().shape({
+        [START_DATE]: yup
+            .string()
+            .required("The start date of exam is required."),
+        [END_DATE]: yup
+            .string()
+            .required("The end date of exam is required."),
+        [EXAM_NAME]: yup
+            .string()
+            .required("The name of exam is required."),
+        [EXAM_TEST_TIME]: yup
+            .string()
+            .required("The testing time of exam is required."),
+        [DESCRIPTION]: yup
+            .string()
+            .required("The description of exam is required."),
+    });
     const handleClickDelete = (item) => {
         setIsDelete(true);
         setExamSelect(item);
     }
 
     const handleClose = () => {
-        console.log("handleClose", isAdd);
         if (isEdit)
             setIsEdit(false);
         if (isAdd)
@@ -96,7 +115,6 @@ export const Examinationmanager = () => {
     }
 
     const handleClickAdd = () => {
-        console.log("ADDD");
         setIsAdd(true);
     }
 
@@ -104,21 +122,19 @@ export const Examinationmanager = () => {
         mode: 'onSubmit',
         defaultValues: initialValue,
         criteriaMode: "firstError",
+        resolver: yupResolver(yupObject)
     })
 
     const submitForm = (body) => {
         handleClose();
-        console.log(body);
         body.startDate = convertDateToMiliseconds(body.startDate);
         body.endDate = convertDateToMiliseconds(body.endDate);
         if (isEdit) {
             let { classroomId, ...newBody } = body;
-            console.log(newBody);
             updateExam(newBody);
         }
         if (isAdd) {
             if (convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate) >= 0) {
-                console.log(convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate));
                 toast.error("Please choose end date must be after start date", toast.POSITION.TOP_RIGHT);
             } else {
                 let { id, ...newBody } = body;
@@ -126,7 +142,6 @@ export const Examinationmanager = () => {
                     newBody = { ...newBody, questionIds: questionsSelect };
                 else
                     newBody = { ...newBody, randomQuestions: chooseQuestionByQuestionGr };
-                console.log(newBody);
                 addExamByIdClassroom(newBody);
             }
 
@@ -144,7 +159,6 @@ export const Examinationmanager = () => {
     }
 
     const handleClickPage = (index) => {
-        console.log("INDEX ", index);
         setActiveIndex(index);
         getAllExam(index);
     };
@@ -162,34 +176,24 @@ export const Examinationmanager = () => {
     }
 
     const checkTimeStart = (list) => {
-        console.log(list);
         list.map((item, index) => {
             let time = item.startDate;
             let timeReal = convertDateToMiliseconds(new Date());
-            console.log(time, ' ', timeReal);
             if (time - timeReal < 0) {
-                console.log(item.id);
                 setCheckExamStart((preValue) => [...preValue, item.id]);
             }
-            // else
-            // {
-            //     console.log("VVV ",item.id);
-            //     setCheckExamStart(checkExamStart.filter((value) => value !== item.id));
-            // }
             return 0;
         })
 
     }
 
     const handleSearch = (data) => {
-        console.log("SEARCH");
         getAllExamOfClassService(idClassRoom, isEnded, undefined, undefined, undefined, undefined, data).then((res) => {
             checkTimeStart(res.content);
             setListAllExam(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
 
-            console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
                 pageNumbers2.push(i);
@@ -198,14 +202,12 @@ export const Examinationmanager = () => {
             setTotalElements(res.totalElements);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get Exam fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.error(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -213,21 +215,15 @@ export const Examinationmanager = () => {
     }
 
     const handleClickEdit = (item) => {
-        console.log(checkExamStart);
-        console.log(checkExamStart.indexOf(item.id));
-        console.log("IIII", item);
+        form.clearErrors();
         setIsEdit(true);
         setTimeout(() => {
             setExamSelect(item);
         });
-        console.log(item);
     }
 
     const updateExam = (body) => {
         updateExamService(body).then((res) => {
-            toast.success(`Update exam successfully !`, {
-                position: toast.POSITION.TOP_RIGHT,
-            });
             getAllExam();
         }).catch((error) => {
             toast.error(`Update exam fail !`, {
@@ -238,9 +234,6 @@ export const Examinationmanager = () => {
 
     const deleteExam = (id) => {
         deleteExamService(id).then((res) => {
-            toast.success(`Delete exam successfully !`, {
-                position: toast.POSITION.TOP_RIGHT,
-            });
             getAllExam();
         }).catch((error) => {
             toast.error(`Delete exam fail !`, {
@@ -252,10 +245,6 @@ export const Examinationmanager = () => {
     const addExamByIdClassroom = (body) => {
         addExamByIdClassroomService(body).then((res) => {
             getAllExam();
-            toast.success(`Add exam successfully !`, {
-                position: toast.POSITION.TOP_RIGHT,
-            });
-
         }).catch((error) => {
             toast.error(`Add exam fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
@@ -269,7 +258,6 @@ export const Examinationmanager = () => {
             setIsLast(res.last);
             setIsFirst(res.first);
             checkTimeStart(res.content);
-            console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
                 pageNumbers2.push(i);
@@ -278,14 +266,12 @@ export const Examinationmanager = () => {
             setTotalElements(res.totalElements);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get Exam fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.error(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -301,7 +287,6 @@ export const Examinationmanager = () => {
 
     useEffect(() => {
         document.title = "Examination Mananger Admin"
-        console.log(idClassRoom);
         setCheckExamStart([]);
         if (idClassRoom)
             getAllExam();
@@ -314,19 +299,18 @@ export const Examinationmanager = () => {
         <>
             <div className=" p-4 h-full w-full flex-row flex">
                 <div className="p-4 dark:border-gray-700">
-                    <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
-
-
-
+                    <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
+                        Examination manager
+                    </div>
+                    <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
-                            <div className='items-center flex gap-4 justify-between mb-[14px]'>
+                            <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
                                 <div onClick={() => navigate(-1)}
                                     className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
                                     <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
                                 </div>
-                                <div className='w-[100px]'>
-
-                                    <Toggle checked={isEnded} handleToggle={setIsEnded} >{isEnded ? 'Ended' : 'Pending'}</Toggle>
+                                <div className='w-[150px]'>
+                                    <Toggle checked={isEnded} handleToggle={setIsEnded} >{isEnded ? 'Finished' : 'On Going'}</Toggle>
                                 </div>
                                 <div className="relative float-right">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
@@ -463,6 +447,7 @@ export const Examinationmanager = () => {
                                 >
                                     <p className="text-center text-lg font-medium">Edit exam</p>
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={examSelect.testName} />
+                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={examSelect.description || ""} />
                                     <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
                                     <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={examSelect.testingTime} />
                                     <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.startDate)} />
@@ -482,6 +467,7 @@ export const Examinationmanager = () => {
                                 >
                                     <p className="text-center text-lg font-medium">Add Exam</p>
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={''} />
+                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
                                     <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={''} />
                                     <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={''} />
@@ -489,7 +475,7 @@ export const Examinationmanager = () => {
                                     <div className='px w-[150px]'>
                                         <Menu placement='bottom-start' >
                                             <MenuHandler>
-                                                <Button onClick={() => { console.log("SSSSSAAAAAAAAAAA") }} className='bg-slate-400'>
+                                                <Button className='bg-slate-400'>
                                                     Add question
                                                 </Button>
                                             </MenuHandler >
@@ -540,7 +526,9 @@ export const Examinationmanager = () => {
 
                                 <div className="flex justify-center p-4 ">
 
-                                    <Button onClick={() => handleCloseShowChooseRandomQuestion()} className="bg-blue-400">Submit</Button>
+                                    <Button
+
+                                        onClick={() => handleCloseShowChooseRandomQuestion()} className="bg-blue-400">Submit</Button>
                                 </div>
 
                             </Modal.Body>
@@ -559,7 +547,7 @@ export const Examinationmanager = () => {
 
                                 </div>
                                 <div className="flex justify-center p-4">
-                                    <Button onClick={() => { console.log(questionsSelect); handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
+                                    <Button onClick={() => { handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
                                 </div>
 
                             </Modal.Body>

@@ -20,7 +20,8 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
 const CONTENT_QUESTION = 'content';
 const QUESTION_GROUP_ID = 'questionGroupId';
 const ANSWER1 = 'answer1';
@@ -43,6 +44,7 @@ export const Questionmanager = (props) => {
     const [isFirst, setIsFirst] = useState(false);
     const [isLast, setIsLast] = useState(false);
     const [offset, setOffset] = useState(0);
+    const [size, setSize] = useState(6);
     const [numberOfElements, setNumberOfElements] = useState(0);
     const [isEdit, setIsEdit] = useState(false);
     const [questionSelect, setQuestionSelect] = useState({});
@@ -76,7 +78,6 @@ export const Questionmanager = (props) => {
         [ANSWER3]: '',
         [ANSWER4]: '',
     };
-
     const handleAddAnswer = (event) => {
         event.preventDefault();
         if (answer === '') {
@@ -85,7 +86,6 @@ export const Questionmanager = (props) => {
         else {
             const updatedListAnswer = [...listAnswer];
             if (listAnswer.length === 0) {
-                console.log("Khi lenght =0")
                 updatedListAnswer.push(answer);
                 const label = document.createElement('label');
                 const input = document.createElement('input');
@@ -105,7 +105,6 @@ export const Questionmanager = (props) => {
                 setAnswer('');
             }
             else {
-                console.log("INDEX ", updatedListAnswer.indexOf(answer));
                 if (updatedListAnswer.indexOf(answer) === -1) {
                     updatedListAnswer.push(answer);
                     const label = document.createElement('label');
@@ -116,7 +115,6 @@ export const Questionmanager = (props) => {
                     input.className = 'mr-[5px]';
                     label.className = 'flex items-center'
                     setListAnswer(updatedListAnswer);
-                    console.log(listAnswer);
                     input.checked = selectedOption === input.value;
                     input.addEventListener('change', (event) => handleOptionChange(event));
                     label.appendChild(input);
@@ -141,7 +139,6 @@ export const Questionmanager = (props) => {
 
     const isChecked = (itemId) => {
         const filteredItems = listCheckBox.filter((item) => item === itemId);
-        console.log(filteredItems.length > 0);
         return filteredItems.length > 0;
     };
 
@@ -208,21 +205,19 @@ export const Questionmanager = (props) => {
     }
 
     const handleClickAdd = () => {
-        console.log("ADDD");
         setIsAdd(true);
     }
 
     const form = useForm({
         mode: 'onSubmit',
         defaultValues: initialValue,
-        criteriaMode: "firstError",
+        criteriaMode: "firstError"
     })
 
     // const { defaultValue,on ...otherProps } = form.register(CONTENT_QUESTION);
 
     const submitForm = (body) => {
         handleClose();
-        console.log(body);
         const newBody = {
             content: contentQuestion,
             firstAnswer: {
@@ -256,7 +251,6 @@ export const Questionmanager = (props) => {
                     newBody.fourthAnswer.isCorrect = true;
                     break;
             }
-            console.log("New body", newBody);
             let { questionGroupId, ...newBodys } = newBody;
             newBodys.id = body.id;
             updateQuestionService(newBodys).then((res) => {
@@ -287,7 +281,6 @@ export const Questionmanager = (props) => {
                     }
                 }
             })
-            console.log("New body", newBody);
             addQuestionByQuestionGroupService(newBody).then((res) => {
                 getAllQuestion();
                 toast.success('Add question successfuly', { position: toast.POSITION.TOP_RIGHT });
@@ -315,7 +308,6 @@ export const Questionmanager = (props) => {
     }
 
     const handleClickPage = (index) => {
-        console.log("INDEX ", index);
         setActiveIndex(index);
         getAllQuestion(index);
     };
@@ -333,10 +325,9 @@ export const Questionmanager = (props) => {
     }
 
     const handleSearch = (data) => {
-        console.log("SEARCH");
         if (props.idClassroom)
             if (isModeActive)
-                getAllActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, undefined, data).then((res) => {
+                getAllActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, size, data).then((res) => {
                     setListAllQuestion(res.content);
                     setIsLast(res.last);
                     setIsFirst(res.first);
@@ -349,19 +340,17 @@ export const Questionmanager = (props) => {
                     setTotalElements(res.totalElements);
                     setOffset(res.pageable.offset);
                     setNumberOfElements(res.numberOfElements);
-                    console.log("numberOfElements", res.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
                     toast.error(`Search question active fail !`, {
                         position: toast.POSITION.TOP_RIGHT,
                     });
-                    console.log(error);
                     removeCredential();
                     navigate(Path.LOGIN);
                 })
             else
-                getAllInActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, undefined, data).then((res) => {
+                getAllInActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, size, data).then((res) => {
                     setListAllQuestion(res.content);
                     setIsLast(res.last);
                     setIsFirst(res.first);
@@ -374,20 +363,18 @@ export const Questionmanager = (props) => {
                     setTotalElements(res.totalElements);
                     setOffset(res.pageable.offset);
                     setNumberOfElements(res.numberOfElements);
-                    console.log("numberOfElements", res.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
                     toast.error(`Get question inactive fail !`, {
                         position: toast.POSITION.TOP_RIGHT,
                     });
-                    console.log(error);
                     removeCredential();
                     navigate(Path.LOGIN);
                 })
         else
             if (isModeActive)
-                getAllActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, undefined, data).then((res) => {
+                getAllActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, size, data).then((res) => {
                     setListAllQuestion(res.content);
                     setIsLast(res.last);
                     setIsFirst(res.first);
@@ -400,19 +387,17 @@ export const Questionmanager = (props) => {
                     setTotalElements(res.totalElements);
                     setOffset(res.pageable.offset);
                     setNumberOfElements(res.numberOfElements);
-                    console.log("numberOfElements", res.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
                     toast.error(`Search question active fail !`, {
                         position: toast.POSITION.TOP_RIGHT,
                     });
-                    console.log(error);
                     removeCredential();
                     navigate(Path.LOGIN);
                 });
             else
-                getAllInActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, undefined, data).then((res) => {
+                getAllInActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, size, data).then((res) => {
                     setListAllQuestion(res.content);
                     setIsLast(res.last);
                     setIsFirst(res.first);
@@ -425,35 +410,29 @@ export const Questionmanager = (props) => {
                     setTotalElements(res.totalElements);
                     setOffset(res.pageable.offset);
                     setNumberOfElements(res.numberOfElements);
-                    console.log("numberOfElements", res.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
                     toast.error(`Search question inactive fail !`, {
                         position: toast.POSITION.TOP_RIGHT,
                     });
-                    console.log(error);
                     removeCredential();
                     navigate(Path.LOGIN);
                 });
     }
 
     const handleClickActive = (item) => {
-        console.log("IIII", item);
 
         setIsChooseActive(true);
         setTimeout(() => {
             setQuestionSelect(item);
         });
-        console.log(item);
     }
 
     const handleClickEdit = (item) => {
-        console.log("IIII", item);
         setContentQuestion(item.content);
         setIsEdit(true);
         setQuestionSelect(item);
-        console.log(item);
     }
 
     const getAllInActiveQuestionByQuestionGrID = async (page, sortType, column, size, search) => {
@@ -469,14 +448,12 @@ export const Questionmanager = (props) => {
             setTotalElements(res.totalElements);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get question inactive fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.log(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -496,14 +473,12 @@ export const Questionmanager = (props) => {
             setTotalElements(res.totalElements);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get question active fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.log(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -523,14 +498,12 @@ export const Questionmanager = (props) => {
             setTotalElements(res.totalElements);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get question active fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.log(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -550,14 +523,12 @@ export const Questionmanager = (props) => {
             setTotalElements(res.totalElements);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get question inactive fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.log(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -593,18 +564,11 @@ export const Questionmanager = (props) => {
 
     return (
         <>
-            <div className=" p-4 h-full w-full flex-row flex">
-                <div className="p-4 dark:border-gray-700">
-                    <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
-                        {/* <p className="text-2xl text-gray-400 dark:text-gray-500">
-                            <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 1v16M1 9h16" />
-                            </svg>
-                        </p> */}
-
-
-                        <div className=" overflow-auto shadow-md sm:rounded-lg">
-                            <div className='items-center flex gap-4 justify-between mb-[14px]'>
+            <div className=" p-1 h-full w-full flex-row flex min-h-[600px]">
+                <div className="p-4 dark:border-gray-700 w-full">
+                    <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
+                        <div className="w-full overflow-auto shadow-md sm:rounded-lg">
+                            <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
                                 <div className='w-[150px]'>
                                     <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
                                 </div>
@@ -843,7 +807,7 @@ export const Questionmanager = (props) => {
                                             <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder='Enter answer'>
 
                                             </input>
-                                            <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('border-2 border-blue-200 rounded-lg bg-green-200 text-xs', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add answer</button>
+                                            <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('border-2 m-1 border-blue-200 rounded-lg bg-green-200 text-xs', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add answer</button>
                                         </div>
                                     </div>
                                     <div ref={showAnswer} className='showAnswer flex flex-col' >

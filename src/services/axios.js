@@ -8,25 +8,13 @@ const instance = axios.create({
 
 
 instance.interceptors.response.use(function (response) {
-      console.log("response")
-      console.log(response)
       return response?.data;
 }, async function (error) {
 
-      console.log("response status code---" + error.response.status);
-      console.log("response config---" + error.config);
       const prevRequest = error?.config;
       if (error.response && error?.response?.status === 401 && !prevRequest?.sent) {
             prevRequest.sent = true;
-            console.log("REFRESH TOKEN ", getRefreshToken());
             const resp = (await refreshToken(getRefreshToken()));
-
-            console.log("resp")
-            console.log(resp)
-
-            // const roles=getUserInfo().roles;
-            // console.log(JSON.stringify(roles))
-
             saveToken(resp.accessToken, resp.refreshToken, null);
             prevRequest.headers = {
                   authorization: `Bearer ${resp.accessToken}`,

@@ -23,6 +23,7 @@ import DoMCTest from '../pages/User/DoMCTest/DoMCTest';
 import VerifyEmail from '../pages/User/VerifyEmail/VerifyEmail';
 import MyInfo from '../pages/User/MyInfo/MyInfo'
 import MyAllScores from '../pages/User/MyAllScores/MyAllScores'
+import ScoreDetailManager from '../pages/Admin/Manager/ScoreDetailManager'
 export const AppRoutes = () => {
 
   return (
@@ -51,6 +52,7 @@ export const AppRoutes = () => {
           <Route path={Path.AMEXAMINATIONMANAGER} element={<Examinationmanager />} />
           <Route path={'/admin/student/:idClassRoom'} element={<Studentmanager />} />
           <Route path={Path.AMSCOREMANAGER} element={<Scoremanager />} />
+          <Route path={Path.AMSCOREDETAILMANAGER} element={<ScoreDetailManager />} />
           <Route path={'/admin/student'} element={<Studentmanager showByIdClassRoom={false} />} />
         </Route>
         <Route path="*" element={<PageNotFound />} />

@@ -8,12 +8,9 @@ export const DatePicker = (props) => {
 
     const handleCheckTime = (event) => {
         let timeSet = event.target.value;
-        console.log(timeSet);
         let milisecondtTimeSet = convertDateToMiliseconds(timeSet.toString());
-        console.log(milisecondtTimeSet);
         let timeReal = new Date();
         timeReal = convertDateToMiliseconds(timeReal.toString());
-        console.log("TIMEREAL ", timeReal);
 
         if (milisecondtTimeSet - timeReal < 0) {
             setError('Please choose a start date after the current date')
@@ -24,12 +21,10 @@ export const DatePicker = (props) => {
 
     useEffect(() => {
         if (defaultValue === '') {
-            console.log("SSSSS ", defaultValue);
             form.setValue(name, '');
             setCheckDefault(false);
         } else {
             if (defaultValue) {
-                console.log("AAAAA ", defaultValue);
                 form.setValue(name, defaultValue);
                 setCheckDefault(false);
             }

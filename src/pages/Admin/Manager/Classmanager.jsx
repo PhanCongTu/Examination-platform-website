@@ -4,9 +4,8 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import InputField from '../../../components/form-controls/InputField/InputField';
 import ButtonS from '../../../components/form-controls/Button/Button';
-import { Modal, CustomFlowbiteTheme } from 'flowbite-react';
 import Toggle from '../../../components/form-controls/Toggle/Toggle';
-
+import * as yup from 'yup';
 import PaginationNav from '../../../components/pagination/PaginationNav';
 import { useNavigate } from 'react-router-dom';
 import Path from '../../../utils/Path';
@@ -19,8 +18,11 @@ import {
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { Modal } from 'flowbite-react';
 const CLASS_CODE = 'classCode';
 const CLASS_NAME = 'className';
+const DESCRIPTION = 'description';
 const IS_PRIVATE = 'isPrivate';
 const ID_CLASS = 'id';
 
@@ -47,60 +49,37 @@ export const Classmanager = () => {
     const initialValue = {
         [CLASS_CODE]: '',
         [CLASS_NAME]: '',
+        [DESCRIPTION]: '',
         [IS_PRIVATE]: '',
         [ID_CLASS]: ''
     };
-
-    const customTheme = {
-        root: {
-            base: ''
-        }
-    };
+    const yupObject = yup.object().shape({
+        [CLASS_CODE]: yup
+            .string()
+            .required("The code of classroom is required."),
+        [CLASS_NAME]: yup
+            .string()
+            .required("The name of classroom is required."),
+        [DESCRIPTION]: yup
+            .string()
+            .required("The description of classroom is required."),
+    });
 
     const handleShowStudent = (item) => {
         navigate(`/admin/student/${item.id}`)
     }
-    // const isChecked = (itemId) => {
-    //     const filteredItems = listClassDelete.filter((item) => item === itemId);
-    //     console.log(filteredItems.length > 0);
-    //     return filteredItems.length > 0;
-    // };
-
-    // const handleCheckboxChange = (event, id, isAll) => {
-    //     if (isAll) {
-    //         setListClassDelete(listAllClass.map((item, index) => {
-    //             return item.id;
-    //         }));
-    //     } else {
-    //         const isChecked = event.target.checked;
-    //         console.log(listClassDelete);
-    //         if (isChecked) {
-    //             setListClassDelete((prevSelected) => [...prevSelected, id]);
-    //         } else {
-    //             setListClassDelete((prevSelected) =>
-    //                 prevSelected.filter((value) => value !== id)
-    //             );
-    //         }
-    //     }
-
-    // };
-
     const handleShowExamOfClass = (item) => {
-        console.log("SSAAA", item.id);
         navigate(`/admin/examination/${item.id}`)
     }
-
     const handleClickOpenQuestionGroup = (item) => {
         navigate(`/admin/questiongr/${item.id}`)
     }
-
     const handleClickDelete = (item) => {
         setIsDelete(true);
         setClassSelect(item);
     }
 
     const handleClose = () => {
-        console.log("handleClose", isAdd);
         if (isEdit)
             setIsEdit(false);
         if (isAdd)
@@ -114,7 +93,6 @@ export const Classmanager = () => {
     }
 
     const handleClickAdd = () => {
-        console.log("ADDD");
         setIsAdd(true);
     }
 
@@ -122,17 +100,13 @@ export const Classmanager = () => {
         mode: 'onSubmit',
         defaultValues: initialValue,
         criteriaMode: "firstError",
+        resolver: yupResolver(yupObject)
     })
 
     const submitForm = (body) => {
         handleClose();
-        console.log(body);
         if (isEdit)
             updateActiveClassService({ ...body, isPrivate: isToggle }).then((res) => {
-                console.log("Response: " + res);
-                toast.success(`Update class successfully!`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
                 getAllClass();
             }).catch((error) => {
                 toast.error(`Update class fail !`, {
@@ -141,10 +115,6 @@ export const Classmanager = () => {
             })
         if (isAdd)
             addActiveClassService({ ...body, isPrivate: isToggle }).then((res) => {
-                console.log("Response: " + res);
-                toast.success(`Add class successfully!`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
                 getAllClass();
             }).catch((error) => {
                 toast.error(`Add class fail !`, {
@@ -153,11 +123,6 @@ export const Classmanager = () => {
             })
         if (isDelete)
             deleteActiveClassService(body).then((res) => {
-                console.log(body);
-                console.log("Response: " + res);
-                toast.success(`Delete class successfully!`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
                 getAllClass();
             }).catch((error) => {
                 toast.error(`Delete class fail !`, {
@@ -166,11 +131,6 @@ export const Classmanager = () => {
             })
         if (isChooseActive)
             activeClassroomService(body.id).then((res) => {
-                console.log(body);
-                console.log("Response: " + res);
-                toast.success(`Active class successfully!`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
                 getAllClass();
             }).catch((error) => {
                 toast.error(`Active class fail !`, {
@@ -182,7 +142,6 @@ export const Classmanager = () => {
     }
 
     const handleClickPage = (index) => {
-        console.log("INDEX ", index);
         setActiveIndex(index);
         getAllClass(index);
     };
@@ -200,26 +159,20 @@ export const Classmanager = () => {
     }
 
     const handleSearch = (data) => {
-        console.log("SEARCH");
         if (isModeActive)
             getAllActiveClassService(undefined, undefined, undefined, undefined, data).then((res) => {
-                console.log(isActive(0));
                 setActiveIndex(0);
                 setlistAllClass(res.content);
                 setIsLast(res.last);
                 setIsFirst(res.first);
-                console.log("TOTAL PAGE", res.totalPages);
                 const pageNumbers2 = [];
                 for (let i = 1; i <= res.totalPages; i++) {
                     pageNumbers2.push(i);
                 }
                 setPageNumbers(pageNumbers2);
-                console.log(pageNumbers);
                 setTotalElements(res.totalElements);
-                console.log(listAllClass);
                 setOffset(res.pageable.offset);
                 setNumberOfElements(res.numberOfElements);
-                console.log("numberOfElements", res.numberOfElements);
             }).catch((error) => {
 
                 toast.error(`Search fail !`, {
@@ -228,23 +181,18 @@ export const Classmanager = () => {
             })
         else
             getAllUnActiveClassService(undefined, undefined, undefined, undefined, data).then((res) => {
-                console.log(isActive(0));
                 setActiveIndex(0);
                 setlistAllClass(res.content);
                 setIsLast(res.last);
                 setIsFirst(res.first);
-                console.log("TOTAL PAGE", res.totalPages);
                 const pageNumbers2 = [];
                 for (let i = 1; i <= res.totalPages; i++) {
                     pageNumbers2.push(i);
                 }
                 setPageNumbers(pageNumbers2);
-                console.log(pageNumbers);
                 setTotalElements(res.totalElements);
-                console.log(listAllClass);
                 setOffset(res.pageable.offset);
                 setNumberOfElements(res.numberOfElements);
-                console.log("numberOfElements", res.numberOfElements);
             }).catch((error) => {
                 removeCredential();
                 navigate(Path.LOGIN);
@@ -256,51 +204,39 @@ export const Classmanager = () => {
     }
 
     const handleClickActive = (item) => {
-        console.log("IIII", item);
         setIsChooseActive(true);
         setTimeout(() => {
             setClassSelect(item);
         });
-        console.log(item);
     }
 
     const handleClickEdit = (item) => {
-        console.log("IIII", item);
+        form.clearErrors();
         setIsEdit(true);
         setTimeout(() => {
             setClassSelect(item);
         });
-        console.log(item);
     }
 
     const getAllActiveClass = async (page, sortType, column, size, search) => {
         await getAllActiveClassService(page, sortType, column, size, search).then((res) => {
-
-            console.log("LIST " + res.content);
-            console.log("ACTIVE" + isActive(activeIndex));
             setlistAllClass(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
-            console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            console.log(pageNumbers);
             setTotalElements(res.totalElements);
-            console.log(listAllClass);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
-            // setIndexPage(res.pageable.pageNumber);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get class fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.log(error);
         });
     }
 
@@ -309,25 +245,20 @@ export const Classmanager = () => {
             setlistAllClass(res.content);
             setIsLast(res.last);
             setIsFirst(res.first);
-            console.log("TOTAL PAGE", res.totalPages);
             const pageNumbers2 = [];
             for (let i = 1; i <= res.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            console.log(pageNumbers);
             setTotalElements(res.totalElements);
-            console.log(listAllClass);
             setOffset(res.pageable.offset);
             setNumberOfElements(res.numberOfElements);
-            console.log("numberOfElements", res.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
             toast.error(`Get class fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
-            console.log(error);
             removeCredential();
             navigate(Path.LOGIN);
         });
@@ -348,71 +279,19 @@ export const Classmanager = () => {
         document.title = "Class Mananger Admin"
         getAllClass();
     }, [isModeActive]);
-
-
     return (
         <>
 
             <div className=" p-4 h-full w-full flex-row flex">
                 <div className="p-4 dark:border-gray-700">
-                    <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
-                        {/* <p className="text-2xl text-gray-400 dark:text-gray-500">
-                            <svg className="w-3.5 h-3.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 18">
-                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 1v16M1 9h16" />
-                            </svg>
-                        </p> */}
-
+                    <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
+                        Classroom manager
+                    </div>
+                    <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
 
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
-                            <div className='items-center flex gap-4 justify-between mb-[14px]'>
-                                {/* <button id="dropdownRadioButton" data-dropdown-toggle="dropdownRadio" className="inline-flex items-center text-gray-500 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-lg text-sm px-3 py-1.5 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700" type="button">
-                                    <svg className="w-3 h-3 text-gray-500 dark:text-gray-400 mr-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 0a10 10 0 1 0 10 10A10.011 10.011 0 0 0 10 0Zm3.982 13.982a1 1 0 0 1-1.414 0l-3.274-3.274A1.012 1.012 0 0 1 9 10V6a1 1 0 0 1 2 0v3.586l2.982 2.982a1 1 0 0 1 0 1.414Z" />
-                                    </svg>
-                                    Last 30 days
-                                    <svg className="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                        <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                    </svg>
-                                </button>
-                                <div id="dropdownRadio" className="z-10 hidden w-48 bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" data-popper-reference-hidden="" data-popper-escaped="" data-popper-placement="top" style={{
-                                    position: 'absolute',
-                                    inset: 'auto auto 0px 0px',
-                                    margin: '0px',
-                                    transform: 'translate3d(522.5px, 3847.5px, 0px)',
-                                }}>
-                                    <ul className="p-3 space-y-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownRadioButton">
-                                        <li>
-                                            <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                <input id="filter-radio-example-1" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                <label htmlFor="filter-radio-example-1" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last day</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                <input id="filter-radio-example-2" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                <label htmlFor="filter-radio-example-2" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last 7 days</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                <input id="filter-radio-example-3" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                <label htmlFor="filter-radio-example-3" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last 30 days</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                <input id="filter-radio-example-4" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                <label htmlFor="filter-radio-example-4" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last month</label>
-                                            </div>
-                                        </li>
-                                        <li>
-                                            <div className="flex items-center p-2 rounded hover:bg-gray-100 dark:hover:bg-gray-600">
-                                                <input id="filter-radio-example-5" type="radio" value="" name="filter-radio" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                <label htmlFor="filter-radio-example-5" className="w-full ml-2 text-sm font-medium text-gray-900 rounded dark:text-gray-300">Last year</label>
-                                            </div>
-                                        </li>
-                                    </ul>
-                                </div> */}
+                            <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
+
                                 <div className='w-[150px] z-0'>
                                     <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
 
@@ -452,9 +331,7 @@ export const Classmanager = () => {
                                         <th scope="col" className="px-6 py-3 w-[70px]">
                                             Active
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[70px]">
-                                            Private
-                                        </th>
+
                                         <th scope="col" className="px-6 py-3 w-[70px]">
                                             Action
                                         </th>
@@ -469,8 +346,9 @@ export const Classmanager = () => {
                                                 (item, index) => {
 
                                                     return (
-                                                        <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                            {/* <td className="w-4 p-4">
+                                                        <>
+                                                            <tr key={index} title={item.description} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                                                {/* <td className="w-4 p-4">
                                                                     <div className="flex items-center">
                                                                         <input
                                                                             checked={isChecked(item.id)}
@@ -482,58 +360,50 @@ export const Classmanager = () => {
                                                                         <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
                                                                     </div>
                                                                 </td> */}
-                                                            <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                                                {item.id}
-                                                            </th>
-                                                            <td className="px-6 py-4 w-[300px] ">
-                                                                <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline w-[300px] line-clamp-1" title={item.className}>{item.className}</p>
-                                                            </td>
-                                                            <td className="px-6 py-4 w-[300px] " >
-                                                                <p className=" truncate font-medium w-[300px] line-clamp-1" title={item.classCode}>{item.classCode}</p>
-                                                            </td>
-                                                            <td className="px-6 py-4 w-[70px]">
-                                                                <div className="flex items-center">
-                                                                    {
-                                                                        item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                                                            Active</>
-                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
-                                                                    }
-                                                                </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 w-[70px] ">
-                                                                <div className="flex items-center">
-                                                                    {
-                                                                        item.isPrivate === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                                                                            Private</>
-                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div> Public</>)
-                                                                    }
-                                                                </div>
-                                                            </td>
+                                                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                                    {item.id}
+                                                                </th>
+                                                                <td className="px-6 py-4 w-[300px] ">
+                                                                    <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline w-[300px] line-clamp-1">{item.className}</p>
+                                                                </td>
+                                                                <td className="px-6 py-4 w-[300px] " >
+                                                                    <p className=" truncate font-medium w-[300px] line-clamp-1">{item.classCode}</p>
+                                                                </td>
+                                                                <td className="px-6 py-4 w-[70px]">
+                                                                    <div className="flex items-center">
+                                                                        {
+                                                                            item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
+                                                                                Active</>
+                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                                                        }
+                                                                    </div>
+                                                                </td>
 
-                                                            <td className="px-6 py-4 w-[70px]">
-                                                                <Menu >
-                                                                    <MenuHandler>
-                                                                        <Button className='bg-slate-400'>
-                                                                            <FontAwesomeIcon icon={faBars} />
-                                                                        </Button>
-                                                                    </MenuHandler>
+                                                                <td className="px-6 py-4 w-[70px]">
+                                                                    <Menu >
+                                                                        <MenuHandler>
+                                                                            <Button className='bg-slate-400'>
+                                                                                <FontAwesomeIcon icon={faBars} />
+                                                                            </Button>
+                                                                        </MenuHandler>
 
-                                                                    {
-                                                                        isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
-                                                                        </MenuList>)
-                                                                            : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem></MenuList>)
-                                                                    }
+                                                                        {
+                                                                            isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
+                                                                            </MenuList>)
+                                                                                : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem></MenuList>)
+                                                                        }
 
 
 
-                                                                </Menu>
+                                                                    </Menu>
 
-                                                            </td>
-                                                        </tr>
+                                                                </td>
+                                                            </tr>
+                                                        </>
                                                     )
                                                 }
                                             )))
@@ -553,6 +423,7 @@ export const Classmanager = () => {
                                 isFirst={isFirst}
                                 isLast={isLast}
                                 isActive={isActive} />
+
                         </div>
                     </div>
                     {
@@ -585,7 +456,8 @@ export const Classmanager = () => {
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
                                     <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={classSelect.classCode} />
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={classSelect.className} />
-                                    <Toggle checked={classSelect.isPrivate} handleToggle={setIsToggle} >Is Private</Toggle>
+                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={classSelect.description || ""} />
+                                    {/* <Toggle checked={classSelect.isPrivate} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <ButtonS onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonS>
                                 </form>
                             </Modal.Body>
@@ -599,12 +471,14 @@ export const Classmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
-                                    <p className="text-center text-lg font-medium">Add class</p>
+                                    <p className="text-center text-lg font-medium">Add new classroom</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={''} />
                                     <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={''} />
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={''} />
-                                    <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle>
-                                    <ButtonS onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonS>
+                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
+                                    {/* <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle> */}
+                                    <ButtonS
+                                        onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonS>
                                 </form>
                             </Modal.Body>
                         </Modal></>)

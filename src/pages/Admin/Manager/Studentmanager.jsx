@@ -40,7 +40,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   };
 
   const handleClose = () => {
-    console.log("handleClose", isAdd);
     setCheckShowByIdClassroom(true);
     if (isAdd)
       setIsAdd(false);
@@ -73,7 +72,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   const submitForm = (body) => {
     handleClose();
     showByIdClassRoom = true;
-    console.log(body);
     if (isAddConfirm)
       addStudentToClass(body);
     else if (isDelete)
@@ -83,10 +81,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   const deleteStudentOfClassroom = (body) => {
     deleteStudentOfClassroomService(body).then((res) => {
       getAllStudentOfClass();
-
-      toast.success('Delete student of class successfuly', {
-        position: toast.POSITION.TOP_RIGHT
-      })
     }).catch((error) => {
       toast.error('Delete student of class fail', {
         position: toast.POSITION.TOP_RIGHT
@@ -99,7 +93,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   const addStudentToClass = (body) => {
     addStudentToClassService(body).then((res) => {
       getAllStudentOfClass();
-
       toast.success('Add student to class successfuly', {
         position: toast.POSITION.TOP_RIGHT
       })
@@ -113,7 +106,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   }
 
   const handleClickPage = (index) => {
-    console.log("INDEX ", index);
     setActiveIndex(index);
     getAllStudent(index);
   };
@@ -131,7 +123,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   }
 
   const handleSearch = (data) => {
-    console.log("SEARCH");
     if (showByIdClassRoom && idClassRoom)
       getAllStudentOfClassService(idClassRoom, undefined, undefined, undefined, undefined, data).then((res) => {
         setlistAllStudent(res.content);
@@ -146,14 +137,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         setTotalElements(res.totalElements);
         setOffset(res.pageable.offset);
         setNumberOfElements(res.numberOfElements);
-        console.log("numberOfElements", res.numberOfElements);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
         toast.error(`Search student fail !`, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        console.log(error);
         removeCredential();
         navigate(Path.LOGIN);
       });
@@ -162,7 +151,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         setlistAllStudent(res.content);
         setIsLast(res.last);
         setIsFirst(res.first);
-        console.log("TOTAL PAGE", res.totalPages);
         const pageNumbers2 = [];
         for (let i = 1; i <= res.totalPages; i++) {
           pageNumbers2.push(i);
@@ -171,14 +159,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         setTotalElements(res.totalElements);
         setOffset(res.pageable.offset);
         setNumberOfElements(res.numberOfElements);
-        console.log("numberOfElements", res.numberOfElements);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
         toast.error(`Search verified student fail !`, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        console.log(error);
         removeCredential();
         navigate(Path.LOGIN);
       });
@@ -188,7 +174,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         setlistAllStudent(res.content);
         setIsLast(res.last);
         setIsFirst(res.first);
-        console.log("TOTAL PAGE", res.totalPages);
         const pageNumbers2 = [];
         for (let i = 1; i <= res.totalPages; i++) {
           pageNumbers2.push(i);
@@ -197,14 +182,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
         setTotalElements(res.totalElements);
         setOffset(res.pageable.offset);
         setNumberOfElements(res.numberOfElements);
-        console.log("numberOfElements", res.numberOfElements);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
         toast.error(`Search student fail !`, {
           position: toast.POSITION.TOP_RIGHT,
         });
-        console.log(error);
         removeCredential();
         navigate(Path.LOGIN);
       });
@@ -216,7 +199,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setlistAllStudent(res.content);
       setIsLast(res.last);
       setIsFirst(res.first);
-      console.log("TOTAL PAGE", res.totalPages);
       const pageNumbers2 = [];
       for (let i = 1; i <= res.totalPages; i++) {
         pageNumbers2.push(i);
@@ -225,14 +207,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setTotalElements(res.totalElements);
       setOffset(res.pageable.offset);
       setNumberOfElements(res.numberOfElements);
-      console.log("numberOfElements", res.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
       toast.error(`Get student fail !`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log(error);
       removeCredential();
       navigate(Path.LOGIN);
     });
@@ -240,12 +220,10 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   }
 
   const getAllStudentOfClass = async (page, sortType, column, size, search) => {
-    console.log("VOgetAllstuclass");
     getAllStudentOfClassService(idClassRoom, page, sortType, column, size, search).then((res) => {
       setlistAllStudent(res.content);
       setIsLast(res.last);
       setIsFirst(res.first);
-      console.log("TOTAL PAGE", res.totalPages);
       const pageNumbers2 = [];
       for (let i = 1; i <= res.totalPages; i++) {
         pageNumbers2.push(i);
@@ -254,14 +232,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setTotalElements(res.totalElements);
       setOffset(res.pageable.offset);
       setNumberOfElements(res.numberOfElements);
-      console.log("numberOfElements", res.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
       toast.error(`Get student fail !`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log(error);
       removeCredential();
       navigate(Path.LOGIN);
     });
@@ -272,7 +248,6 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setlistAllStudent(res.content);
       setIsLast(res.last);
       setIsFirst(res.first);
-      console.log("TOTAL PAGE", res.totalPages);
       const pageNumbers2 = [];
       for (let i = 1; i <= res.totalPages; i++) {
         pageNumbers2.push(i);
@@ -281,22 +256,18 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       setTotalElements(res.totalElements);
       setOffset(res.pageable.offset);
       setNumberOfElements(res.numberOfElements);
-      console.log("numberOfElements", res.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
       toast.error(`Get verified student fail !`, {
         position: toast.POSITION.TOP_RIGHT,
       });
-      console.log(error);
       removeCredential();
       navigate(Path.LOGIN);
     });
   }
 
   const getAllStudent = (page, sortType, column, size, search) => {
-    console.log("idClassRoom ", idClassRoom);
-    console.log("showByIdClassRoom ", showByIdClassRoom);
     if (showByIdClassRoom && idClassRoom)
       getAllStudentOfClass(page, sortType, column, size, search);
     else if (!showByIdClassRoom && idClassRoom)
@@ -318,11 +289,22 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   return (
     <>
-      <div className=" p-4 h-full w-full flex-row flex">
-        <div className="p-4 dark:border-gray-700">
-          <div className="flex items-center justify-start h-auto mb-4 dark:bg-gray-800">
+      <div className=" p-4 h-full min-h-[550px] w-full flex-row flex">
+        <div className="pb-4 dark:border-gray-700">
+          {((idClassRoom && showByIdClassRoom)) && <>
+            <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
+              List students in classroom
+            </div>
+          </>}
+          {((!idClassRoom && !showByIdClassRoom) && <>
+            <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
+              All students
+            </div>
+          </>)}
+
+          <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
             <div className=" overflow-auto shadow-md sm:rounded-lg">
-              <div className='items-center flex gap-4 justify-between mb-[14px]'>
+              <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
                 <div onClick={() => navigate(-1)}
                   className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
                   <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
@@ -348,24 +330,26 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                     <th scope="col" className="px-6 py-3 w-[150px]">
                       ID student
                     </th>
-                    <th scope="col" className={clsx("px-6 py-3 w-[300px]", showByIdClassRoom === false && idClassRoom && 'w-[600px]')} >
+                    <th scope="col" className={clsx("px-6 py-3 w-[300px]")} >
                       Student name
                     </th>
-                    {showByIdClassRoom ? (
-                      <>
-                        <th scope="col" className="px-6 py-3 w-[200px]">
-                          Email
-                        </th>
-                        <th scope="col" className="px-6 py-3 w-[200px]">
-                          Email Verified
-                        </th>
-                        <th scope="col" className="px-6 py-3 w-[70px]">
-                          Active
-                        </th>
-                      </>) : (!idClassRoom && (<>
-                        <th scope="col" className="px-6 py-3 w-[200px]">
-                          Email
-                        </th>
+                    <th scope="col" className="px-6 py-3 w-[400px]">
+                      Email
+                    </th>
+                    {!showByIdClassRoom ?
+                      (
+                        <>
+
+                          <th scope="col" className="px-6 py-3 w-[200px]">
+                            Email Verified
+                          </th>
+                          <th scope="col" className="px-6 py-3 w-[70px]">
+                            Active
+                          </th>
+                        </>
+                      )
+                      :
+                      (!idClassRoom && (<>
                         <th scope="col" className="px-6 py-3 w-[200px]">
                           Email Verified
                         </th>
@@ -392,12 +376,14 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                               <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                 {item.userID}
                               </th>
-                              <td className={clsx("px-6 py-3 w-[300px]", showByIdClassRoom === false && idClassRoom && 'w-[600px]')}>
+                              <td className={clsx("px-6 py-3 w-[300px]")}>
                                 <p className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.displayName}>{item.displayName}</p>
                               </td>
-                              {showByIdClassRoom ? (<><td className="px-6 py-4 w-[200px] " >
-                                <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.emailAddress}>{item.emailAddress}</p>
+                              <td className="px-6 py-4 w-[400px] " >
+                                <p className=" truncate font-medium  w-full line-clamp-1" title={item.emailAddress}>{item.emailAddress}</p>
                               </td>
+                              {!showByIdClassRoom ? (<>
+
                                 <td className="px-6 py-4 w-[200px]">
                                   <div className="flex items-center">
                                     {
@@ -415,9 +401,8 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                                       ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
                                     }
                                   </div>
-                                </td></>) : (!idClassRoom && (<><td className="px-6 py-4 w-[200px] " >
-                                  <p className=" truncate font-medium  max-w-[200px] line-clamp-1" title={item.emailAddress}>{item.emailAddress}</p>
-                                </td>
+                                </td></>) : (!idClassRoom && (<>
+
                                   <td className="px-6 py-4 w-[200px]">
                                     <div className="flex items-center">
                                       {

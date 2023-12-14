@@ -229,7 +229,7 @@ function Testing({ Test, IsDeadline }) {
                                     {!IsDeadline ? format(endDateTime, `h:mm a ${isSameDay(endDateTime, startDateTime) ? '' : '(dd/MM)'} `) : format(endDateTime, 'h:mm a')}
                               </time>
                               {
-                                    endDateTime < new Date() ? <p className='pl-3 font-bold text-red-600'>Ended</p> : <></>
+                                    endDateTime < new Date() ? <p className='pl-3 font-bold text-red-600'>Finished</p> : <></>
                               }
 
                         </div>

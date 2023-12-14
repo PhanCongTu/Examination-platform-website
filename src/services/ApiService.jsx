@@ -40,7 +40,7 @@ export const deleteStudentOfClassroomService = async (body) => {
 
       let accessToken = getAccessToken();
       return await axios.request({
-            method: 'delete',
+            method: 'post',
             maxBodyLength: Infinity,
             url: deleteStudentOfClassroomUrl,
             headers: {
@@ -473,7 +473,6 @@ export const getAllExamOfClassService = async (id, isEnded, page, sortType, colu
 }
 
 export const addStudentToClassService = async (body) => {
-      console.log("BODY STUDENT ", body);
       let accessToken = getAccessToken();
       return await axios.request({
             method: 'post',
@@ -614,7 +613,6 @@ export const getAllUnActiveClassService = async (page, sortType, column, size, s
       }
       if (queryParams.length > 0) {
             getAllUnActiveClassUrlParam += '?' + queryParams.join('&');
-            console.log(getAllUnActiveClassUrlParam);
       }
       return await axios.request({
             method: 'get',
@@ -724,9 +722,7 @@ export const deleteActiveClassService = async (body) => {
 
 export const addActiveClassService = async (body) => {
       const { id, ...params } = body;
-      console.log(params);
       let accessToken = getAccessToken();
-      console.log(accessToken);
       return await axios.request({
             method: 'post',
             maxBodyLength: Infinity,
@@ -741,9 +737,7 @@ export const addActiveClassService = async (body) => {
 
 export const updateActiveClassService = async (body) => {
       const { id, ...params } = body;
-      console.log(params);
       let accessToken = getAccessToken();
-      console.log(accessToken);
       return await axios.request({
             method: 'put',
             maxBodyLength: Infinity,
@@ -777,7 +771,6 @@ export const getAllActiveClassService = async (page, sortType, column, size, sea
       }
       if (queryParams.length > 0) {
             getAllActiveClassUrlParam += '?' + queryParams.join('&');
-            console.log(getAllActiveClassUrlParam);
       }
       return await axios.request({
             method: 'get',
@@ -790,7 +783,6 @@ export const getAllActiveClassService = async (page, sortType, column, size, sea
 }
 
 export const codeResetService = async (emailAddress) => {
-      console.log(codeResetPassUrl.replace('{email}', emailAddress))
       return await axios.request({
             method: 'post',
             maxBodyLength: Infinity,

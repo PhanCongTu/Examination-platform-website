@@ -1,36 +1,31 @@
 import React, { useEffect, useState } from 'react'
-import { getRoles, getAccessToken, removeCredential } from '../../../services/ApiService';
+import { useLocation, useNavigate, NavLink } from 'react-router-dom';
+import { getScoreOfStudentService } from '../../../services/UserService';
 import classroomPNG from '../../../assets/classroomPNG.png';
-import { NavLink, useNavigate, useParams } from 'react-router-dom';
-import { ROLE_STUDENT } from '../../../utils/Constant';
-import { getMyCoreService } from '../../../services/UserService';
 import Path from '../../../utils/Path';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
 import clsx from 'clsx';
-
-function ScoreDetail() {
-      const { testId } = useParams();
+function ScoreDetailManager() {
       const navigate = useNavigate();
+      let location = useLocation();
+      const [MCTestId, setMCTestId] = useState(location?.state?.testId);
+      const [StudentId, setStudentId] = useState(location?.state?.studentId);
       const [score, setScore] = useState();
 
-      if (!getAccessToken() || !getRoles()?.includes(ROLE_STUDENT)) {
-            removeCredential()
-            navigate(Path.LOGIN)
-      }
       useEffect(() => {
-            getMyCoreService(testId)
+            getScoreOfStudentService(StudentId, MCTestId)
                   .then((res) => {
                         setScore(res);
                   })
                   .catch((err) => {
-
                   })
       }, [])
+
       return (
             <>
-                  <div className='min-h-screen h-full  bg-repeat p-5 flex justify-center ' style={{ backgroundImage: "url(" + classroomPNG + ")" }}>
+                  <div className='min-h-screen h-full w-screen  bg-repeat p-5 flex justify-center ' style={{ backgroundImage: "url(" + classroomPNG + ")" }}>
                         <div className='bg-white opacity-95 min-h-screen h-full w-[80%] pt-6 rounded-lg select-none' >
                               <div onClick={() => navigate(-1)}
                                     className='flex justify-start items-center ml-10 cursor-pointer w-fit rounded-lg p-1'>
@@ -42,6 +37,7 @@ function ScoreDetail() {
                                           {
                                                 score ? <>
                                                       <div className='bg-white opacity-100 flex justify-center pt-16 pb-10 '>
+
                                                             <div className=" w-1/2 flex flex-col items-center bg-slate-100 border border-gray-200 rounded-lg shadow md:flex-row md:max-w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                                                                   <div className="flex flex-col w-full justify-between p-4 leading-normal">
                                                                         <h5 className="flex justify-center mb-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
@@ -122,8 +118,8 @@ function ScoreDetail() {
                                                 </div>
                                           }
                                           <div className="flex w-full justify-center p-4 leading-normal">
-                                                <NavLink to={Path.HOME}
-                                                      className='flex w-80 select-none cursor-pointer justify-center items-center rounded-lg border-[2px] py-1 bg-white text-red-600 border-red-600' variant="outlined">Back to Home</NavLink>
+                                                <NavLink to={-1}
+                                                      className='flex w-80 select-none cursor-pointer justify-center items-center rounded-lg border-[2px] py-1 bg-white text-red-600 border-red-600' variant="outlined">Back to previous page</NavLink>
                                           </div>
 
                                     </div>
@@ -134,4 +130,4 @@ function ScoreDetail() {
       )
 }
 
-export default ScoreDetail
+export default ScoreDetailManager
