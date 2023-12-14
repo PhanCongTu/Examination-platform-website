@@ -313,12 +313,6 @@ export const Classmanager = () => {
                             <table className="w-full text-sm text-left text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
-                                        {/* <th scope="col" className="p-4">
-                                            <div className="flex items-center">
-                                                <input onChange={() => handleCheckboxChange(undefined, undefined, true)} id="checkbox-all-search" type="checkbox" className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600" />
-                                                <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
-                                            </div>
-                                        </th> */}
                                         <th scope="col" className="px-6 py-3 w-[150px]">
                                             ID class
                                         </th>
@@ -348,18 +342,6 @@ export const Classmanager = () => {
                                                     return (
                                                         <>
                                                             <tr key={index} title={item.description} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                {/* <td className="w-4 p-4">
-                                                                    <div className="flex items-center">
-                                                                        <input
-                                                                            checked={isChecked(item.id)}
-                                                                            onChange={(e) => handleCheckboxChange(e, item.id)}
-                                                                            id={`checkbox-table-search-${index}`}
-                                                                            type="checkbox"
-                                                                            className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 dark:focus:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600"
-                                                                        />
-                                                                        <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
-                                                                    </div>
-                                                                </td> */}
                                                                 <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                     {item.id}
                                                                 </th>
@@ -458,7 +440,10 @@ export const Classmanager = () => {
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={classSelect.className} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={classSelect.description || ""} />
                                     {/* <Toggle checked={classSelect.isPrivate} handleToggle={setIsToggle} >Is Private</Toggle> */}
-                                    <ButtonS onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonS>
+                                    <div className='flex justify-around'>
+                                        <Button onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -477,8 +462,10 @@ export const Classmanager = () => {
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     {/* <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle> */}
-                                    <ButtonS
-                                        onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonS>
+                                    <div className='flex justify-around'>
+                                        <ButtonS onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
+                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)

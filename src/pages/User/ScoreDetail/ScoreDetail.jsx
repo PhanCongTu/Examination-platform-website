@@ -45,7 +45,15 @@ function ScoreDetail() {
                                                             <div className=" w-1/2 flex flex-col items-center bg-slate-100 border border-gray-200 rounded-lg shadow md:flex-row md:max-w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                                                                   <div className="flex flex-col w-full justify-between p-4 leading-normal">
                                                                         <h5 className="flex justify-center mb-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                                                              Result
+                                                                              {score.totalScore >= score.targetScore ?
+                                                                                    <>
+                                                                                          <p className='text-green-600' >Passed</p>
+                                                                                    </>
+                                                                                    :
+                                                                                    <>
+                                                                                          <p className='text-red-600' >Failed</p>
+                                                                                    </>
+                                                                              }
                                                                         </h5>
                                                                         <p className="py-5 text-[50px] flex justify-center items-end mb-3 font-normal text-black dark:text-gray-400 select-none">
                                                                               <strong>{score?.totalScore} </strong>
@@ -54,7 +62,8 @@ function ScoreDetail() {
                                                                         <div className=" text-[18px] mb-1 font-normal text-black dark:text-gray-400 select-none">
                                                                               <p><strong>Exam name:</strong> {score?.multipleChoiceTest?.testName}</p>
                                                                               <p><strong>Submitted on:</strong> {format(score?.submittedDate, 'MMM dd, yyy h:mm a')}</p>
-
+                                                                              <p><strong>Target score:</strong> {score?.targetScore || 0} / 10</p>
+                                                                              <p><strong>Test description:</strong> {score?.multipleChoiceTest?.description || 0}</p>
                                                                         </div>
 
 

@@ -53,6 +53,7 @@ function MyAllScores() {
       const getAllMyScores = (dateFrom, dateTo, page, sortType, column, size, search) => {
             getAllMyScoreService(dateFrom, dateTo, page, sortType, column, size, search)
                   .then(res => {
+                        console.log(res)
                         setMyScores(res.content)
                         setTotalElements(res.totalElements)
                         setTotalPages(res.totalPages)
@@ -133,6 +134,9 @@ function MyAllScores() {
                                                             <th scope="col" className="px-6 py-3">
                                                                   Score
                                                             </th>
+                                                            <th scope="col" className="px-6 py-3">
+                                                                  Result
+                                                            </th>
                                                       </tr>
                                                 </thead>
                                                 <tbody>
@@ -152,6 +156,16 @@ function MyAllScores() {
                                                                   </td>
                                                                   <td className="px-6 py-4">
                                                                         {score.totalScore}
+                                                                  </td>
+                                                                  <td className="px-6 py-4">
+                                                                        {score.totalScore >= score.targetScore ?
+                                                                              <>
+                                                                                    <p className='font-bold text-green-600'>Passed</p>
+                                                                              </>
+                                                                              :
+                                                                              <>
+                                                                                    <p className='font-bold text-red-600'>Failed</p>
+                                                                              </>}
                                                                   </td>
                                                             </tr>
                                                       })}

@@ -30,6 +30,7 @@ const END_DATE = 'endDate';
 const EXAM_TEST_TIME = 'testingTime';
 const ID_CLASSROOM = 'classroomId';
 const DESCRIPTION = 'description';
+const TARGET_SCORE = 'targetScore';
 
 export const Examinationmanager = () => {
     const { idClassRoom } = useParams();
@@ -61,7 +62,8 @@ export const Examinationmanager = () => {
         [EXAM_NAME]: '',
         [END_DATE]: '',
         [EXAM_TEST_TIME]: '',
-        [DESCRIPTION]: ''
+        [DESCRIPTION]: '',
+        [TARGET_SCORE]: ''
     };
     const yupObject = yup.object().shape({
         [START_DATE]: yup
@@ -79,6 +81,9 @@ export const Examinationmanager = () => {
         [DESCRIPTION]: yup
             .string()
             .required("The description of exam is required."),
+        [TARGET_SCORE]: yup
+            .string()
+            .required("The target score of exam is required.")
     });
     const handleClickDelete = (item) => {
         setIsDelete(true);
@@ -129,23 +134,20 @@ export const Examinationmanager = () => {
         handleClose();
         body.startDate = convertDateToMiliseconds(body.startDate);
         body.endDate = convertDateToMiliseconds(body.endDate);
-        if (isEdit) {
+        if (convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate) >= 0) {
+            toast.error("Please choose end date must be after start date", toast.POSITION.TOP_RIGHT);
+        } else if (body.targetScore < 0 || body.targetScore > 10) {
+            toast.error("The target score must be from 0 to 10", toast.POSITION.TOP_RIGHT);
+        } else if (isEdit) {
             let { classroomId, ...newBody } = body;
             updateExam(newBody);
-        }
-        if (isAdd) {
-            if (convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate) >= 0) {
-                toast.error("Please choose end date must be after start date", toast.POSITION.TOP_RIGHT);
-            } else {
-                let { id, ...newBody } = body;
-                if (questionsSelect.length != 0)
-                    newBody = { ...newBody, questionIds: questionsSelect };
-                else
-                    newBody = { ...newBody, randomQuestions: chooseQuestionByQuestionGr };
-                addExamByIdClassroom(newBody);
-            }
-
-
+        } else if (isAdd) {
+            let { id, ...newBody } = body;
+            if (questionsSelect.length != 0)
+                newBody = { ...newBody, questionIds: questionsSelect };
+            else
+                newBody = { ...newBody, randomQuestions: chooseQuestionByQuestionGr };
+            addExamByIdClassroom(newBody);
         }
         if (isDelete)
             deleteExam(body.id);
@@ -345,6 +347,9 @@ export const Examinationmanager = () => {
                                         <th scope="col" className="px-6 py-3 w-[150px]">
                                             Exam time
                                         </th>
+                                        <th scope="col" className="px-6 py-3 w-[150px]">
+                                            Target score
+                                        </th>
                                         <th scope="col" className="px-6 py-3 w-[60px]" >
                                             Action
                                         </th>
@@ -375,7 +380,10 @@ export const Examinationmanager = () => {
                                                             </td>
 
                                                             <td className="px-6 py-4 w-[150px] " >
-                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.testingTime}>{item.testingTime}</p>
+                                                                <p className="flex justify-center truncate font-medium  max-w-[150px] line-clamp-1" title={item.testingTime}>{item.testingTime}</p>
+                                                            </td>
+                                                            <td className="px-6 py-4 w-[150px] " >
+                                                                <p className="flex justify-center truncate font-medium  max-w-[150px] line-clamp-1" title={item.targetScore}>{item.targetScore}</p>
                                                             </td>
                                                             <td className="px-6 py-4 w-[60px]">
                                                                 <Menu >
@@ -450,9 +458,15 @@ export const Examinationmanager = () => {
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={examSelect.description || ""} />
                                     <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
                                     <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={examSelect.testingTime} />
-                                    <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.startDate)} />
-                                    <DatePicker name={END_DATE} label="End date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.endDate)} />
-                                    <ButtonE onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonE>
+                                    <InputField type='number' name={TARGET_SCORE} label="Target of score" form={form} defaultValue={examSelect.targetScore} />
+                                    <div className='flex'>
+                                        <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.startDate)} />
+                                        <DatePicker name={END_DATE} label="End date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.endDate)} />
+                                    </div>
+                                    <div className='flex justify-around'>
+                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonE>
+                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -469,9 +483,12 @@ export const Examinationmanager = () => {
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
-                                    <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={''} />
-                                    <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={''} />
-                                    <DatePicker name={END_DATE} label="End date" form={form} defaultValue={''} />
+                                    <InputField type='number' name={EXAM_TEST_TIME} label="Time test (minutes)" form={form} defaultValue={''} />
+                                    <InputField type='number' name={TARGET_SCORE} label="Target of score (x/10)" form={form} defaultValue={''} />
+                                    <div className='flex'>
+                                        <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={''} />
+                                        <DatePicker name={END_DATE} label="End date" form={form} defaultValue={''} />
+                                    </div>
                                     <div className='px w-[150px]'>
                                         <Menu placement='bottom-start' >
                                             <MenuHandler>
@@ -487,7 +504,10 @@ export const Examinationmanager = () => {
                                             </MenuList>
                                         </Menu>
                                     </div>
-                                    <ButtonE onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</ButtonE>
+                                    <div className='flex justify-around'>
+                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonE>
+                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)

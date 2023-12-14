@@ -65,6 +65,7 @@ export const Scoremanager = () => {
 
   const getAllStudentSocreByIdExam = async (page, sortType, column, size, search) => {
     getAllStudentScoreByIDExamService(idExam, page, sortType, column, size, search).then((res) => {
+      console.log(res.content)
       setListAllScore(res.content);
       setIsLast(res.last);
       setIsFirst(res.first);
@@ -144,8 +145,11 @@ export const Scoremanager = () => {
                     <th scope="col" className="px-6 py-3 w-[300px]">
                       Summit date
                     </th>
-                    <th scope="col" className="px-6 py-3 w-[300px]">
+                    <th scope="col" className="px-6 py-3 w-[150px]">
                       Total score
+                    </th>
+                    <th scope="col" className="px-6 py-3 w-[150px]">
+                      Result
                     </th>
                     <th scope="col" className="px-6 py-3 w-[62px]">
                       Lated
@@ -164,17 +168,29 @@ export const Scoremanager = () => {
                               onClick={() => navigate(Path.AMSCOREDETAILMANAGER, { state: { studentId: item.studentId, testId: item.testId } })}
                               className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
-                              <th scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                              <td scope="row" className="w-[62px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                 {item.id}
-                              </th>
+                              </td>
                               <td className="px-6 py-4 w-[300px] ">
                                 <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[200px] line-clamp-1" title={item.studentDisplayName}>{item.studentDisplayName}</p>
                               </td>
                               <td className="px-6 py-4 w-[300px] " >
                                 <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={getFormattedDateTimeByMilisecond(item.submittedDate)}>{getFormattedDateTimeByMilisecond(item.submittedDate)}</p>
                               </td>
-                              <td className="px-6 py-4 w-[300px] " >
+                              <td className="px-6 py-4 w-[150px] " >
                                 <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={item.totalScore}>{item.totalScore}</p>
+                              </td>
+                              <td className="px-6 py-4 w-[150px] " >
+                                <p className=" truncate font-medium  max-w-[300px] line-clamp-1" title={item.targetScore}>
+                                  {item.totalScore >= item.targetScore ?
+                                    <>
+                                      <p className='font-bold text-green-600'>Passed</p>
+                                    </>
+                                    :
+                                    <>
+                                      <p className='font-bold text-red-600'>Failed</p>
+                                    </>}
+                                </p>
                               </td>
                               <td className="px-6 py-4 w-[62px]">
                                 <div className="flex items-center">

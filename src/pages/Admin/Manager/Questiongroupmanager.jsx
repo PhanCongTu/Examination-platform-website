@@ -513,7 +513,10 @@ export const QuestionGroup = (props) => {
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={questionGroupSelect.description || ""} />
 
 
-                                    <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
+                                    <div className='flex justify-around'>
+                                        <Button onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -531,7 +534,10 @@ export const QuestionGroup = (props) => {
                                     <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={''} />
                                     <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
-                                    <Button onClick={() => handleClose()} className="bg-blue-800" type='submit'>Submit</Button>
+                                    <div className='flex justify-around'>
+                                        <Button onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
