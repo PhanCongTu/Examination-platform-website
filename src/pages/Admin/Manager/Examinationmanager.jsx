@@ -506,7 +506,7 @@ export const Examinationmanager = () => {
                                         </Menu>
                                     </div>
                                     <div className='flex justify-around'>
-                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonE>
+                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 !w-[80px]" type='submit'>Submit</ButtonE>
                                         <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
                                     </div>
                                 </form>
@@ -535,24 +535,21 @@ export const Examinationmanager = () => {
                 }
                 {isShowRamdomQuestion && (
                     <>
-                        <Modal className=" bg-opacity-60 z-[103]" show={true} theme={{ 'content': { 'base': 'w-[1000px]' } }} popup onClose={() => handleCloseShowChooseRandomQuestion()} >
-                            <Modal.Header >
-                                <h1>Choose question group</h1>
-                                <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
-                            </Modal.Header>
+                        <Modal className=" bg-opacity-60 z-[103] h-full-[500px]" show={true} theme={{ 'content': { 'base': 'w-[1000px]' } }} popup onClose={() => handleCloseShowChooseRandomQuestion()} >
+
                             <Modal.Body className='flex justify-center flex-col'>
                                 <div className='flex justify-center'>
                                     <QuestionGroup id={idClassRoom} chooseQuestionGroup={setChooseQuestionByQr} listQuestionGrChoose={chooseQuestionByQuestionGr} />
                                 </div>
 
-                                <div className="flex justify-center p-4 ">
-
+                                <div className="flex justify-around pb-4 ">
                                     <Button
-
                                         onClick={() => handleCloseShowChooseRandomQuestion()} className="bg-blue-400">Submit</Button>
+                                    <Modal.Header className='hover:cursor-pointer  border-[2px] rounded-lg' />
                                 </div>
-
                             </Modal.Body>
+
+
                         </Modal></>)
                 }
                 {isShowManualQuestion && (

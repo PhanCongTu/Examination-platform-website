@@ -183,13 +183,13 @@ function ClassroomDetail() {
                                                                   </Typography>
                                                                   <div className='flex justify-end items-center pt-2 '>
                                                                         <Typography className="flex items-center px-10 ">
-                                                                              <strong>Time to start: </strong> {format(MCTest.startDate, `h:mm a (dd/MM) `)}
+                                                                              <strong className='pr-3'>Time to start: </strong> {format(MCTest.startDate, `h:mm a (dd/MM) `)}
                                                                         </Typography>
                                                                         <Typography className={`flex items-center px-10 `}>
-                                                                              <strong>Time to end: </strong>{format(MCTest.endDate, `h:mm a (dd/MM) `)}
+                                                                              <strong className='pr-3'>Time to end: </strong>{format(MCTest.endDate, `h:mm a (dd/MM) `)}
                                                                         </Typography>
                                                                         <Typography className="flex items-center px-1" >
-                                                                              <strong>Test duration:</strong> {MCTest.testingTime} minutes
+                                                                              <strong className='pr-3'>Test duration:</strong> {MCTest.testingTime} minutes
                                                                         </Typography>
                                                                   </div>
 

@@ -564,8 +564,8 @@ export const Questionmanager = (props) => {
 
     return (
         <>
-            <div className=" p-1 h-full w-full flex-row flex min-h-[600px]">
-                <div className="p-4 dark:border-gray-700 w-full">
+            <div className=" pt-1 h-fit w-full flex-row flex ">
+                <div className="pt-4 dark:border-gray-700 w-full">
                     <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
                         <div className="w-full overflow-auto shadow-md sm:rounded-lg">
                             <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
@@ -600,26 +600,26 @@ export const Questionmanager = (props) => {
                                                 <label htmlFor="checkbox-all-search" className="sr-only">checkbox</label>
                                             </div>
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[70px]">
+                                        <th scope="col" className="px-6 py-1 w-[70px]">
                                             ID question
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[300px] " >
+                                        <th scope="col" className="px-6 py-1 w-[300px] " >
                                             Question
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[150px]">
+                                        <th scope="col" className="px-6 py-1 w-[150px]">
                                             First answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[150px]">
+                                        <th scope="col" className="px-6 py-1 w-[150px]">
                                             Second answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[150px]">
+                                        <th scope="col" className="px-6 py-1 w-[150px]">
                                             Third answer
                                         </th>
-                                        <th scope="col" className="px-6 py-3 w-[150px]">
+                                        <th scope="col" className="px-6 py-1 w-[150px]">
                                             Fourth answer
                                         </th>
                                         {
-                                            props.id && (<th scope="col" className="px-6 py-3 w-[70px]">
+                                            props.id && (<th scope="col" className="px-6 py-1 w-[70px]">
                                                 Action
                                             </th>)
                                         }
@@ -636,7 +636,7 @@ export const Questionmanager = (props) => {
 
                                                     return (
                                                         <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                            <td className="w-4 p-4 ">
+                                                            <td className="w-4 px-4 py-1 ">
                                                                 <div className="flex items-center">
                                                                     <input
                                                                         checked={isChecked(item.id)}
@@ -648,27 +648,27 @@ export const Questionmanager = (props) => {
                                                                     <label htmlFor="checkbox-table-search-1" className="sr-only">checkbox</label>
                                                                 </div>
                                                             </td>
-                                                            <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                            <th scope="row" className="w-[150px] px-6 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                 {item.id}
                                                             </th>
-                                                            <td className="px-6 py-4 w-[300px] ">
+                                                            <td className="px-6 py-1 w-[300px] ">
                                                                 <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.content}>{item.content}</p>
                                                             </td>
-                                                            <td className="px-6 py-4 w-[150px] " >
+                                                            <td className="px-6 py-1 w-[150px] " >
                                                                 <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.firstAnswer}>{item.firstAnswer}</p>
                                                             </td>
-                                                            <td className="px-6 py-4 w-[150px] " >
+                                                            <td className="px-6 py-1 w-[150px] " >
                                                                 <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.secondAnswer}>{item.secondAnswer}</p>
                                                             </td>
-                                                            <td className="px-6 py-4 w-[150px] " >
+                                                            <td className="px-6 py-1 w-[150px] " >
                                                                 <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.thirdAnswer}>{item.thirdAnswer}</p>
                                                             </td>
 
-                                                            <td className="px-6 py-4 w-[150px] " >
+                                                            <td className="px-6 py-1 w-[150px] " >
                                                                 <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.fourthAnswer}>{item.fourthAnswer}</p>
                                                             </td>
                                                             {
-                                                                props.id && (<td className="px-6 py-4 w-[60px]">
+                                                                props.id && (<td className="px-6 py-1 w-[60px]">
                                                                     <Menu >
                                                                         <MenuHandler>
                                                                             <ButtonMenu className='bg-slate-400'>
@@ -797,7 +797,9 @@ export const Questionmanager = (props) => {
                                     <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
                                     <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} />
                                     <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
-                                    <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
+                                    <textarea
+                                        rows="4"
+                                        className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
                                     <div>
                                         <label className='block pb-1 text-sm font-medium text-gray-700'>
                                             Answer
@@ -807,7 +809,7 @@ export const Questionmanager = (props) => {
                                             <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder='Enter answer'>
 
                                             </input>
-                                            <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('border-2 m-1 border-blue-200 rounded-lg bg-green-200 text-xs', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add answer</button>
+                                            <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('hover:bg-black hover:text-white font-bold border-2 m-1 px-5 py-3 border-black rounded-lg bg-white text-sm', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add</button>
                                         </div>
                                     </div>
                                     <div ref={showAnswer} className='showAnswer flex flex-col' >

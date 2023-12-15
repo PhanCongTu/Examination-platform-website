@@ -342,11 +342,14 @@ export const QuestionGroup = (props) => {
 
     return (
         <div>
-            <div className=" p-4 h-full w-full flex-row flex">
-                <div className="p-4 dark:border-gray-700">
-                    <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-                        Question group manager
-                    </div>
+            <div className=" pt-4 h-full w-full flex-row flex">
+                <div className="pt-4 dark:border-gray-700">
+                    {!id ? <></> : <>
+                        <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
+                            Question group manager
+                        </div>
+                    </>}
+
                     <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='p-3 items-center flex gap-4 justify-between'>
@@ -378,7 +381,7 @@ export const QuestionGroup = (props) => {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
 
-                                        <th scope="col" className="px-6 py-3 w-[200px]">
+                                        <th scope="col" className="px-6 py-3 w-[100px]">
                                             ID question group
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[300px]">
@@ -388,7 +391,7 @@ export const QuestionGroup = (props) => {
                                             Question group code
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[70px]">
-                                            Enable
+                                            Status
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
                                             Total question
@@ -399,7 +402,7 @@ export const QuestionGroup = (props) => {
                                             </th>
                                         }
                                         {
-                                            props.id && <th scope="col" className="px-6 py-3 w-[300px]">
+                                            props.id && <th scope="col" className="px-6 py-3 w-[50px]">
                                                 Number question
                                             </th>
                                         }
@@ -414,51 +417,63 @@ export const QuestionGroup = (props) => {
                                                 (item, index) => {
 
                                                     return (
-                                                        <tr key={index} title={item.description} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                            <th scope="row" className="w-[200px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                        <tr key={index} title={item.description} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                            <th
+                                                                scope="row" className="flex justify-center w-[100px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                 {item.id}
                                                             </th>
-                                                            <td className="px-6 py-4 w-[300px]">
-                                                                <p onClick={() => { if (!props.id) handleShowQuestion(item); }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline">{item.name}</p>
-                                                            </td>
-                                                            <td className="px-6 py-4 w-[300px]">
+                                                            <th
 
-                                                                <p className="cursor-pointer font-medium dark:text-blue-500 " >{item.code}</p>
-                                                            </td>
-                                                            <td className="px-6 py-4 w-[70px]">
+                                                                className="px-6 py-4 w-[300px]">
+                                                                <p
+                                                                    onClick={() => { if (!props.id) handleShowQuestion(item); }}
+                                                                    className="cursor-pointer font-medium dark:text-blue-500">{item.name}</p>
+                                                            </th>
+                                                            <th
+                                                                className="px-6 py-4 w-[300px]">
+
+                                                                <p
+                                                                    onClick={() => { if (!props.id) handleShowQuestion(item); }}
+                                                                    className="cursor-pointer font-medium dark:text-blue-500 " >{item.code}</p>
+                                                            </th>
+                                                            <th
+                                                                className="px-6 py-4 w-[70px]">
                                                                 <div className="flex items-center">
                                                                     {
-                                                                        item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500"></div>
+                                                                        item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
                                                                             Active</>
-                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 "></div> Passive</>)
+                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
                                                                     }
                                                                 </div>
-                                                            </td>
-                                                            <td className="px-6 py-4 w-[150px]">
+                                                            </th>
+                                                            <th
+                                                                onClick={() => { if (!props.id) handleShowQuestion(item); }}
+                                                                className="px-6 py-4 w-[150px]">
 
                                                                 <p className="cursor-pointer font-medium flex justify-center dark:text-blue-500 ">{item.totalQuestion}</p>
-                                                            </td>
+                                                            </th>
+
                                                             {
-                                                                !props.id && <td className="px-6 py-4 flex w-[150px]">
+                                                                !props.id && <th className="px-6 py-4 flex w-[150px]">
                                                                     {
                                                                         isModeActive ? (<>
                                                                             <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
-                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p></>)
-                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Active</p>)
+                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-red-600 dark:text-red-500 hover:underline">Delete</p></>)
+                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-green-600 dark:text-green-500 hover:underline">Active</p>)
                                                                     }
 
 
-                                                                </td>
+                                                                </th>
                                                             }
                                                             {
-                                                                props.id && <td className="px-6 py-4 w-[300px]">
+                                                                props.id && <th className="px-6 py-4 w-[50px]">
                                                                     <input
-                                                                        className=' border-black-100 border'
+                                                                        className=' border-black border-[1px] rounded-md pl-5 w-[50px]'
                                                                         type="number"
                                                                         onChange={(event) => { handleEnterNumberQuestion(event, item) }}
                                                                         defaultValue={handleShowDefaultValue(item.id)}
                                                                     />
-                                                                </td>
+                                                                </th>
                                                             }
 
                                                         </tr>
@@ -554,8 +569,8 @@ export const QuestionGroup = (props) => {
                                     <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button className="bg-blue-400" type='submit'>Confirm</Button>
-                                        <Button onClick={() => handleClose()} className=" bg-red-500">Cancel</Button>
+                                        <Button className="bg-red-500" type='submit'>Delete</Button>
+                                        <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
                                     </div>
                                 </form>
                             </Modal.Body>

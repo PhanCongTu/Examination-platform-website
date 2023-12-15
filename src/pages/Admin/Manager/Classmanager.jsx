@@ -324,7 +324,7 @@ export const Classmanager = () => {
                                             Class code
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[70px]">
-                                            Active
+                                            Status
                                         </th>
 
                                         <th scope="col" className="px-6 py-3 w-[70px]">
@@ -342,17 +342,27 @@ export const Classmanager = () => {
 
                                                     return (
                                                         <>
-                                                            <tr key={index} title={item.description} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                                                <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
+                                                            <tr key={index} title={item.description} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600">
+                                                                <th
+                                                                    scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
                                                                     {item.id}
                                                                 </th>
-                                                                <td className="px-6 py-4 w-[300px] ">
-                                                                    <p onClick={() => handleClickOpenQuestionGroup(item)} className="cursor-pointer font-medium dark:text-blue-500 hover:underline w-[300px] line-clamp-1">{item.className}</p>
+                                                                <td
+
+                                                                    className="px-6 py-4 w-[300px] ">
+                                                                    <p
+                                                                        onClick={() => handleClickOpenQuestionGroup(item)}
+                                                                        className="cursor-pointer font-medium dark:text-blue-500  w-[300px] line-clamp-1">{item.className}</p>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[300px] " >
-                                                                    <p className=" truncate font-medium w-[300px] line-clamp-1">{item.classCode}</p>
+                                                                <td
+                                                                    className="px-6 py-4 w-[300px] " >
+                                                                    <p
+                                                                        onClick={() => handleClickOpenQuestionGroup(item)}
+                                                                        className="cursor-pointer truncate font-medium w-[300px] line-clamp-1">{item.classCode}</p>
                                                                 </td>
-                                                                <td className="px-6 py-4 w-[70px]">
+                                                                <td
+
+                                                                    className="px-6 py-4 w-[70px]">
                                                                     <div className="flex items-center">
                                                                         {
                                                                             item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
