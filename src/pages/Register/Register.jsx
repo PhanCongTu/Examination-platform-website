@@ -20,6 +20,7 @@ const CONFIRMPASSWORD = 'confirmPassword';
 
 const Register = () => {
       const navigate = useNavigate();
+      document.title = 'Register';
       // Link tham khao userForm
       // https://viblo.asia/p/react-hook-form-xu-ly-form-de-dang-hon-bao-gio-het-RnB5pAdDKPG
       const initialValue = {
@@ -95,7 +96,7 @@ const Register = () => {
                               </h1>
                               {/*  form.handleSubmit => validate trước khi gọi submitForm*/}
                               <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="mb-0 space-y-2 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                               >
                                     <p className="text-center text-lg font-medium">Sign up</p>
 
@@ -109,7 +110,11 @@ const Register = () => {
                                     <Button className={isTeacher ? "bg-blue-800" : "bg-indigo-500"} isSubmiting={form.formState.isSubmitting} type='submit' >Sign up as {isTeacher ? 'an teacher' : 'an student'}</Button>
                                     <p className="text-center text-sm text-gray-500">
                                           {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
-                                          <NavLink className='underline text-sm' to="/login" >Login</NavLink>
+                                          <NavLink className='underline text-sm' to="/login" >Back to login page</NavLink>
+                                    </p>
+                                    <p className="text-center text-sm text-gray-500">
+                                          {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
+                                          <NavLink className='underline text-sm font-bold' to="/home" >Home page</NavLink>
                                     </p>
                               </form>
                         </div>

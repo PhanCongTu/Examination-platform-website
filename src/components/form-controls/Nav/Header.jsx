@@ -7,7 +7,7 @@ import { ROLE_STUDENT } from '../../../utils/Constant'
 import { toast } from 'react-toastify'
 import Path from '../../../utils/Path'
 import UserIcon from '../../../assets/user.png';
-import TestIcon from '../../../assets/test_icon.png';
+import TestIcon from '../../../assets/exam-icon.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCircleCheck, faCircleXmark } from '@fortawesome/free-regular-svg-icons'
 

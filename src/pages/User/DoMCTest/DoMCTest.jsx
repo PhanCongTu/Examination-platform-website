@@ -11,6 +11,7 @@ import {
 } from 'date-fns'
 
 function DoMCTest() {
+      document.title = 'Testing';
       const navigate = useNavigate();
       let location = useLocation();
       const [MCTestId, setMCTestId] = useState(location?.state?.mctestid);

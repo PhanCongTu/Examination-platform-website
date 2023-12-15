@@ -19,7 +19,7 @@ const END_DATE = 'end_date';
 
 function ClassroomDetail() {
       const navigate = useNavigate();
-
+      document.title = 'Classroom detail';
       const { classroomId } = useParams();
       const [classroom, setClassroom] = useState({});
       const [MCTests, setMCTests] = useState([]);

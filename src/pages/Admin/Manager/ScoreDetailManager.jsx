@@ -8,6 +8,7 @@ import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 function ScoreDetailManager() {
+      document.title = 'Score detail';
       const navigate = useNavigate();
       let location = useLocation();
       const [MCTestId, setMCTestId] = useState(location?.state?.testId);

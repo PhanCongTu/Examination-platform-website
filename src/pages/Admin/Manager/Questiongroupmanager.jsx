@@ -23,6 +23,7 @@ const ID_QUESTIONGROUP = 'id';
 const ID_CLASSROOM = 'classroomId';
 
 export const QuestionGroup = (props) => {
+    document.title = 'Question group manager';
     let { id } = useParams();
     const [isShowQuestion, setIsShowQuestion] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
@@ -514,8 +515,7 @@ export const QuestionGroup = (props) => {
 
 
                                     <div className='flex justify-around'>
-                                        <Button onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
-                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                        <Button className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -535,8 +535,7 @@ export const QuestionGroup = (props) => {
                                     <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     <div className='flex justify-around'>
-                                        <Button onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
-                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                        <Button className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
                                     </div>
                                 </form>
                             </Modal.Body>

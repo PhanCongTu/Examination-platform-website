@@ -10,6 +10,7 @@ import { getRoles, getAccessToken, removeCredential } from '../../../services/Ap
 import Path from '../../../utils/Path';
 import { ROLE_STUDENT } from '../../../utils/Constant';
 function PrepareTest() {
+      document.title = 'Exam detail';
       const { testId } = useParams();
       const navigate = useNavigate();
       const [MCTest, setMCTest] = useState();

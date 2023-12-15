@@ -8,6 +8,7 @@ import { toast } from 'react-toastify';
 import { displayNameInvalid, emailInvalid, emailRegex, passwordInvalid, passwordRegex } from '../../../utils/Constant';
 function MyInfo() {
       const navigate = useNavigate()
+      document.title = 'My infomation';
       // State for updating user profile
       const [toggleUpdateEmail, setToggleUpdateEmail] = React.useState(false);
       const [loginName, setLoginName] = React.useState("");
@@ -37,7 +38,7 @@ function MyInfo() {
                         navigate(Path.LOGIN)
                   })
       }
-      
+
       const handleToggleUpdateEmail = () => {
             setToggleUpdateEmail(pre => !pre)
       }

@@ -21,6 +21,7 @@ const CLASS_CODE = 'classCode';
 
 function MyClassrooms() {
       const navigate = useNavigate();
+      document.title = 'My classrooms';
       const [classrooms, setClassroom] = useState([])
 
       // Default value to get request

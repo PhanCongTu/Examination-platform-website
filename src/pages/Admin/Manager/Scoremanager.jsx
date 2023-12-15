@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 export const Scoremanager = () => {
+  document.title = 'Score manager';
   const navigate = useNavigate();
   const [searchData, setSearchData] = useState('');
   const [listAllScore, setListAllScore] = useState([]);

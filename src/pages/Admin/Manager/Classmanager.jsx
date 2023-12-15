@@ -28,6 +28,7 @@ const ID_CLASS = 'id';
 
 export const Classmanager = () => {
     const navigate = useNavigate();
+    document.title = 'Classroom manager';
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -441,7 +442,7 @@ export const Classmanager = () => {
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={classSelect.description || ""} />
                                     {/* <Toggle checked={classSelect.isPrivate} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
-                                        <Button onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                        <Button className="bg-blue-800 w-[100px]" type='submit' >Submit</Button>
                                         <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
                                     </div>
                                 </form>
@@ -463,8 +464,7 @@ export const Classmanager = () => {
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     {/* <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
-                                        <ButtonS onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
-                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                        <ButtonS className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
                                     </div>
                                 </form>
                             </Modal.Body>

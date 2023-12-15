@@ -11,6 +11,7 @@ import { format } from 'date-fns';
 import clsx from 'clsx';
 
 function ScoreDetail() {
+      document.title = 'Score detail';
       const { testId } = useParams();
       const navigate = useNavigate();
       const [score, setScore] = useState();

@@ -17,6 +17,7 @@ const PASSWORD = 'password';
 
 const Login = () => {
       const navigate = useNavigate();
+      document.title = 'Login';
       // Link tham khao userForm
       // https://viblo.asia/p/react-hook-form-xu-ly-form-de-dang-hon-bao-gio-het-RnB5pAdDKPG
       const initialValue = {
@@ -43,7 +44,6 @@ const Login = () => {
             resolver: yupResolver(yupObject)
       })
       useEffect(() => {
-            document.title = "Login";
             removeCredential();
       }, [])
       const [errorMessage, setErrorMessage] = useState();
@@ -97,6 +97,9 @@ const Login = () => {
                                                 {/* NavLink dùng để redirect đến link được define trong router (App.js) */}
                                                 Don't remember password? &nbsp;
                                                 <NavLink className='underline text-sm' to="/forgot" >Forgot password</NavLink>
+                                          </p>
+                                          <p className="text-center text-sm text-gray-500">
+                                                <NavLink className='underline text-sm font-bold' to="/home" >Home page</NavLink>
                                           </p>
                                     </div>
 

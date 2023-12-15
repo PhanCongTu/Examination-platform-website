@@ -33,6 +33,7 @@ const DESCRIPTION = 'description';
 const TARGET_SCORE = 'targetScore';
 
 export const Examinationmanager = () => {
+    document.title = 'Examination manager';
     const { idClassRoom } = useParams();
     const navigate = useNavigate();
     const [chooseQuestionByQuestionGr, setChooseQuestionByQr] = useState([]);

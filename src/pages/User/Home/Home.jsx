@@ -31,7 +31,7 @@ function classNames(...classes) {
 function Home() {
       // navigater
       const navigate = useNavigate();
-
+      document.title = 'Home';
       let today = startOfToday()
       let [selectedDay, setSelectedDay] = useState(today)
       let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))

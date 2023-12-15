@@ -17,6 +17,7 @@ const ID_CLASSROOM = 'classroomId';
 const ID_STUDENT = 'studentId';
 
 export const Studentmanager = ({ showByIdClassRoom = true }) => {
+  document.title = 'Student manager';
   const { idClassRoom } = useParams();
   const [isAddConfirm, setIsAddConfirm] = useState(false);
   const [isAdd, setIsAdd] = useState(false);

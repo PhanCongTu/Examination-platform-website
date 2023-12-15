@@ -16,6 +16,7 @@ const SCORE = 'totalCore';
 
 
 function MyAllScores() {
+      document.title = 'My all scores';
       const navigate = useNavigate();
       // Default value to get request
       var dateOffset = (24 * 60 * 60 * 1000) * 15; //15 days

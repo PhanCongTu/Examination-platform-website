@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 import Path from '../../../utils/Path';
 function VerifyEmail() {
       const navigate = useNavigate();
+      document.title = 'Verify email address';
       const [code, setCode] = React.useState();
       const [isSend, setIsSend] = React.useState(false);
 
