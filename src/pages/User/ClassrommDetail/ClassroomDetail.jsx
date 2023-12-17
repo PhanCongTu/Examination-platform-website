@@ -173,7 +173,7 @@ function ClassroomDetail() {
                                           <div className='pt-3 flex justify-start flex-wrap gap-2  px-20 md:px-10 sm:px-32'>
                                                 {MCTests?.map((MCTest, key) => {
                                                       return <Card onClick={() => navigate(Path.PREPARE_TEST.replace(':testId', MCTest.id))}
-                                                            key={key} className={` hover:bg-slate-300 w-full px-5 py-2 bg-slate-100 rounded-md border-[2px] border-gray-300
+                                                            key={key} className={` hover:bg-slate-300 w-full px-5 py-2 bg-slate-100 rounded-md border-l-[10px] border-gray-300
             ${isSameDay(MCTest.endDate, today) ? ' text-black border-red-500' : ''}
             ${isSameDay(MCTest.endDate, tomorrow) ? ' text-black border-yellow-100 ' : ''}`}>
                                                             <CardBody className=''>

@@ -449,10 +449,9 @@ export const Examinationmanager = () => {
                 {isEdit && (
                     <>
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
                                     <p className="text-center text-lg font-medium">Edit exam</p>
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={examSelect.testName} />
@@ -466,7 +465,9 @@ export const Examinationmanager = () => {
                                     </div>
                                     <div className='flex justify-around'>
                                         <ButtonE onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonE>
-                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
+                                    <div className='flex justify-center m-0'>
+                                        <Modal.Header />
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -475,12 +476,15 @@ export const Examinationmanager = () => {
                 {isAdd && (
                     <>
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
+
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg px-4 pt-4 shadow-lg"
                                 >
-                                    <p className="text-center text-lg font-medium">Add Exam</p>
+                                    <div className='flex'>
+                                        <p className="text-center text-lg font-medium">Add Exam </p>
+
+                                    </div>
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
@@ -489,25 +493,26 @@ export const Examinationmanager = () => {
                                     <div className='flex'>
                                         <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={''} />
                                         <DatePicker name={END_DATE} label="End date" form={form} defaultValue={''} />
+                                        <div className=' w-[150px]'>
+                                            <Menu placement='bottom-start' >
+                                                <MenuHandler>
+                                                    <Button className='bg-black mt-[20px] hover:bg-gray-500'>
+                                                        Add question
+                                                    </Button>
+                                                </MenuHandler >
+                                                <MenuList className='rounded-md z-[102]'>
+                                                    <MenuItem className='z-[102]rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenRandomQuestion() }}>Add random by question group</MenuItem>
+                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenManualQuestion() }}>Add manual</MenuItem>
+                                                </MenuList>
+                                            </Menu>
+                                        </div>
                                     </div>
-                                    <div className='px w-[150px]'>
-                                        <Menu placement='bottom-start' >
-                                            <MenuHandler>
-                                                <Button className='bg-slate-400'>
-                                                    Add question
-                                                </Button>
-                                            </MenuHandler >
-                                            <MenuList className='rounded-md z-[102]'>
-                                                <MenuItem className='z-[102]rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenRandomQuestion() }}>Add random by question group</MenuItem>
-                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenManualQuestion() }}>Add manual</MenuItem>
 
-
-                                            </MenuList>
-                                        </Menu>
-                                    </div>
                                     <div className='flex justify-around'>
                                         <ButtonE onClick={() => handleClose()} className="bg-blue-800 !w-[80px]" type='submit'>Submit</ButtonE>
-                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                    </div>
+                                    <div className='flex justify-center m-0'>
+                                        <Modal.Header />
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -527,7 +532,7 @@ export const Examinationmanager = () => {
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
                                         <ButtonE className="bg-red-500" type='submit'>Delete</ButtonE>
-                                        <ButtonE onClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonE>
+                                        <ButtonE handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonE>
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -561,7 +566,7 @@ export const Examinationmanager = () => {
                             </Modal.Header>
                             <Modal.Body>
                                 <div className='flex justify-center'>
-                                    <Questionmanager idClassroom={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
+                                    <Questionmanager isAddManual={true} idClassroom={idClassRoom} setQuestionsSelect={setQuestionsSelect} idQuestionSelect={questionsSelect} />
 
                                 </div>
                                 <div className="flex justify-center p-4">

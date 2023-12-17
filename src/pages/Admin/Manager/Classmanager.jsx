@@ -443,17 +443,19 @@ export const Classmanager = () => {
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
                                     <p className="text-center text-lg font-medium"> Edit class</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
-                                    <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={classSelect.classCode} />
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={classSelect.className} />
+                                    <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={classSelect.classCode} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={classSelect.description || ""} />
                                     {/* <Toggle checked={classSelect.isPrivate} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
-                                        <Button className="bg-blue-800 w-[100px]" type='submit' >Submit</Button>
-                                        <p className='hover:cursor-pointer hover:bg-black hover:text-white border-black border-[2px] mb-2 py-2 px-8 rounded-lg' onClick={() => handleClose()}>Close</p>
+                                        <ButtonS className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
+                                    </div>
+                                    <div className='flex justify-center'>
+                                        <Modal.Header />
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -462,19 +464,21 @@ export const Classmanager = () => {
                 {isAdd && (
                     <>
                         <Modal className="bg-opacity-60 z-[101]" theme={{ 'content': { 'base': 'w-1/2 m-10' } }} show={true} popup onClose={() => handleClose()} >
-                            <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
                                 >
                                     <p className="text-center text-lg font-medium">Add new classroom</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={''} />
-                                    <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={''} />
                                     <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={''} />
+                                    <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     {/* <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
                                         <ButtonS className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
+                                    </div>
+                                    <div className='flex justify-center'>
+                                        <Modal.Header />
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -494,8 +498,9 @@ export const Classmanager = () => {
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
                                         <ButtonS className="bg-red-500" type='submit'>Delete</ButtonS>
-                                        <ButtonS onClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
                                     </div>
+
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -514,7 +519,7 @@ export const Classmanager = () => {
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
                                         <ButtonS className="bg-red-500" type='submit'>Submit</ButtonS>
-                                        <ButtonS onClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
                                     </div>
                                 </form>
                             </Modal.Body>

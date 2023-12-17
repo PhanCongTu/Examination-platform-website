@@ -625,13 +625,13 @@ export const getAllUnActiveClassService = async (page, sortType, column, size, s
       })
 }
 
-export const deleteQuestionGroupService = async (body) => {
+export const deleteQuestionGroupService = async (questionGrId) => {
 
       let accessToken = getAccessToken();
       return await axios.request({
             method: 'delete',
             maxBodyLength: Infinity,
-            url: deleteQuestionGroupUrl.replace('{id}', body.id),
+            url: deleteQuestionGroupUrl.replace('{id}', questionGrId),
             headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${accessToken}`

@@ -511,7 +511,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <div className='invisible py-3'></div>
                   <div className='flex gap-3'>
                     <Button className="bg-blue-500" type='submit'>Confirm</Button>
-                    <Button onClick={() => handleClose()} className="bg-yellow-300">Cancel</Button>
+                    <Button handleOnClick={() => handleClose()} className="bg-yellow-300">Cancel</Button>
                   </div>
                 </form>
               </Modal.Body>
@@ -533,7 +533,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <div className='invisible py-3'></div>
                   <div className='flex gap-3'>
                     <Button className="bg-red-500" type='submit'>Confirm</Button>
-                    <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                    <Button handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
                   </div>
                 </form>
               </Modal.Body>

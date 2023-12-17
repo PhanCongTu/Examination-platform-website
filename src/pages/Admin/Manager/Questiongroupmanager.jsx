@@ -153,24 +153,24 @@ export const QuestionGroup = (props) => {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
-        if (isDelete)
-            deleteQuestionGroupService(body).then((res) => {
+        // if (isDelete)
+        //     deleteQuestionGroupService(body).then((res) => {
 
-                getAllQuestionGroup();
-            }).catch((error) => {
-                toast.error(`Delete question group fail !`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-            })
-        if (isChooseActionActive)
-            activeQuestionGroupService(body.id).then((res) => {
+        //         getAllQuestionGroup();
+        //     }).catch((error) => {
+        //         toast.error(`Delete question group fail !`, {
+        //             position: toast.POSITION.TOP_RIGHT,
+        //         });
+        //     })
+        // if (isChooseActionActive)
+        //     activeQuestionGroupService(body.id).then((res) => {
 
-                getAllQuestionGroup();
-            }).catch((error) => {
-                toast.error(`Active question group fail !`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-            })
+        //         getAllQuestionGroup();
+        //     }).catch((error) => {
+        //         toast.error(`Active question group fail !`, {
+        //             position: toast.POSITION.TOP_RIGHT,
+        //         });
+        //     })
         handleClose();
         setActiveIndex(0);
     }
@@ -181,6 +181,33 @@ export const QuestionGroup = (props) => {
             return foundItem.numberOfQuestion;
         }
         return null;
+    }
+    const handleDeleteQuestionGr = (questionGrId) => {
+        if (isDelete) {
+            handleClose();
+            deleteQuestionGroupService(questionGrId).then((res) => {
+                getAllQuestionGroup();
+                toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
+            }).catch((error) => {
+                toast.error(`Delete question group fail !`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            })
+        }
+
+    }
+    const handleActiveQuestionGr = (questionGrId) => {
+        if (isChooseActionActive) {
+            handleClose();
+            activeQuestionGroupService(questionGrId).then((res) => {
+                toast.success('Active question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                getAllQuestionGroup();
+            }).catch((error) => {
+                toast.error(`Active question group fail !`, {
+                    position: toast.POSITION.TOP_RIGHT,
+                });
+            })
+        }
     }
 
     const handleClickPage = (index) => {
@@ -517,20 +544,22 @@ export const QuestionGroup = (props) => {
                 {isEdit && (
                     <>
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
                                     <p className="text-center text-lg font-medium"> Edit Question Group </p>
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
-                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={questionGroupSelect.code} />
                                     <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={questionGroupSelect.name} />
+                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={questionGroupSelect.code} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={questionGroupSelect.description || ""} />
 
 
                                     <div className='flex justify-around'>
                                         <Button className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                    </div>
+                                    <div className='flex justify-center'>
+                                        <Modal.Header />
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -539,18 +568,20 @@ export const QuestionGroup = (props) => {
                 {isAdd && (
                     <>
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
                                     <p className="text-center text-lg font-medium">Add question group</p>
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={id} />
-                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={''} />
                                     <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={''} />
+                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
                                     <div className='flex justify-around'>
                                         <Button className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                    </div>
+                                    <div className='flex justify-center'>
+                                        <Modal.Header />
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -561,18 +592,17 @@ export const QuestionGroup = (props) => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
-                                <form onSubmit={form.handleSubmit(submitForm)}
+                                <div
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
                                     <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
-                                    <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button className="bg-red-500" type='submit'>Delete</Button>
-                                        <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                        <Button handleOnClick={() => handleDeleteQuestionGr(questionGroupSelect.id)} className="bg-red-500 w-[100px]" type='button'>Delete</Button>
+                                        <Button handleOnClick={() => handleClose()} className=" bg-blue-500">Cancel</Button>
                                     </div>
-                                </form>
+                                </div>
                             </Modal.Body>
                         </Modal></>)
                 }
@@ -581,7 +611,7 @@ export const QuestionGroup = (props) => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
-                                <form onSubmit={form.handleSubmit(submitForm)}
+                                <div
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
@@ -589,10 +619,10 @@ export const QuestionGroup = (props) => {
                                     <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button className="bg-blue-400" type='submit'>Confirm</Button>
-                                        <Button onClick={() => handleClose()} className=" bg-red-500">Cancel</Button>
+                                        <Button handleOnClick={() => handleActiveQuestionGr(questionGroupSelect.id)} className="bg-blue-400" type='submit'>Confirm</Button>
+                                        <Button handleOnClick={() => handleClose()} className=" bg-red-500">Cancel</Button>
                                     </div>
-                                </form>
+                                </div>
                             </Modal.Body>
                         </Modal></>)
                 }
@@ -606,7 +636,6 @@ export const QuestionGroup = (props) => {
                                 </Modal.Header>
                                 <Modal.Body className='flex justify-center '>
                                     <div className='!w-full'>
-
                                         <Questionmanager id={questionGroupSelect.id} />
                                     </div>
                                 </Modal.Body>

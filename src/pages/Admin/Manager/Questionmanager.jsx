@@ -20,8 +20,6 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
-import { yupResolver } from '@hookform/resolvers/yup';
-import * as yup from 'yup';
 const CONTENT_QUESTION = 'content';
 const QUESTION_GROUP_ID = 'questionGroupId';
 const ANSWER1 = 'answer1';
@@ -568,10 +566,13 @@ export const Questionmanager = (props) => {
                 <div className="pt-4 dark:border-gray-700 w-full">
                     <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
                         <div className="w-full overflow-auto shadow-md sm:rounded-lg">
-                            <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
-                                <div className='w-[150px]'>
-                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
-                                </div>
+                            <div className='p-3 items-center flex gap-4 float-right mb-[14px]'>
+                                {!props?.isAddManual &&
+                                    <div className='w-[150px]'>
+                                        <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+                                    </div>
+                                }
+
 
                                 <div className="relative float-right">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
@@ -730,15 +731,16 @@ export const Questionmanager = (props) => {
                 {isEdit && (
                     <>
                         <Modal className="bg-opacity-60 z-[105] m-auto" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
+
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
-
-                                    <p className="text-center text-lg font-medium">Edit question</p>
-                                    <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
-                                    <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
+                                    <div>
+                                        <p className="text-center text-lg font-medium">Edit question</p>
+                                        <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                        <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
+                                    </div>
                                     {/* <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} /> */}
                                     <InputField name='id' disabled form={form} defaultValue={questionSelect.id} />
                                     <InputField name={ANSWER1} label="First Answer" form={form} defaultValue={questionSelect.firstAnswer}
@@ -778,6 +780,9 @@ export const Questionmanager = (props) => {
                                             onChange={(event) => handleOptionChange(event)}
                                         /></>} />
                                     <Button onClick={() => handleClose()} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
+                                    <div className='flex justify-center'>
+                                        <Modal.Header />
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -785,10 +790,9 @@ export const Questionmanager = (props) => {
                 {isAdd && (
                     <>
                         <Modal className="bg-opacity-60 z-[105] " show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
                                 >
                                     <p className="text-center text-lg font-medium">Add question</p>
                                     <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
@@ -796,10 +800,12 @@ export const Questionmanager = (props) => {
                                     <InputField name={ANSWER2} disabled form={form} defaultValue={listAnswer[1] || ''} />
                                     <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
                                     <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} />
-                                    <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
-                                    <textarea
-                                        rows="4"
-                                        className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
+                                    <div>
+                                        <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                        <textarea
+                                            rows="4"
+                                            className='mt-0 border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4  text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
+                                    </div>
                                     <div>
                                         <label className='block pb-1 text-sm font-medium text-gray-700'>
                                             Answer
@@ -815,6 +821,9 @@ export const Questionmanager = (props) => {
                                     <div ref={showAnswer} className='showAnswer flex flex-col' >
                                     </div>
                                     <Button onClick={() => handleClose()} className={clsx((clickCount <= 4 || !isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
+                                    <div className='flex justify-center'>
+                                        <Modal.Header />
+                                    </div>
                                 </form>
                             </Modal.Body>
                         </Modal></>)
@@ -833,7 +842,7 @@ export const Questionmanager = (props) => {
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
                                         <Button className="bg-red-500" type='submit'>Delete</Button>
-                                        <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                        <Button handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -853,7 +862,7 @@ export const Questionmanager = (props) => {
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
                                         <Button className="bg-red-500" type='submit'>Confirm</Button>
-                                        <Button onClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                        <Button handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
                                     </div>
                                 </form>
                             </Modal.Body>
