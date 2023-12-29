@@ -148,7 +148,7 @@ export const getScoreOfStudentService = async (studentId, multipleChoiceTestId) 
       })
 }
 
-export const getMyCoreService = async (MCTestId) => {
+export const getMyScoreService = async (MCTestId) => {
       let accessToken = getAccessToken();
       return await axios.request({
             method: 'get',

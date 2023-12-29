@@ -4,7 +4,7 @@ import Path from '../../../utils/Path';
 import classroomPNG from '../../../assets/classroomPNG.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong, faListSquares } from '@fortawesome/free-solid-svg-icons';
-import { createTestTrackingService, getDoMultipleChoiceTestService, getMyCoreService, submitMCTestService, trackMyTestService } from '../../../services/UserService';
+import { createTestTrackingService, getDoMultipleChoiceTestService, getMyScoreService, submitMCTestService, trackMyTestService } from '../../../services/UserService';
 import { secondsDiff, secondsToTime } from '../../../utils/WebUtils';
 import {
       differenceInSeconds
@@ -32,7 +32,7 @@ function DoMCTest() {
       }, [])
       // Get the test
       useEffect(() => {
-            getMyCoreService(MCTestId)
+            getMyScoreService(MCTestId)
                   .then((res) => {
                         // If the test is already submitted
                         navigate(Path.SCORE_DETAIL.replace(':testId', MCTestId))

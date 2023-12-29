@@ -4,7 +4,7 @@ import classroomPNG from '../../../assets/classroomPNG.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { Button } from '@material-tailwind/react';
-import { getMyCoreService, getMyMultipleChoiceTestInformationService } from '../../../services/UserService';
+import { getMyScoreService, getMyMultipleChoiceTestInformationService } from '../../../services/UserService';
 import { format } from 'date-fns';
 import { getRoles, getAccessToken, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
@@ -29,7 +29,7 @@ function PrepareTest() {
                   .catch((err) => {
                         navigate(Path.HOME)
                   })
-            getMyCoreService(testId)
+            getMyScoreService(testId)
                   .then((res) => {
                         setScore(res);
                   })

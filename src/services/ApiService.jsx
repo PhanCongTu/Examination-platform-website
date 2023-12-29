@@ -705,18 +705,18 @@ export const getAllActivateQuestionGroupService = async (id, page, sortType, col
       })
 }
 
-export const deleteActiveClassService = async (body) => {
+export const deleteActiveClassService = async (id) => {
 
       let accessToken = getAccessToken();
       return await axios.request({
             method: 'delete',
             maxBodyLength: Infinity,
-            url: deleteActiveClassUrl.replace('{id}', body.id),
+            url: deleteActiveClassUrl.replace('{id}', id),
             headers: {
                   'Content-Type': 'application/json',
                   'Authorization': `Bearer ${accessToken}`
             },
-            data: body.id
+            data: id
       })
 }
 

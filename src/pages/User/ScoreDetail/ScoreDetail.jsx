@@ -3,7 +3,7 @@ import { getRoles, getAccessToken, removeCredential } from '../../../services/Ap
 import classroomPNG from '../../../assets/classroomPNG.png';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { ROLE_STUDENT } from '../../../utils/Constant';
-import { getMyCoreService } from '../../../services/UserService';
+import { getMyScoreService } from '../../../services/UserService';
 import Path from '../../../utils/Path';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
@@ -21,7 +21,7 @@ function ScoreDetail() {
             navigate(Path.LOGIN)
       }
       useEffect(() => {
-            getMyCoreService(testId)
+            getMyScoreService(testId)
                   .then((res) => {
                         setScore(res);
                   })

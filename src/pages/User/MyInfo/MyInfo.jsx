@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { displayNameInvalid, emailInvalid, emailRegex, passwordInvalid, passwordRegex } from '../../../utils/Constant';
+import { getUserInfo, saveCredential } from '../../../services/ApiService';
 function MyInfo() {
       const navigate = useNavigate()
       document.title = 'My infomation';
@@ -61,9 +62,17 @@ function MyInfo() {
       const handleSubmitUpdateMyInfo = () => {
             updateUserProfileService(displayName, newEmailAddress)
                   .then(res => {
+                        if (!isEmailAddressVerified) {
+                              var userInfo = JSON.parse(getUserInfo());
+                              console.log(userInfo)
+                              userInfo.emailAddress = newEmailAddress;
+                              saveCredential(userInfo);
+                        }
+
                         toast.success(`Update successfully!`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });
+                        getMyInfo()
                   })
                   .catch(err => {
                         getMyInfo()

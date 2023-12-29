@@ -122,22 +122,6 @@ export const Classmanager = () => {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
-        if (isDelete)
-            deleteActiveClassService(body).then((res) => {
-                getAllClass();
-            }).catch((error) => {
-                toast.error(`Delete class fail !`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-            })
-        if (isChooseActive)
-            activeClassroomService(body.id).then((res) => {
-                getAllClass();
-            }).catch((error) => {
-                toast.error(`Active class fail !`, {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-            })
         setActiveIndex(0);
 
     }
@@ -202,6 +186,28 @@ export const Classmanager = () => {
                 });
             })
 
+    }
+
+    const handleClickActiveClass = (id) => {
+        activeClassroomService(id).then((res) => {
+            getAllClass();
+        }).catch((error) => {
+            toast.error(`Active class fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        })
+        handleClose();
+    }
+
+    const handleClickDeleteClass = (id) => {
+        deleteActiveClassService(id).then((res) => {
+            getAllClass();
+        }).catch((error) => {
+            toast.error(`Delete class fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        })
+        handleClose();
     }
 
     const handleClickActive = (item) => {
@@ -489,7 +495,7 @@ export const Classmanager = () => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
-                                <form onSubmit={form.handleSubmit(submitForm)}
+                                <form
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
@@ -497,7 +503,7 @@ export const Classmanager = () => {
                                     <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <ButtonS className="bg-red-500" type='submit'>Delete</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClickDeleteClass(classSelect.id)} className="bg-red-500" type='button'>Delete</ButtonS>
                                         <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
                                     </div>
 
@@ -510,7 +516,7 @@ export const Classmanager = () => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
                             <Modal.Header />
                             <Modal.Body>
-                                <form onSubmit={form.handleSubmit(submitForm)}
+                                <form
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
@@ -518,7 +524,7 @@ export const Classmanager = () => {
                                     <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <ButtonS className="bg-red-500" type='submit'>Submit</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClickActiveClass(classSelect.id)} className="bg-red-500" type='submit'>Submit</ButtonS>
                                         <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
                                     </div>
                                 </form>
