@@ -500,7 +500,7 @@ export const Classmanager = () => {
                                 >
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
+                                    <h1 className='text-[16px] text-center'>Are you sure you want to delete ????</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
                                         <ButtonS handleOnClick={() => handleClickDeleteClass(classSelect.id)} className="bg-red-500" type='button'>Delete</ButtonS>

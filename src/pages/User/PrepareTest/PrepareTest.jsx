@@ -57,7 +57,7 @@ function PrepareTest() {
                                           <div className=" w-1/2 flex flex-col items-center bg-slate-100 border border-gray-200 rounded-lg shadow md:flex-row md:max-w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
                                                 <div className="flex flex-col w-full justify-between p-4 leading-normal">
                                                       <h5 className="flex mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
-                                                            Test name
+                                                            {MCTest.testName}
                                                             {
                                                                   (MCTest?.endDate < new Date()) || score !== undefined ?
                                                                         <p className=' select-none pl-5 bg-slate-100 text-red-600 border-red-600' variant="outlined">Finished</p>
