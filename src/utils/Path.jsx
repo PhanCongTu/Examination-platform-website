@@ -18,6 +18,7 @@ const Path = {
     PREPARE_TEST: '/my/prepare-test/:testId',
     DO_MC_TEST: '/my/do-mc-test',
     SCORE_DETAIL: '/my/score-detail/:testId',
-    MY_ALL_SCORES: '/my/all-scores'
+    MY_ALL_SCORES: '/my/all-scores',
+    TEACHERHOME:'/teacher/home/'
 }
 export default Path

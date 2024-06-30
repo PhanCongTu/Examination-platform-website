@@ -1,18 +1,17 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { Sidebar } from '../../components/form-controls/Nav/Sidebar'
-import { Outlet, useLocation, useNavigate } from 'react-router-dom'
+import { Outlet, useNavigate } from 'react-router-dom'
 import { getAccessToken, getRoles } from '../../services/ApiService'
 import Path from '../../utils/Path'
 import { ROLE_ADMIN } from '../../utils/Constant'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
+
 
 
 export const Admin = () => {
   const [isClick, setClick] = useState(false);
   let navigate = useNavigate();
   const sidebarRef = useRef(null);
-
+  
   const handleClick = () => {
     setClick(true);
   }
@@ -22,7 +21,6 @@ export const Admin = () => {
       setClick(false);
     }
   };
-  const location = useLocation();
   useEffect(() => {
     document.addEventListener('mousedown', handleOutsideClick);
     document.addEventListener('touchstart', handleOutsideClick);

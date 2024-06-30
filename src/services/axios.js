@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getRefreshToken, removeCredential, saveToken } from './ApiService';
 
 const instance = axios.create({
-      baseURL: 'http://examination-platform.ap-southeast-1.elasticbeanstalk.com',
+      baseURL: 'http://localhost:5000',
       'Content-Type': 'application/json',
 });
 

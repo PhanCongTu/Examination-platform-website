@@ -13,7 +13,6 @@ import { Classmanager } from '../pages/Admin/Manager/Classmanager'
 import { Studentmanager } from '../pages/Admin/Manager/Studentmanager'
 import { QuestionGroup } from '../pages/Admin/Manager/Questiongroupmanager'
 import { Examinationmanager } from '../pages/Admin/Manager/Examinationmanager'
-import { Questionmanager } from '../pages/Admin/Manager/Questionmanager'
 import { Scoremanager } from '../pages/Admin/Manager/Scoremanager'
 import MyClassroom from '../pages/User/MyClassrooms/MyClassrooms';
 import ClassroomDetail from '../pages/User/ClassrommDetail/ClassroomDetail'
@@ -24,10 +23,12 @@ import VerifyEmail from '../pages/User/VerifyEmail/VerifyEmail';
 import MyInfo from '../pages/User/MyInfo/MyInfo'
 import MyAllScores from '../pages/User/MyAllScores/MyAllScores'
 import ScoreDetailManager from '../pages/Admin/Manager/ScoreDetailManager'
+import Teacher from '../pages/Teacher/Teacher'
+import HomeTeacher from '../pages/Teacher/Home/HomeTeacher'
 export const AppRoutes = () => {
 
   return (
-    <div className=''>
+    <div className='h-full '>
       <Routes>
 
         <Route path={'/'} element={<Home />} exact />
@@ -54,6 +55,9 @@ export const AppRoutes = () => {
           <Route path={Path.AMSCOREMANAGER} element={<Scoremanager />} />
           <Route path={Path.AMSCOREDETAILMANAGER} element={<ScoreDetailManager />} />
           <Route path={'/admin/student'} element={<Studentmanager showByIdClassRoom={false} />} />
+        </Route>
+        <Route path='/teacher'  element={<Teacher/>}>
+          <Route path={Path.TEACHERHOME} element={<HomeTeacher/>}></Route>
         </Route>
         <Route path="*" element={<PageNotFound />} />
       </Routes>

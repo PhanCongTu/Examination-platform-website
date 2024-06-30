@@ -61,10 +61,10 @@ const Register = () => {
 
       const [isTeacher, setIsTeacher] = useState(false)
       const [errorMessage, setErrorMessage] = useState();
-      // True nếu user nhận mình là giáo viên"
-      // const getToggle = (isToggle) => {
-      //       setIsTeacher(isToggle)
-      // }
+      
+      const getToggle = (isToggle) => {
+            setIsTeacher(isToggle)
+      }
       const submitForm = (body) => {
             // Tạo service để chứa response từ API riêng
             if (body.password === body.confirmPassword)
@@ -105,7 +105,7 @@ const Register = () => {
                                     <InputField type='password' name={PASSWORD} label="Password" form={form} />
                                     <InputField type='password' name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
                                     <InputField name={EMAIL} label="Email address" form={form} />
-                                    {/* <Toggle handleToggle={getToggle} >I am a teacher.</Toggle> */}
+                                    <Toggle handleToggle={getToggle} >I am a teacher.</Toggle>
                                     {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}
                                     <Button className={isTeacher ? "bg-blue-800" : "bg-indigo-500"} isSubmiting={form.formState.isSubmitting} type='submit' >Sign up as {isTeacher ? 'an teacher' : 'an student'}</Button>
                                     <p className="text-center text-sm text-gray-500">

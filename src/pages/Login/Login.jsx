@@ -8,9 +8,9 @@ import Button from '../../components/form-controls/Button/Button';
 import 'react-toastify/dist/ReactToastify.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { getAccessToken, getRoles, loginInService, removeCredential, saveCredential } from '../../services/ApiService';
+import { getRoles, loginInService, removeCredential, saveCredential } from '../../services/ApiService';
 import Path from '../../utils/Path';
-import { ROLE_ADMIN } from '../../utils/Constant';
+import { ROLE_ADMIN, ROLE_TEACHER } from '../../utils/Constant';
 
 const USERNAME = 'loginName';
 const PASSWORD = 'password';
@@ -55,11 +55,15 @@ const Login = () => {
             loginInService(body)
                   .then((response) => {
                         saveCredential(response)
-                        let roles = getRoles();// Lưu thông tin user vào local sto
+                        let roles = getRoles()
                         if (roles.includes(ROLE_ADMIN))
                               navigate(Path.AMCLASSMANAGER);
+                        else if(roles.includes(ROLE_TEACHER))
+                              navigate(Path.TEACHERHOME)
                         else
                               navigate(Path.HOME);
+                        // else
+                        //       navigate(Path.TEACHERHOME)
                   })
                   .catch((error) => {
                         toast.error(`Log in fail !`, {
@@ -67,7 +71,7 @@ const Login = () => {
                         });
                         setErrorMessage(error?.response?.data?.message)
                   });
-            // Nếu thành công thì chuyển đến trang Home
+          
       };
       return (
             <div className='mt-12'>
