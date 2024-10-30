@@ -5,7 +5,7 @@ const Path = {
     FORGOT: '/forgot',
     VERIFY_EMAIL: '/verify-email',
     MY_INFO: '/my/info',
-    AMCLASSMANAGER: '/admin/class',
+    AMCLASSMANAGER: '/admin/subject',
     AMTEACHERMANAGER: '/admin/teacher',
     AMSTUDENTMANAGER: '/admin/student/:idClassRoom?',
     AMQUESTIONGROUPMANAGER: '/admin/questiongr/:id?',
@@ -13,12 +13,13 @@ const Path = {
     AMQUESTIONMANAGER: '/admin/question/:idClassRoom?',
     AMSCOREMANAGER: '/admin/score/:idExam?',
     AMSCOREDETAILMANAGER: '/admin/score-detail?',
-    MY_CLASSROOMS: '/my/classrooms',
-    CLASSROOM_DETAIL: '/my/classroom-detail/:classroomId',
+    MY_SUBJECTS: '/my/subjects',
+    SUBJECT_DETAIL: '/my/subject-detail/:subjectId',
     PREPARE_TEST: '/my/prepare-test/:testId',
     DO_MC_TEST: '/my/do-mc-test',
     SCORE_DETAIL: '/my/score-detail/:testId',
     MY_ALL_SCORES: '/my/all-scores',
+    MY_ALL_TEST: '/my/all-tests',
     TEACHERHOME:'/teacher/home/'
 }
 export default Path

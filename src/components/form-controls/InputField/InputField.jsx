@@ -20,7 +20,7 @@ function InputField(props) {
 
   }, [defaultValue])
 
-
+  console.log("sdasdas",defaultValue)
   return (
     <>
       <div className={clsx(form.formState.isSubmitting ? "opacity-50" : '', disabled ? "hidden" : '')} >

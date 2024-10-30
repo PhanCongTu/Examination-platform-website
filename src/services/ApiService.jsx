@@ -1,40 +1,100 @@
 
 import axios from './axios';
-const signUpStudentUrl = `/signup/student`;
-const signUpTeacherUrl = `/signup/teacher`;
-const loginInUrl = '/login';
-const resetPasswordUrl = '/api/password/reset/EMAIL:{email}';
-const codeResetPassUrl = 'api/password/request-reset/EMAIL:{email}';
-const getAllActiveClassUrl = 'api/v1/classroom';
-const updateActiveClassUrl = "api/v1/classroom/update/{id}";
-const addActiveClassUrl = "api/v1/classroom/create";
-const deleteActiveClassUrl = "api/v1/classroom/delete/{id}";
-const getAllActiveQuestionGroupUrl = 'api/v1/question-group/classroom/';
-const addQuestionGroupUrl = 'api/v1/question-group/create';
-const updateQuestionGroupUrl = 'api/v1/question-group/update/{id}';
-const deleteQuestionGroupUrl = 'api/v1/question-group/delete/{id}'
-const getAllUnActiveClassUrl = 'api/v1/classroom/inactive';
-const getAllUnActiveQuestionGroupUrl = 'api/v1/question-group/inactive/classroom/{id}';
-const getAllStudentOfClassUrl = 'api/v1/student/classroom';
-const getAllActiveStudentUrl = 'api/v1/student';
-const addStudentToClassUrl = 'api/v1/student/add-to-class';
-const getAllExamOfClassUrl = 'api/v1/multiple-choice-test/classroom';
-const addExamByIdClassroomUrl = 'api/v1/multiple-choice-test/create'
-const getAllActiveQuestionUrl = 'api/v1/question/question-group'
-const getAllInActiveQuestionUrl = 'api/v1/question/inactive/question-group'
-const addQuestionByQuestionGroupUrl = 'api/v1/question/create';
-const updateQuestionUrl = 'api/v1/question/update/{id}';
-const deleteQuestionUrl = 'api/v1/question/delete/{id}';
-const deleteExamUrl = 'api/v1/multiple-choice-test/delete/{idExam}';
-const updateExamUrl = 'api/v1/multiple-choice-test/update/info/{idExam}';
-const getAllStudentScoreByIDExamUrl = 'api/v1/score/multiple-choice-test'
-const getAllVerifiedStudentUrl = 'api/v1/student/verified';
-const getAllActiveQuestionByIdClassroomUrl = 'api/v1/question/classroom';
-const getAllInActiveQuestionByIdClassroomUrl = 'api/v1/question/inactive/classroom';
-const activeClassroomUrl = 'api/v1/classroom/active/{idClassroom}';
-const activeQuestionGroupUrl = 'api/v1/question-group/active/{idQuestionGr}';
-const activeQuestionUrl = 'api/v1/question/active/{idQuestion}';
-const deleteStudentOfClassroomUrl = 'api/v1/student/remove-from-class'
+const signUpStudentUrl = `/identity/signup/student`;
+const signUpTeacherUrl = `/identity/signup/teacher`;
+const loginInUrl = '/identity/login';
+const resetPasswordUrl = '/identity/password/reset/EMAIL:{email}';
+const codeResetPassUrl = 'notify/password/request-reset/EMAIL:{email}';
+const getAllActiveClassUrl = 'exam/subject';
+const updateActiveClassUrl = "exam/subject/update/{id}";
+const addActiveClassUrl = "exam/subject/create";
+const deleteActiveClassUrl = "exam/subject/delete/{id}";
+const getAllActiveQuestionGroupUrl = 'exam/question-group/subject/';
+const addQuestionGroupUrl = 'exam/question-group/create';
+const updateQuestionGroupUrl = 'exam/question-group/update/{id}';
+const deleteQuestionGroupUrl = 'exam/question-group/delete/{id}'
+const getAllUnActiveClassUrl = 'exam/subject/inactive';
+const getAllUnActiveQuestionGroupUrl = 'exam/question-group/inactive/subject/{id}';
+const getAllStudentOfClassUrl = 'exam/student/subject';
+const getAllActiveStudentUrl = 'identity/student';
+const addStudentToClassUrl = 'exam/student/add-to-class';
+const getAllExamOfClassUrl = 'exam/multiple-choice-test/subject';
+const addExamByIdClassroomUrl = 'exam/multiple-choice-test/create'
+const getAllActiveQuestionUrl = 'exam/question/question-group'
+const getAllInActiveQuestionUrl = 'exam/question/inactive/question-group'
+const addQuestionByQuestionGroupUrl = 'exam/question/create';
+const updateQuestionUrl = 'exam/question/update/{id}';
+const deleteQuestionUrl = 'exam/question/delete/{id}';
+const deleteExamUrl = 'exam/multiple-choice-test/delete/{idExam}';
+const updateExamUrl = 'exam/multiple-choice-test/update/info/{idExam}';
+const getAllStudentScoreByIDExamUrl = 'exam/score/multiple-choice-test'
+const getAllVerifiedStudentUrl = 'identity/student/verified';
+const getAllActiveQuestionByIdClassroomUrl = 'exam/question/subject';
+const getAllInActiveQuestionByIdClassroomUrl = 'exam/question/inactive/subject';
+const activeClassroomUrl = 'exam/subject/active/{idClassroom}';
+const activeQuestionGroupUrl = 'exam/question-group/active/{idQuestionGr}';
+const activeQuestionUrl = 'exam/question/active/{idQuestion}';
+const deleteStudentOfClassroomUrl = 'exam/student/remove-from-class'
+const exportListStudentOfClassUrl = 'exam/student/export/subject';
+const getQuestionByIdUrl = 'exam/question/{idQuestion}'
+const exportListQuestionOfQuestionGroupUrl = 'exam/question-group/export/questions'
+const importListQuestionIntoQuestionGroupUrl = 'exam/question-group/import/questions'
+
+export const importListQuestionIntoQuestionGroupService = async (formData, idQuestionGroup) => {
+      let accessToken = getAccessToken();
+
+      return await axios.request({
+            method: 'post',
+            url: importListQuestionIntoQuestionGroupUrl + '/' + idQuestionGroup,
+            data: formData,
+            headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+
+      })
+}
+
+export const getQuestionByIdService = async (idQuestion) => {
+      let accessToken = getAccessToken();
+      console.log(idQuestion)
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: getQuestionByIdUrl.replace('{idQuestion}', idQuestion),
+            headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+
+      })
+}
+export const exportListQuestionOfQuestionGroupService = async (idQuestionGroup) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: exportListQuestionOfQuestionGroupUrl + '/' + idQuestionGroup,
+            headers: {
+
+                  'Authorization': `Bearer ${accessToken}`
+            },
+            responseType: 'blob',
+      })
+}
+export const exportListStudentOfClassService = async (idClass, typeExport) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: exportListStudentOfClassUrl + '/' + idClass + '?typeExport=' + typeExport,
+            headers: {
+
+                  'Authorization': `Bearer ${accessToken}`
+            },
+            responseType: 'blob',
+      })
+}
 
 export const deleteStudentOfClassroomService = async (body) => {
 
@@ -861,12 +921,13 @@ export const removeCredential = () => {
 export const saveCredential = (userInfor) => {
 
       localStorage.setItem('userInfor', JSON.stringify(userInfor));
-
+      // console.log(userInfor)
       // Lưu token riêng vào local storage
       saveToken(userInfor.accessToken, userInfor.refreshToken, JSON.stringify(userInfor.roles));
 }
 
 export const saveToken = (accessToken, refreshToken, roles) => {
+      // console.log(roles);
       localStorage.setItem('accessToken', accessToken);
       localStorage.setItem('refreshToken', refreshToken);
       if (roles != null)

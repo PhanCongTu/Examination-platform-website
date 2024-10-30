@@ -10,12 +10,12 @@ import PageNotFound from '../pages/PageNotFound'
 
 import { Admin } from '../pages/Admin/Admin'
 import { Classmanager } from '../pages/Admin/Manager/Classmanager'
-import { Studentmanager } from '../pages/Admin/Manager/Studentmanager'
+import  Studentmanager  from '../pages/Admin/Manager/Studentmanager'
 import { QuestionGroup } from '../pages/Admin/Manager/Questiongroupmanager'
 import { Examinationmanager } from '../pages/Admin/Manager/Examinationmanager'
 import { Scoremanager } from '../pages/Admin/Manager/Scoremanager'
-import MyClassroom from '../pages/User/MyClassrooms/MyClassrooms';
-import ClassroomDetail from '../pages/User/ClassrommDetail/ClassroomDetail'
+
+
 import PrepareTest from '../pages/User/PrepareTest/PrepareTest';
 import Student from '../pages/User/Student';
 import DoMCTest from '../pages/User/DoMCTest/DoMCTest';
@@ -25,6 +25,9 @@ import MyAllScores from '../pages/User/MyAllScores/MyAllScores'
 import ScoreDetailManager from '../pages/Admin/Manager/ScoreDetailManager'
 import Teacher from '../pages/Teacher/Teacher'
 import HomeTeacher from '../pages/Teacher/Home/HomeTeacher'
+import SubjectDetail from '../pages/User/SubjectDetail/SubjectDetail'
+import MySubjects from '../pages/User/MySubjects/MySubjects'
+import MyAllTest from '../pages/User/MyAllTest/MyAllTest'
 export const AppRoutes = () => {
 
   return (
@@ -39,13 +42,14 @@ export const AppRoutes = () => {
         <Route path={Path.VERIFY_EMAIL} element={<VerifyEmail />} />
 
         <Route path='/my' element={<Student />} >
-          <Route path={Path.MY_CLASSROOMS} element={<MyClassroom />} />
-          <Route path={Path.CLASSROOM_DETAIL} element={<ClassroomDetail />} />
+          <Route path={Path.MY_SUBJECTS} element={<MySubjects />} />
+          <Route path={Path.SUBJECT_DETAIL} element={<SubjectDetail />} />
           <Route path={Path.PREPARE_TEST} element={<PrepareTest />} />
           <Route path={Path.DO_MC_TEST} element={<DoMCTest />} />
           <Route path={Path.SCORE_DETAIL} element={<ScoreDetail />} />
           <Route path={Path.MY_INFO} element={<MyInfo />} />
           <Route path={Path.MY_ALL_SCORES} element={<MyAllScores />} />
+          <Route path={Path.MY_ALL_TEST} element={<MyAllTest />} />
         </Route>
         <Route path='/admin' element={<Admin />}>
           <Route path={Path.AMCLASSMANAGER} element={<Classmanager />} />

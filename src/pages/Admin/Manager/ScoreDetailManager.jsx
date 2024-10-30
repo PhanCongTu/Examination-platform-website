@@ -19,7 +19,7 @@ function ScoreDetailManager() {
             getScoreOfStudentService(StudentId, MCTestId)
                   .then((res) => {
                         console.log(res);
-                        setScore(res);
+                        setScore(res.data);
                   })
                   .catch((err) => {
                   })

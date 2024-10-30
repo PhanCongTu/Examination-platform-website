@@ -7,16 +7,16 @@ import PaginationNav from '../../../components/pagination/PaginationNav';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addStudentToClassService, deleteStudentOfClassroomService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
+import { addStudentToClassService, deleteStudentOfClassroomService, exportListStudentOfClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 
-const ID_CLASSROOM = 'classroomId';
+const ID_CLASSROOM = 'subjectId';
 const ID_STUDENT = 'studentId';
 
-export const Studentmanager = ({ showByIdClassRoom = true }) => {
+const Studentmanager = ({ showByIdClassRoom = true }) => {
   document.title = 'Student manager';
   const { idClassRoom } = useParams();
   const [isAddConfirm, setIsAddConfirm] = useState(false);
@@ -60,6 +60,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
   }
 
   const handleClickAddConfirm = (item) => {
+    console.log(item)
     setIsAddConfirm(true);
     setStudentSelect(item);
   }
@@ -75,8 +76,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     showByIdClassRoom = true;
     if (isAddConfirm)
       addStudentToClass(body);
-    else if (isDelete)
+    else if (isDelete){
+      toast.success('Delete student of class successfuly', {
+        position: toast.POSITION.TOP_RIGHT
+      })
       deleteStudentOfClassroom(body);
+    }
   }
 
   const deleteStudentOfClassroom = (body) => {
@@ -93,7 +98,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   const addStudentToClass = (body) => {
     addStudentToClassService(body).then((res) => {
-      getAllStudentOfClass();
+      //getAllStudentOfClass();
       toast.success('Add student to class successfuly', {
         position: toast.POSITION.TOP_RIGHT
       })
@@ -122,22 +127,40 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     setActiveIndex(index + 1);
     getAllStudent(index + 1);
   }
-
+  const handleClickExport=()=>{
+    exportListStudentOfClassService(idClassRoom,"excel").then((res)=>{
+      console.log(res)
+      const url = window.URL.createObjectURL(new Blob([res]));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `ss.xlsx`); // Tên file
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      // Giải phóng URL để tránh rò rỉ bộ nhớ
+    window.URL.revokeObjectURL(url);
+      console.log("successeee")
+    
+    }).catch((e)=>{
+      console.log(e)
+    })
+  }
   const handleSearch = (data) => {
+    console.log(data)
     if (showByIdClassRoom && idClassRoom)
       getAllStudentOfClassService(idClassRoom, undefined, undefined, undefined, undefined, data).then((res) => {
-        setlistAllStudent(res.content);
-        setIsLast(res.last);
-        setIsFirst(res.first);
+        setlistAllStudent(res.data.content);
+        setIsLast(res.data.last);
+        setIsFirst(res.data.first);
 
         const pageNumbers2 = [];
-        for (let i = 1; i <= res.totalPages; i++) {
+        for (let i = 1; i <= res.data.totalPages; i++) {
           pageNumbers2.push(i);
         }
         setPageNumbers(pageNumbers2);
-        setTotalElements(res.totalElements);
-        setOffset(res.pageable.offset);
-        setNumberOfElements(res.numberOfElements);
+        setTotalElements(res.data.totalElements);
+        setOffset(res.data.pageable?.offset);
+        setNumberOfElements(res.data.numberOfElements);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
@@ -149,17 +172,17 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
       });
     else if (!showByIdClassRoom && idClassRoom) {
       getAllVerifiedStudentService(undefined, undefined, undefined, undefined, data).then((res) => {
-        setlistAllStudent(res.content);
-        setIsLast(res.last);
-        setIsFirst(res.first);
+        setlistAllStudent(res.data.content);
+        setIsLast(res.data.last);
+        setIsFirst(res.data.first);
         const pageNumbers2 = [];
-        for (let i = 1; i <= res.totalPages; i++) {
+        for (let i = 1; i <= res.data.totalPages; i++) {
           pageNumbers2.push(i);
         }
         setPageNumbers(pageNumbers2);
-        setTotalElements(res.totalElements);
-        setOffset(res.pageable.offset);
-        setNumberOfElements(res.numberOfElements);
+        setTotalElements(res.data.totalElements);
+        setOffset(res.data.pageable?.offset);
+        setNumberOfElements(res.data.numberOfElements);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
@@ -172,17 +195,17 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
     }
     else {
       getAllActiveStudentService(undefined, undefined, undefined, undefined, data).then((res) => {
-        setlistAllStudent(res.content);
-        setIsLast(res.last);
-        setIsFirst(res.first);
+        setlistAllStudent(res.data.content);
+        setIsLast(res.data.last);
+        setIsFirst(res.data.first);
         const pageNumbers2 = [];
-        for (let i = 1; i <= res.totalPages; i++) {
+        for (let i = 1; i <= res.data.totalPages; i++) {
           pageNumbers2.push(i);
         }
         setPageNumbers(pageNumbers2);
-        setTotalElements(res.totalElements);
-        setOffset(res.pageable.offset);
-        setNumberOfElements(res.numberOfElements);
+        setTotalElements(res.data.totalElements);
+        setOffset(res.data.pageable?.offset);
+        setNumberOfElements(res.data.numberOfElements);
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
@@ -197,17 +220,17 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   const getAllActiveStudent = async (page, sortType, column, size, search) => {
     getAllActiveStudentService(page, sortType, column, size, search).then((res) => {
-      setlistAllStudent(res.content);
-      setIsLast(res.last);
-      setIsFirst(res.first);
+      setlistAllStudent(res.data.content);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.totalElements);
-      setOffset(res.pageable.offset);
-      setNumberOfElements(res.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable?.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
@@ -222,19 +245,20 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   const getAllStudentOfClass = async (page, sortType, column, size, search) => {
     getAllStudentOfClassService(idClassRoom, page, sortType, column, size, search).then((res) => {
-      setlistAllStudent(res.content);
-      setIsLast(res.last);
-      setIsFirst(res.first);
+      setlistAllStudent(res.data.content);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.totalElements);
-      setOffset(res.pageable.offset);
-      setNumberOfElements(res.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable?.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
+      console.log(error)
       setIsLoading(false);
       toast.error(`Get student fail !`, {
         position: toast.POSITION.TOP_RIGHT,
@@ -246,17 +270,17 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   const getAllVerifiedStudent = (page, sortType, column, size, search) => {
     getAllVerifiedStudentService(page, sortType, column, size, search).then((res) => {
-      setlistAllStudent(res.content);
-      setIsLast(res.last);
-      setIsFirst(res.first);
+      setlistAllStudent(res.data.content);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.totalElements);
-      setOffset(res.pageable.offset);
-      setNumberOfElements(res.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
@@ -320,7 +344,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
                 </div>
                 <div className='flex gap-4  items-center justify-between'>
-                  {idClassRoom && showByIdClassRoom && (<Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add student to class</Button>)}
+                  {idClassRoom && showByIdClassRoom && (
+                    <div className='w-full flex flex-row'>
+<Button className="bg-blue-800 w-auto mr-1" handleOnClick={() => { handleClickAdd() }}>Add student to subject</Button>
+<Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>Export list student of subject</Button>
+                    </div>
+                  )}
 
                 </div>
               </div>
@@ -370,12 +399,12 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                     (listAllStudent.length !== 0 && (
                       listAllStudent.map(
                         (item, index) => {
-
+                          console.log(item)
                           return (
                             <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
 
                               <th scope="row" className="w-[150px] px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white" >
-                                {item.userID}
+                                {item.id}
                               </th>
                               <td className={clsx("px-6 py-3 w-[300px]")}>
                                 <p className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.displayName}>{item.displayName}</p>
@@ -505,7 +534,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                 >
                   <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
-                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.userID} />
+                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
                   <p className="text-center text-[20px] font-medium text-lime-400 uppercase"> Alert </p>
                   <h1 className='text-[16px] text-center'>Are you sure you want to add this student to this class?</h1>
                   <div className='invisible py-3'></div>
@@ -527,7 +556,7 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
                   className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                 >
                   <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
-                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.userID} />
+                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
                   <p className="text-center text-[20px] font-medium text-yellow-400 uppercase"> Alert </p>
                   <h1 className='text-[16px] text-center'>Are you sure want to remove this student from your current classroom?</h1>
                   <div className='invisible py-3'></div>
@@ -544,3 +573,4 @@ export const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   )
 }
+export default React.memo(Studentmanager)

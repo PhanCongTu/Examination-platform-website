@@ -41,17 +41,17 @@ export const Scoremanager = () => {
 
   const handleSearch = (data) => {
     getAllStudentScoreByIDExamService(idExam, undefined, undefined, undefined, undefined, data).then((res) => {
-      setListAllScore(res.content);
-      setIsLast(res.last);
-      setIsFirst(res.first);
+      setListAllScore(res.data.content);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.totalElements);
-      setOffset(res.pageable.offset);
-      setNumberOfElements(res.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
@@ -66,18 +66,18 @@ export const Scoremanager = () => {
 
   const getAllStudentSocreByIdExam = async (page, sortType, column, size, search) => {
     getAllStudentScoreByIDExamService(idExam, page, sortType, column, size, search).then((res) => {
-      console.log(res.content)
-      setListAllScore(res.content);
-      setIsLast(res.last);
-      setIsFirst(res.first);
+      console.log(res.data.content)
+      setListAllScore(res.data.content);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.totalElements);
-      setOffset(res.pageable.offset);
-      setNumberOfElements(res.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);

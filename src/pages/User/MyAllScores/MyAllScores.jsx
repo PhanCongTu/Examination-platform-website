@@ -54,10 +54,10 @@ function MyAllScores() {
       const getAllMyScores = (dateFrom, dateTo, page, sortType, column, size, search) => {
             getAllMyScoreService(dateFrom, dateTo, page, sortType, column, size, search)
                   .then(res => {
-                        console.log(res)
-                        setMyScores(res.content)
-                        setTotalElements(res.totalElements)
-                        setTotalPages(res.totalPages)
+                        console.log(res.data)
+                        setMyScores(res.data.content)
+                        setTotalElements(res.data.totalElements)
+                        setTotalPages(res.data.totalPages)
                   })
                   .catch(err => {
 
@@ -124,10 +124,10 @@ function MyAllScores() {
                                                                   Test name
                                                             </th>
                                                             <th scope="col" className="px-6 py-3">
-                                                                  Classroom name
+                                                                  Subject name
                                                             </th>
                                                             <th scope="col" className="px-6 py-3">
-                                                                  Class code
+                                                                  Subject code
                                                             </th>
                                                             <th scope="col" className="px-6 py-3">
                                                                   Submitted date
@@ -147,10 +147,10 @@ function MyAllScores() {
                                                                         {score.testName}
                                                                   </th>
                                                                   <td className="px-6 py-4">
-                                                                        {score.className}
+                                                                        {score.subjectName}
                                                                   </td>
                                                                   <td className="px-6 py-4">
-                                                                        {score.classCode}
+                                                                        {score.subjectCode}
                                                                   </td>
                                                                   <td className="px-6 py-4">
                                                                         {format(score.submittedDate, 'MMM dd, yyy h:mm a')}

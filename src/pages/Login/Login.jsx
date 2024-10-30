@@ -54,7 +54,7 @@ const Login = () => {
 
             loginInService(body)
                   .then((response) => {
-                        saveCredential(response)
+                        saveCredential(response.data)
                         let roles = getRoles()
                         if (roles.includes(ROLE_ADMIN))
                               navigate(Path.AMCLASSMANAGER);
@@ -66,6 +66,7 @@ const Login = () => {
                         //       navigate(Path.TEACHERHOME)
                   })
                   .catch((error) => {
+                        console.log(error)
                         toast.error(`Log in fail !`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });

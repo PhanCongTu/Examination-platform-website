@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react'
-import { NavLink, Navigate, useLocation, useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useState } from 'react'
+import { useLocation, useNavigate } from 'react-router-dom';
 import Path from '../../../utils/Path';
 import classroomPNG from '../../../assets/classroomPNG.png';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLeftLong, faListSquares } from '@fortawesome/free-solid-svg-icons';
+import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { createTestTrackingService, getDoMultipleChoiceTestService, getMyScoreService, submitMCTestService, trackMyTestService } from '../../../services/UserService';
 import { secondsDiff, secondsToTime } from '../../../utils/WebUtils';
 import {
       differenceInSeconds
 } from 'date-fns'
+import QuizQuestion from '../../../components/exam/QuizQuesiton';
+
 
 function DoMCTest() {
       document.title = 'Testing';
@@ -18,10 +20,10 @@ function DoMCTest() {
       const [MCTest, setMCTest] = useState();
       const [testingTime, setTestingTime] = useState();
       const [listAnswer, setListAnswer] = useState([]);
+      const [listSubmitAnswer, setListSubmitAnswer] = useState([]);
       const [response, setResponse] = useState(undefined);
       const [submitValue, setSubmitValue] = useState({
-            multipleChoiceTestId: MCTestId,
-            submittedAnswers: listAnswer
+            
       });
 
       // If test id is missing
@@ -40,13 +42,19 @@ function DoMCTest() {
                   .catch((err) => {
                         getDoMultipleChoiceTestService(MCTestId)
                               .then((res) => {
-                                    setMCTest(res)
-                                    res?.questions.forEach(question => {
-                                          var answer = {
-                                                questionId: question.id,
-                                                answer: ""
-                                          };
-                                          setListAnswer(pre => [...pre, answer]);
+                                    console.log(res.data)
+                                    setMCTest(res.data)
+                                    res?.data.questions.forEach(question => {
+                                          question.answers.forEach(
+                                                answer => {
+                                                      var answer1 = {
+                                                            questionId: question.id,
+                                                            answer: answer.answerContent
+                                                      };
+                                                      setListAnswer(pre => [...pre, answer1]);
+                                                }
+                                          )
+
                                     })
                               })
                               .catch((err) => {
@@ -56,16 +64,20 @@ function DoMCTest() {
                         // Start tracking the test
                         trackMyTestService(MCTestId)
                               .then((res) => {
-                                    if (!Object.keys(res).length) {
+                                    console.log(res)
+                                    // if (!Object.keys(res?.data).length) {
+                                    if (!res.hasOwnProperty('data')) {
                                           createTestTrackingService(MCTestId)
                                                 .then((res2) => {
-                                                      setTestingTime(secondsDiff((new Date(res2.dueTime)), (new Date())))
+                                                      console.log(res2)
+                                                      setTestingTime(secondsDiff((new Date(res2.data.dueTime)), (new Date())))
                                                 })
                                                 .catch((err) => {
                                                       console.error(err)
                                                 })
                                     } else {
-                                          setTestingTime(secondsDiff((new Date(res.dueTime)), (new Date())))
+                                          console.log(res.data)
+                                          setTestingTime(secondsDiff((new Date(res.data.dueTime)), (new Date())))
                                     }
                               })
                               .catch((err) => {
@@ -83,24 +95,72 @@ function DoMCTest() {
                   handleSubmit()
             }
       }, [testingTime])
-      const handleChooseAnswer = (questionId, value) => {
-            listAnswer.forEach(item => {
-                  if (item.questionId === questionId) {
-                        item.answer = value
-                        var tempListAnswer = listAnswer.filter(item => item.questionId !== questionId)
-                        var answer = {
-                              questionId: questionId,
-                              answer: value
-                        };
-                        tempListAnswer.push(answer)
-                        setListAnswer(tempListAnswer)
-                        setSubmitValue({
-                              multipleChoiceTestId: MCTestId,
-                              submittedAnswers: tempListAnswer
-                        })
-                  }
+      const handleChooseAnswer = useCallback((questionId, value) => {
+            console.log("handleChooseAnswer");
+            console.log(questionId, value);
+            console.log("Check prev");
+            if (listSubmitAnswer.length !== 0) {
+                  console.log("Check");
+                  listSubmitAnswer.forEach(submittedAnswer => {
+                        console.log(submittedAnswer)
+                        if (submittedAnswer?.questionId == questionId) {
+                              setListSubmitAnswer(prev => prev.map((item, index) => {
+                                    if (item && item.questionId === questionId) {
+                                          return { ...item, answer: value };
+                                        }
+                                        return item;
+                              }))
+                        } else {
+                              var answer = {
+                                    questionId: questionId,
+                                    answer: value
+                              };
+                              setListSubmitAnswer(prev => [...prev, answer])
+                        }
+                  })
+            }
+            else{
+                  console.log("Add submit answer");
+                  var answer = {
+                        questionId: questionId,
+                        answer: value
+                  };
+                  setListSubmitAnswer(prev => [...prev, answer])
+            }
+            // if (listSubmitAnswer.some(submittedAnswer => submittedAnswer.questionId === questionId)) {
+            //       setListSubmitAnswer(prev => prev.map(item => {
+            //             if (item.questionId === questionId) {
+            //                   return { ...item, answer: value };
+            //             }
+            //             return item;
+            //       }));
+            // } else {
+            //       setListSubmitAnswer(prev => [...prev, { questionId: questionId, answer: value }]);
+            // }
+            setSubmitValue({
+                  multipleChoiceTestId: MCTestId,
+                  submittedAnswers: listSubmitAnswer
             })
-      }
+            console.log(listSubmitAnswer);
+
+
+            // listAnswer.forEach(item => {
+            //       if (item.questionId === questionId) {
+            //             item.answer = value
+            //             var tempListAnswer = listAnswer.filter(item => item.questionId !== questionId)
+            //             var answer = {
+            //                   questionId: questionId,
+            //                   answer: value
+            //             };
+            //             tempListAnswer.push(answer)
+            //             setListAnswer(tempListAnswer)
+            //             setSubmitValue({
+            //                   multipleChoiceTestId: MCTestId,
+            //                   submittedAnswers: tempListAnswer
+            //             })
+            //       }
+            // })
+      },[listSubmitAnswer])
       const handleSubmit = () => {
             submitMCTestService(submitValue)
                   .then((res) => {
@@ -127,9 +187,11 @@ function DoMCTest() {
                                                 {
                                                       MCTest?.questions?.map((ques, index) => {
                                                             return <div key={index} className='pt-10'>
-                                                                  <h3 className="pl-3 mb-4 font-semibold text-black dark:text-white">{index + 1}. {ques.content}</h3>
-                                                                  <ul className="w-[90%] text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
-                                                                        <li onClick={() => handleChooseAnswer(ques.id, ques.firstAnswer)} className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
+                                                                  {/* <h3 className="pl-3 mb-4 font-semibold text-black dark:text-white">{index + 1}. {ques.content}</h3>
+                                                                  <ul className="w-[90%] text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"> */}
+                                                                  <QuizQuestion indexQuestion={index} question={ques} handleChooseAnswer={handleChooseAnswer} showScore={false}/>
+
+                                                                  {/* <li onClick={() => handleChooseAnswer(ques.id, ques.firstAnswer)} className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                                               <div className="flex items-center ps-3">
                                                                                     <input
                                                                                           id={`list-radio-license-1-${ques.id}`} value="" type="radio" name={`list-radio-${ques.id}`} className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-700 dark:focus:ring-offset-gray-700 focus:ring-2 dark:bg-gray-600 dark:border-gray-500" />
@@ -160,8 +222,8 @@ function DoMCTest() {
                                                                                     <label htmlFor={`list-radio-license-4-${ques.id}`} className="w-full py-3 ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">
                                                                                           {ques.fourthAnswer} </label>
                                                                               </div>
-                                                                        </li>
-                                                                  </ul>
+                                                                        </li> */}
+                                                                  {/* </ul> */}
                                                             </div>
                                                       })
                                                 }

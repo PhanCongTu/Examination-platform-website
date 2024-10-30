@@ -55,16 +55,19 @@ function Home() {
       }
 
       let selectedDayTests = MCTest.filter((test) =>
+          
             isSameDay(new Date(test.startDate), selectedDay)
+      
+           
       )
       let selectedDayEndedTests = MCTest.filter((test) =>
             isSameDay(new Date(test.endDate), selectedDay)
       )
       useEffect(() => {
 
-            getMy2WeeksAroundMCTestService()
+            getMy2WeeksAroundMCTestService(0, undefined, undefined, 100, undefined)
                   .then(response => {
-                        setMCTest(response)
+                        setMCTest(response.data)
                   })
                   .catch((error) => {
                         removeCredential();
@@ -178,13 +181,13 @@ function Home() {
                                                             <Testing Test={test} IsDeadline={false} key={test.id} />
                                                       ))
                                                 ) : (
-                                                      <p>There are exams for this date.</p>
+                                                      <p>There are no exams for this date.</p>
                                                 )}
                                           </ol>
                                     </section>
                                     <section className="mt-12 md:mt-0 md:pl-14">
                                           <h2 className="font-semibold text-red-600 px-3 rounded-lg">
-                                                Schedule dutedate exams for{' '}
+                                                Schedule due date exams for{' '}
                                                 <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
                                                       {format(selectedDay, 'MMM dd, yyy')}
                                                 </time>
@@ -233,7 +236,7 @@ function Testing({ Test, IsDeadline }) {
                               }
 
                         </div>
-                        <p>Classroom: {Test.className}</p>
+                        <p>Subject: {Test.subjectName}</p>
                   </div>
 
                   <Menu
@@ -275,13 +278,13 @@ function Testing({ Test, IsDeadline }) {
                                           <Menu.Item>
                                                 {({ active }) => (
                                                       <NavLink
-                                                            to={Path.CLASSROOM_DETAIL.replace(':classroomId', Test.classroomId)}
+                                                            to={Path.SUBJECT_DETAIL.replace(':subjectId', Test.subjectId)}
                                                             className={classNames(
                                                                   active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
                                                                   'block px-4 py-2 text-sm'
                                                             )}
                                                       >
-                                                            Go to classromm
+                                                            Go to subject
                                                       </NavLink>
                                                 )}
                                           </Menu.Item>

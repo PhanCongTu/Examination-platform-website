@@ -28,7 +28,7 @@ const EXAM_NAME = 'testName';
 const START_DATE = 'startDate';
 const END_DATE = 'endDate';
 const EXAM_TEST_TIME = 'testingTime';
-const ID_CLASSROOM = 'classroomId';
+const ID_SUBJECT = 'subjectId';
 const DESCRIPTION = 'description';
 const TARGET_SCORE = 'targetScore';
 
@@ -140,7 +140,7 @@ export const Examinationmanager = () => {
         } else if (body.targetScore < 0 || body.targetScore > 10) {
             toast.error("The target score must be from 0 to 10", toast.POSITION.TOP_RIGHT);
         } else if (isEdit) {
-            let { classroomId, ...newBody } = body;
+            let { subjectId, ...newBody } = body;
             updateExam(newBody);
         } else if (isAdd) {
             let { id, ...newBody } = body;
@@ -192,23 +192,23 @@ export const Examinationmanager = () => {
 
     const handleSearch = (data) => {
         getAllExamOfClassService(idClassRoom, isEnded, undefined, undefined, undefined, undefined, data).then((res) => {
-            checkTimeStart(res.content);
-            setListAllExam(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            checkTimeStart(res.data.content);
+            setListAllExam(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
 
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get Exam fail !`, {
+            toast.error(`Get exam fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -248,6 +248,9 @@ export const Examinationmanager = () => {
     const addExamByIdClassroom = (body) => {
         addExamByIdClassroomService(body).then((res) => {
             getAllExam();
+            toast.success(`Add exam successful !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
         }).catch((error) => {
             toast.error(`Add exam fail !`, {
                 position: toast.POSITION.TOP_RIGHT,
@@ -257,18 +260,18 @@ export const Examinationmanager = () => {
 
     const getAllExamOfClassroom = async (page, sortType, column, size, search) => {
         getAllExamOfClassService(idClassRoom, isEnded, page, sortType, column, size, search).then((res) => {
-            setListAllExam(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
-            checkTimeStart(res.content);
+            setListAllExam(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
+            checkTimeStart(res.data.content);
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
@@ -439,7 +442,7 @@ export const Examinationmanager = () => {
                                         >
                                             Uh-oh!
                                         </h1>
-                                        <p className="mt-4 text-gray-500">We cannot find any exam in this classroom.</p>
+                                        <p className="mt-4 text-gray-500">We cannot find any exam in this subject.</p>
                                     </div>
                                 </div>
                             </>))
@@ -481,13 +484,13 @@ export const Examinationmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg px-4 pt-4 shadow-lg"
                                 >
-                                    <div className='flex'>
+                                    <div className='flex items-center justify-center'>
                                         <p className="text-center text-lg font-medium">Add Exam </p>
 
                                     </div>
                                     <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={''} />
                                     <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
-                                    <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
+                                    <InputField name={ID_SUBJECT} disabled form={form} defaultValue={idClassRoom} />
                                     <InputField type='number' name={EXAM_TEST_TIME} label="Time test (minutes)" form={form} defaultValue={''} />
                                     <InputField type='number' name={TARGET_SCORE} label="Target of score (x/10)" form={form} defaultValue={''} />
                                     <div className='flex'>

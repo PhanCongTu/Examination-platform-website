@@ -24,14 +24,14 @@ function PrepareTest() {
       useEffect(() => {
             getMyMultipleChoiceTestInformationService(testId)
                   .then((res) => {
-                        setMCTest(res);
+                        setMCTest(res.data);
                   })
                   .catch((err) => {
                         navigate(Path.HOME)
                   })
             getMyScoreService(testId)
                   .then((res) => {
-                        setScore(res);
+                        setScore(res.data);
                   })
                   .catch((err) => {
                   })
@@ -47,10 +47,10 @@ function PrepareTest() {
                         {MCTest ?
                               <>
                                     <div className='bg-slate-200 mt-5 select-none pl-16'>
-                                          <h2 className='text-[40px] pt-5 flex justify-start items-center'>{MCTest.className}
+                                          <h2 className='text-[40px] pt-5 flex justify-start items-center'>{MCTest.subjectName}
 
                                           </h2>
-                                          <h4 className='text-[20px] pb-5 flex justify-start items-center'>({MCTest.classCode})</h4>
+                                          <h4 className='text-[20px] pb-5 flex justify-start items-center'>({MCTest.subjectCode})</h4>
                                           <h4 className='text-[18px] pb-5 flex justify-start items-center'>{MCTest.classDescription}</h4>
                                     </div>
                                     <div className='bg-white opacity-100 flex justify-center pt-16 pb-10 '>

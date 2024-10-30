@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { NavLink, useNavigate, useParams } from 'react-router-dom'
-import classroomPNG from '../../../assets/classroomPNG.png';
-import classroomAVT from '../../../assets/classroom_avatar.png';
-import { getClassroomByIdService, getMCTestsOfClassroomService } from '../../../services/UserService';
+import subjectPNG from '../../../assets/classroomPNG.png';
+import subjectAVT from '../../../assets/classroom_avatar.png';
+import { getSubjectByIdService, getMCTestsOfSubjectService } from '../../../services/UserService';
 import { DESCREASE, INSCREASE } from '../../../utils/Constant';
 import Toggle from '../../../components/form-controls/Toggle/Toggle';
 import { Pagination } from '@mui/material';
@@ -17,15 +17,15 @@ const TEST_NAME = 'test_name';
 const START_DATE = 'start_date';
 const END_DATE = 'end_date';
 
-function ClassroomDetail() {
+function SubjectDetail() {
       const navigate = useNavigate();
-      document.title = 'Classroom detail';
-      const { classroomId } = useParams();
-      const [classroom, setClassroom] = useState({});
+      document.title = 'Subject detail';
+      const { subjectId } = useParams();
+      const [subject, setSubject] = useState({});
       const [MCTests, setMCTests] = useState([]);
 
-      let today = startOfToday()
-      let tomorrow = startOfTomorrow()
+      let today = startOfToday();
+      let tomorrow = startOfTomorrow();
       // Default value to get request
       const [page, setPage] = useState(0);
       const [sortType, setSortType] = useState(INSCREASE);
@@ -55,44 +55,46 @@ function ClassroomDetail() {
             setIsEnded(isToggle)
       }
       useEffect(() => {
-            getMCTestsOfClassroomService(classroomId, page, sortType, column, size, search, isEnded)
+            getMCTestsOfSubjectService(subjectId, page, sortType, column, size, search, isEnded)
                   .then((res) => {
-                        setMCTests(res.content)
-                        setPage(res.number)
-                        setTotalPages(res.totalPages)
-                        setTotalElements(res.totalElements)
+                        setMCTests(res.data.content)
+                        setPage(res.data.number)
+                        setTotalPages(res.data.totalPages)
+                        setTotalElements(res.data.totalElements)
                   })
                   .catch(err => {
                         setMCTests([])
                   })
       }, [page, sortType, column, isEnded])
       useEffect(() => {
-            getClassroomByIdService(classroomId)
+            console.log("subjectId ", subjectId);
+            getSubjectByIdService(subjectId)
                   .then((res) => {
-                        setClassroom(res)
+                        console.log(res.data)
+                        setSubject(res.data)
                   })
                   .catch(err => {
-                        setClassroom(null)
+                        setSubject(null)
                   })
-            getMCTestsOfClassroomService(classroomId, page, sortType, column, size, search, isEnded)
+            getMCTestsOfSubjectService(subjectId, page, sortType, column, size, search, isEnded)
                   .then((res) => {
-                        setMCTests(res.content)
-                        setPage(res.number)
-                        setTotalPages(res.totalPages)
-                        setTotalElements(res.totalElements)
+                        setMCTests(res.data.content)
+                        setPage(res.data.number)
+                        setTotalPages(res.data.totalPages)
+                        setTotalElements(res.data.totalElements)
                   })
                   .catch(err => {
                         setMCTests([])
                   })
 
-      }, [classroomId])
+      }, [subjectId])
       const handleSearch = () => {
-            getMCTestsOfClassroomService(classroomId, 0, sortType, column, size, search, isEnded)
+            getMCTestsOfSubjectService(subjectId, 0, sortType, column, size, search, isEnded)
                   .then((res) => {
-                        setMCTests(res.content)
-                        setPage(res.number)
-                        setTotalPages(res.totalPages)
-                        setTotalElements(res.totalElements)
+                        setMCTests(res.data.content)
+                        setPage(res.data.number)
+                        setTotalPages(res.data.totalPages)
+                        setTotalElements(res.data.totalElements)
                   })
                   .catch(err => {
                         setMCTests([])
@@ -100,22 +102,22 @@ function ClassroomDetail() {
       }
       return (
             <>
-                  <div className={clsx(MCTests?.length > 2 ? 'h-full' : 'h-screen', "bg-repeat p-5 flex justify-center ")} style={{ backgroundImage: "url(" + classroomPNG + ")" }}>
+                  <div className={clsx(MCTests?.length > 2 ? 'h-full' : 'h-screen', "bg-repeat p-5 flex justify-center ")} style={{ backgroundImage: "url(" + subjectPNG + ")" }}>
                         <div className='bg-white opacity-95 h-full w-[80%] pt-6 rounded-lg ' >
                               <div onClick={() => navigate(-1)}
                                     className='flex justify-start items-center ml-10 cursor-pointer select-none w-fit rounded-lg p-1'>
                                     <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to the previous page
                               </div>
-                              {classroom ?
+                              {subject ?
                                     <>
                                           <div className='bg-white opacity-100 flex justify-center pb-10'>
 
                                                 <div className=" flex flex-col items-center bg-white border border-gray-200 rounded-lg shadow md:flex-row w-[80%] hover:bg-gray-100 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700">
-                                                      <img className="px-2 object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={classroomAVT} alt="" />
+                                                      <img className="px-2 object-cover w-full rounded-t-lg h-96 md:h-auto md:w-48 md:rounded-none md:rounded-s-lg" src={subjectAVT} alt="" />
                                                       <div className="flex flex-col justify-between p-4 leading-normal">
-                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{classroom.className}</h5>
-                                                            <p className="mb-3 font-bold text-gray-700 dark:text-gray-400">{classroom.classCode}</p>
-                                                            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{classroom.description}</p>
+                                                            <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{subject.subjectName}</h5>
+                                                            <p className="mb-3 font-bold text-gray-700 dark:text-gray-400">{subject.subjectCode}</p>
+                                                            <p className="mb-3 font-normal text-gray-700 dark:text-gray-400">{subject.description}</p>
                                                       </div>
                                                 </div>
 
@@ -130,7 +132,7 @@ function ClassroomDetail() {
                                                       >
                                                             Uh-oh!
                                                       </h1>
-                                                      <p className="mt-4 text-gray-500">We cannot find any classroom.</p>
+                                                      <p className="mt-4 text-gray-500">We cannot find any subject.</p>
                                                 </div>
                                           </div>
                                     </>}
@@ -204,7 +206,7 @@ function ClassroomDetail() {
                                     </>
                                     :
                                     <>
-                                          {classroom ? <>
+                                          {subject ? <>
                                                 <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                                                       <div className="text-center">
                                                             <h1
@@ -212,7 +214,7 @@ function ClassroomDetail() {
                                                             >
                                                                   Uh-oh!
                                                             </h1>
-                                                            <p className="mt-4 text-gray-500">We cannot find any exam of this classroom.</p>
+                                                            <p className="mt-4 text-gray-500">We cannot find any exam of this subject.</p>
                                                       </div>
                                                 </div>
                                           </> : <></>}
@@ -225,4 +227,4 @@ function ClassroomDetail() {
       )
 }
 
-export default ClassroomDetail
+export default SubjectDetail

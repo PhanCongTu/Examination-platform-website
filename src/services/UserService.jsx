@@ -1,22 +1,63 @@
 import { getAccessToken } from './ApiService';
 import axios from './axios';
-const getMy2WeeksAroundMCTest = 'api/v1/multiple-choice-test/me/two-weeks-around';
-const getMyClassrooms = 'api/v1/classroom/me';
-const getClassroomById = 'api/v1/classroom';
-const getMCTestsOfClassroom = 'api/v1/multiple-choice-test/classroom';
-const getMyMultipleChoiceTestInformation = 'api/v1/multiple-choice-test/my/info';
-const getDoMultipleChoiceTest = 'api/v1/multiple-choice-test';
-const createTestTracking = 'api/v1/test-tracking/my/create';
-const trackMyTest = 'api/v1/test-tracking/my';
-const submitMCTest = 'api/v1/score/submit-test';
-const getMyCore = 'api/v1/score/my';
-const sendEmailVerifyCode = 'api/email/send-verification';
-const verifyEmail = 'api/email/verify';
-const myInfomation = 'api/my-info';
-const updateUserProfile = 'api/user/update';
-const changePassword = 'api/change-password';
-const getAllMyScore = 'api/v1/score/my';
-const getScoreOfStudent = 'api/v1/score/student';
+const getMy2WeeksAroundMCTest = 'exam/multiple-choice-test/me/two-weeks-around';
+const getMySubjects = 'exam/subject/me';
+const getSubjectById = 'exam/subject';
+const getMCTestsOfSubject = 'exam/multiple-choice-test/subject';
+const getMyMultipleChoiceTestInformation = 'exam/multiple-choice-test/my/info';
+const getDoMultipleChoiceTest = 'exam/multiple-choice-test';
+const createTestTracking = 'exam/test-tracking/my/create';
+const trackMyTest = 'exam/test-tracking/my';
+const submitMCTest = 'exam/score/submit-test';
+const getMyScore = 'exam/score/my';
+const sendEmailVerifyCode = 'notify/email/send-verification';
+const verifyEmail = 'identity/user/email/verify';
+const myInfomation = 'identity/user/my-info';
+const updateUserProfile = 'identity/user/update';
+const changePassword = 'identity/user/change-password';
+const getAllMyScore = 'exam/score/my';
+const getScoreOfStudent = 'exam/score/student';
+const getAllMyTestSpecifyDay='exam/multiple-choice-test/me/specific-day';
+
+export const getAllMyTestSpecifyDayService = async (dateFrom, dateTo, page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllMyTestSpecifyDayParam = getAllMyTestSpecifyDay;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (dateFrom) {
+            queryParams.push(`startOfDate=${dateFrom}`);
+      }
+      if (dateTo) {
+            queryParams.push(`endOfDate=${dateTo}`);
+      }
+      if (queryParams.length > 0) {
+            getAllMyTestSpecifyDayParam += '?' + queryParams.join('&');
+      }
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: getAllMyTestSpecifyDayParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+
 export const getAllMyScoreService = async (dateFrom, dateTo, page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
       let getAllMyScoreParam = getAllMyScore;
@@ -153,7 +194,7 @@ export const getMyScoreService = async (MCTestId) => {
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getMyCore + `/ ${MCTestId}`,
+            url: getMyScore + `/${MCTestId}`,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -163,6 +204,7 @@ export const getMyScoreService = async (MCTestId) => {
 
 export const submitMCTestService = async (value) => {
       let accessToken = getAccessToken();
+      console.log(value)
       return await axios.request({
             method: 'post',
             maxBodyLength: Infinity,
@@ -180,7 +222,7 @@ export const trackMyTestService = async (MCTestId) => {
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: trackMyTest + `/ ${MCTestId}`,
+            url: trackMyTest + `/${MCTestId}`,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -193,7 +235,7 @@ export const createTestTrackingService = async (MCTestId) => {
       return await axios.request({
             method: 'post',
             maxBodyLength: Infinity,
-            url: createTestTracking + `/ ${MCTestId}`,
+            url: createTestTracking + `/${MCTestId}`,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -206,7 +248,7 @@ export const getDoMultipleChoiceTestService = async (MCTestId) => {
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getDoMultipleChoiceTest + `/ ${MCTestId}`,
+            url: getDoMultipleChoiceTest + `/${MCTestId}`,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -219,7 +261,7 @@ export const getMyMultipleChoiceTestInformationService = async (MCTestId) => {
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getMyMultipleChoiceTestInformation + `/ ${MCTestId}`,
+            url: getMyMultipleChoiceTestInformation + `/${MCTestId}`,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -227,8 +269,8 @@ export const getMyMultipleChoiceTestInformationService = async (MCTestId) => {
       })
 }
 
-export const getMCTestsOfClassroomService = async (classroomId, page, sortType, column, size, search, isEnded) => {
-      let getMCTestsOfClassroomParam = getMCTestsOfClassroom + `/${classroomId}`;
+export const getMCTestsOfSubjectService = async (subjectId, page, sortType, column, size, search, isEnded) => {
+      let getMCTestsOfSubjectParam = getMCTestsOfSubject + `/${subjectId}`;
       let queryParams = [];
       if (page) {
             queryParams.push(`page=${page}`);
@@ -249,35 +291,56 @@ export const getMCTestsOfClassroomService = async (classroomId, page, sortType, 
             queryParams.push(`isEnded=${isEnded}`);
       }
       if (queryParams.length > 0) {
-            getMCTestsOfClassroomParam += '?' + queryParams.join('&');
+            getMCTestsOfSubjectParam += '?' + queryParams.join('&');
       }
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getMCTestsOfClassroomParam,
+            url: getMCTestsOfSubjectParam,
             headers: {
                   'Content-Type': "application/json"
             }
       })
 }
 
-export const getClassroomByIdService = async (classroomId) => {
+export const getSubjectByIdService = async (subjectId) => {
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getClassroomById + `/ ${classroomId}`,
+            url: getSubjectById + `/${subjectId}`,
             headers: {
                   'Content-Type': "application/json"
             }
       })
 }
 
-export const getMy2WeeksAroundMCTestService = async () => {
+export const getMy2WeeksAroundMCTestService = async (page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
+      let getMy2WeeksAroundMCTestParam = getMy2WeeksAroundMCTest ;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+ 
+      if (queryParams.length > 0) {
+            getMy2WeeksAroundMCTestParam += '?' + queryParams.join('&');
+      }
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getMy2WeeksAroundMCTest,
+            url: getMy2WeeksAroundMCTestParam,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -285,8 +348,8 @@ export const getMy2WeeksAroundMCTestService = async () => {
       })
 }
 
-export const getMyClassroomsService = async (page, sortType, column, size, search) => {
-      let getMyClassroomsParam = getMyClassrooms;
+export const getMySubjectsService = async (page, sortType, column, size, search) => {
+      let getMySubjectsParam = getMySubjects;
       let queryParams = [];
       if (page) {
             queryParams.push(`page = ${page}`);
@@ -304,13 +367,13 @@ export const getMyClassroomsService = async (page, sortType, column, size, searc
             queryParams.push(`search = ${search}`);
       }
       if (queryParams.length > 0) {
-            getMyClassroomsParam += '?' + queryParams.join('&');
+            getMySubjectsParam += '?' + queryParams.join('&');
       }
       let accessToken = getAccessToken();
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getMyClassroomsParam,
+            url: getMySubjectsParam,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"

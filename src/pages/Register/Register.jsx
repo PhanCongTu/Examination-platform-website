@@ -74,7 +74,7 @@ const Register = () => {
                               toast.success(`Sign-up successfully!`, {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
-                              saveCredential(response) // Lưu thông tin user vào local sto
+                              saveCredential(response.data.content) 
                               navigate(Path.VERIFY_EMAIL);
                         })
                         .catch((error) => {

@@ -29,6 +29,7 @@ function MyInfo() {
       const getMyInfo = () => {
             myInfomationService()
                   .then(res => {
+                        res=res.data
                         setLoginName(res.loginName)
                         setDisplayName(res.displayName)
                         setEmailAddress(res.emailAddress)

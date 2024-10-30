@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useTransition } from 'react'
 import { activeClassroomService, addActiveClassService, deleteActiveClassService, getAllActiveClassService, getAllUnActiveClassService, removeCredential, updateActiveClassService } from '../../../services/ApiService'
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
@@ -20,15 +20,15 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from 'flowbite-react';
-const CLASS_CODE = 'classCode';
-const CLASS_NAME = 'className';
+const CLASS_CODE = 'subjectCode';
+const CLASS_NAME = 'subjectName';
 const DESCRIPTION = 'description';
 const IS_PRIVATE = 'isPrivate';
 const ID_CLASS = 'id';
 
 export const Classmanager = () => {
+    const {t}=useTransition();
     const navigate = useNavigate();
-    document.title = 'Classroom manager';
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -57,13 +57,13 @@ export const Classmanager = () => {
     const yupObject = yup.object().shape({
         [CLASS_CODE]: yup
             .string()
-            .required("The code of classroom is required."),
+            .required(t("The code of subject is required.")),
         [CLASS_NAME]: yup
             .string()
-            .required("The name of classroom is required."),
+            .required(t("The name of subject is required.")),
         [DESCRIPTION]: yup
             .string()
-            .required("The description of classroom is required."),
+            .required(t("The description of subject is required.")),
     });
 
     const handleShowStudent = (item) => {
@@ -110,7 +110,7 @@ export const Classmanager = () => {
             updateActiveClassService({ ...body, isPrivate: isToggle }).then((res) => {
                 getAllClass();
             }).catch((error) => {
-                toast.error(`Update class fail !`, {
+                toast.error(t('Update subject fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -118,7 +118,7 @@ export const Classmanager = () => {
             addActiveClassService({ ...body, isPrivate: isToggle }).then((res) => {
                 getAllClass();
             }).catch((error) => {
-                toast.error(`Add class fail !`, {
+                toast.error(t('Add subject fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -147,41 +147,41 @@ export const Classmanager = () => {
         if (isModeActive)
             getAllActiveClassService(undefined, undefined, undefined, undefined, data).then((res) => {
                 setActiveIndex(0);
-                setlistAllClass(res.content);
-                setIsLast(res.last);
-                setIsFirst(res.first);
+                setlistAllClass(res.data.content);
+                setIsLast(res.data.last);
+                setIsFirst(res.data.first);
                 const pageNumbers2 = [];
-                for (let i = 1; i <= res.totalPages; i++) {
+                for (let i = 1; i <= res.data.totalPages; i++) {
                     pageNumbers2.push(i);
                 }
                 setPageNumbers(pageNumbers2);
-                setTotalElements(res.totalElements);
-                setOffset(res.pageable.offset);
-                setNumberOfElements(res.numberOfElements);
+                setTotalElements(res.data.totalElements);
+                setOffset(res.data.pageable.offset);
+                setNumberOfElements(res.data.numberOfElements);
             }).catch((error) => {
 
-                toast.error(`Search fail !`, {
+                toast.error(t('Search fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
         else
             getAllUnActiveClassService(undefined, undefined, undefined, undefined, data).then((res) => {
                 setActiveIndex(0);
-                setlistAllClass(res.content);
-                setIsLast(res.last);
-                setIsFirst(res.first);
+                setlistAllClass(res.data.content);
+                setIsLast(res.data.last);
+                setIsFirst(res.data.first);
                 const pageNumbers2 = [];
-                for (let i = 1; i <= res.totalPages; i++) {
+                for (let i = 1; i <= res.data.totalPages; i++) {
                     pageNumbers2.push(i);
                 }
                 setPageNumbers(pageNumbers2);
-                setTotalElements(res.totalElements);
-                setOffset(res.pageable.offset);
-                setNumberOfElements(res.numberOfElements);
+                setTotalElements(res.data.totalElements);
+                setOffset(res.data.pageable.offset);
+                setNumberOfElements(res.data.numberOfElements);
             }).catch((error) => {
                 removeCredential();
                 navigate(Path.LOGIN);
-                toast.error(`Search fail !`, {
+                toast.error(t('Search fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -192,7 +192,7 @@ export const Classmanager = () => {
         activeClassroomService(id).then((res) => {
             getAllClass();
         }).catch((error) => {
-            toast.error(`Active class fail !`, {
+            toast.error(t('Active subject fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         })
@@ -203,7 +203,7 @@ export const Classmanager = () => {
         deleteActiveClassService(id).then((res) => {
             getAllClass();
         }).catch((error) => {
-            toast.error(`Delete class fail !`, {
+            toast.error(t('Delete subject fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         })
@@ -227,21 +227,21 @@ export const Classmanager = () => {
 
     const getAllActiveClass = async (page, sortType, column, size, search) => {
         await getAllActiveClassService(page, sortType, column, size, search).then((res) => {
-            setlistAllClass(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setlistAllClass(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get class fail !`, {
+            toast.error(t('Get list subject fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         });
@@ -249,21 +249,21 @@ export const Classmanager = () => {
 
     const getAllUnActivateClass = async (page, sortType, column, size, search) => {
         getAllUnActiveClassService(page, sortType, column, size, search).then((res) => {
-            setlistAllClass(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setlistAllClass(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get class fail !`, {
+            toast.error(t('Get list subject fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -283,7 +283,7 @@ export const Classmanager = () => {
     };
 
     useEffect(() => {
-        document.title = "Class Mananger Admin"
+        document.title = t("Subject management")
         getAllClass();
     }, [isModeActive]);
     return (
@@ -292,7 +292,7 @@ export const Classmanager = () => {
             <div className=" p-4 h-full w-full flex-row flex">
                 <div className="p-4 dark:border-gray-700">
                     <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-                        Classroom manager
+                        {t('Subject management')}
                     </div>
                     <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
 
@@ -300,7 +300,7 @@ export const Classmanager = () => {
                             <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
 
                                 <div className='w-[150px] z-0'>
-                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? t('Active') : t('Inactive')}</Toggle>
 
                                 </div>
                                 <div className="relative">
@@ -309,11 +309,11 @@ export const Classmanager = () => {
                                             <svg className="w-5 h-5 text-white dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
                                         </ButtonS>
                                     </div>
-                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
+                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Search for items")} />
 
                                 </div>
                                 <div className='flex gap-4  items-center justify-between'>
-                                    <ButtonS className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add</ButtonS>
+                                    <ButtonS className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>{t('Add')}</ButtonS>
 
                                 </div>
                             </div>
@@ -321,20 +321,20 @@ export const Classmanager = () => {
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
-                                            ID class
+                                            {t('ID subject')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[300px]" >
-                                            Class name
+                                            {t('Subject name')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[300px] ">
-                                            Class code
+                                            {t('Subject code')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[70px]">
-                                            Status
+                                            {t('Status')}
                                         </th>
 
                                         <th scope="col" className="px-6 py-3 w-[70px]">
-                                            Action
+                                            {t('Action')}
                                         </th>
 
                                     </tr>
@@ -358,13 +358,13 @@ export const Classmanager = () => {
                                                                     className="px-6 py-4 w-[300px] ">
                                                                     <p
                                                                         onClick={() => handleClickOpenQuestionGroup(item)}
-                                                                        className="cursor-pointer font-medium dark:text-blue-500  w-[300px] line-clamp-1">{item.className}</p>
+                                                                        className="cursor-pointer font-medium dark:text-blue-500  w-[300px] line-clamp-1">{item.subjectName}</p>
                                                                 </td>
                                                                 <td
                                                                     className="px-6 py-4 w-[300px] " >
                                                                     <p
                                                                         onClick={() => handleClickOpenQuestionGroup(item)}
-                                                                        className="cursor-pointer truncate font-medium w-[300px] line-clamp-1">{item.classCode}</p>
+                                                                        className="cursor-pointer truncate font-medium w-[300px] line-clamp-1">{item.subjectCode}</p>
                                                                 </td>
                                                                 <td
 
@@ -372,8 +372,8 @@ export const Classmanager = () => {
                                                                     <div className="flex items-center">
                                                                         {
                                                                             item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                                                                Active</>
-                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                                                                {t('Active')}</>
+                                                                            ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>{t('Inactive')}</>)
                                                                         }
                                                                     </div>
                                                                 </td>
@@ -387,13 +387,13 @@ export const Classmanager = () => {
                                                                         </MenuHandler>
 
                                                                         {
-                                                                            isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >Show student in class</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>Show question group of class</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>Show examination of class</MenuItem>
+                                                                            isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>{t('Edit')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >{t('Delete')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >{t('Show student of subject')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>{t('Show question group of subject')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>{t('Show examination of subject')}</MenuItem>
                                                                             </MenuList>)
-                                                                                : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>Active</MenuItem></MenuList>)
+                                                                                : (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }}>{t('Active subject')}</MenuItem></MenuList>)
                                                                         }
 
 
@@ -427,7 +427,7 @@ export const Classmanager = () => {
                     </div>
                     {
                         isLoading ? (<>
-                            <h1 className='text-sm pl-1'>Loading...</h1>
+                            <h1 className='text-sm pl-1'>{t('Loading...')}</h1>
                         </>) : (listAllClass.length === 0 && (<>
                             <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                                 <div className="text-center">
@@ -436,7 +436,7 @@ export const Classmanager = () => {
                                     >
                                         Uh-oh!
                                     </h1>
-                                    <p className="mt-4 text-gray-500">We cannot find any classroom.</p>
+                                    <p className="mt-4 text-gray-500">{t('We cannot find any subject.')}</p>
                                 </div>
                             </div>
                         </>))
@@ -451,14 +451,14 @@ export const Classmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
-                                    <p className="text-center text-lg font-medium"> Edit class</p>
+                                    <p className="text-center text-lg font-medium">{t('Edit subject')}</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
-                                    <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={classSelect.className} />
-                                    <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={classSelect.classCode} />
-                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={classSelect.description || ""} />
+                                    <InputField name={CLASS_NAME} label={t("Subject name")} form={form} defaultValue={classSelect.subjectName} />
+                                    <InputField name={CLASS_CODE} label={t("Subject code")} form={form} defaultValue={classSelect.subjectCode} />
+                                    <InputField name={DESCRIPTION} label={t("Description")} form={form} defaultValue={classSelect.description || ""} />
                                     {/* <Toggle checked={classSelect.isPrivate} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
-                                        <ButtonS className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
+                                        <ButtonS className="bg-blue-800 w-[100px]" type='submit'>{t('Submit')}</ButtonS>
                                     </div>
                                     <div className='flex justify-center'>
                                         <Modal.Header />
@@ -474,14 +474,14 @@ export const Classmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
                                 >
-                                    <p className="text-center text-lg font-medium">Add new classroom</p>
+                                    <p className="text-center text-lg font-medium">{t('Add subject')}</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={''} />
-                                    <InputField name={CLASS_NAME} label="Class name" form={form} defaultValue={''} />
-                                    <InputField name={CLASS_CODE} label="Class code" form={form} defaultValue={''} />
-                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
+                                    <InputField name={CLASS_NAME} label={t("Subject name")} form={form} defaultValue={''} />
+                                    <InputField name={CLASS_CODE} label={t("Subject code")} form={form} defaultValue={''} />
+                                    <InputField name={DESCRIPTION} label={t("Description" )}form={form} defaultValue={''} />
                                     {/* <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
-                                        <ButtonS className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonS>
+                                        <ButtonS className="bg-blue-800 w-[100px]" type='submit'>{t('Submit')}</ButtonS>
                                     </div>
                                     <div className='flex justify-center'>
                                         <Modal.Header />
@@ -499,12 +499,12 @@ export const Classmanager = () => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to delete ????</h1>
+                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {('Warning')} </p>
+                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to delete ????')}</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <ButtonS handleOnClick={() => handleClickDeleteClass(classSelect.id)} className="bg-red-500" type='button'>Delete</ButtonS>
-                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClickDeleteClass(classSelect.id)} className="bg-red-500" type='button'>{t('Delete')}</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</ButtonS>
                                     </div>
 
                                 </form>
@@ -520,12 +520,12 @@ export const Classmanager = () => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-green-300 uppercase"> Confirm </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
+                                    <p className="text-center text-[20px] font-medium text-green-300 uppercase"> {t('Confirm')} </p>
+                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to active ?')}</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <ButtonS handleOnClick={() => handleClickActiveClass(classSelect.id)} className="bg-red-500" type='submit'>Submit</ButtonS>
-                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClickActiveClass(classSelect.id)} className="bg-red-500" type='submit'>{t('Submit')}</ButtonS>
+                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</ButtonS>
                                     </div>
                                 </form>
                             </Modal.Body>

@@ -13,8 +13,9 @@ import {
 
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
-import { activeQuestionService, addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionByIdClassroomService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByIdClassroomService, getAllInActiveQuestionByQuestionGrIDService, removeCredential, updateQuestionService } from '../../../services/ApiService';
+import { faBars, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
+
+import { exportListQuestionOfQuestionGroupService, activeQuestionService, addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionByIdClassroomService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByIdClassroomService, getAllInActiveQuestionByQuestionGrIDService, getQuestionByIdService, removeCredential, updateQuestionService, importListQuestionIntoQuestionGroupService } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
@@ -22,13 +23,11 @@ import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
 const CONTENT_QUESTION = 'content';
 const QUESTION_GROUP_ID = 'questionGroupId';
-const ANSWER1 = 'answer1';
-const ANSWER2 = 'answer2';
-const ANSWER3 = 'answer3';
-const ANSWER4 = 'answer4';
+const QUESTION_TYPE = 'questionType';
 const ID_QUESTION = 'id';
 export const Questionmanager = (props) => {
     const navigate = useNavigate();
+    const [questionType, setQuestionType] = useState('multipleChoice');
     const [contentQuestion, setContentQuestion] = useState('');
     const [listAnswer, setListAnswer] = useState([]);
     const [clickCount, setClickCount] = useState(1);
@@ -45,7 +44,13 @@ export const Questionmanager = (props) => {
     const [size, setSize] = useState(6);
     const [numberOfElements, setNumberOfElements] = useState(0);
     const [isEdit, setIsEdit] = useState(false);
-    const [questionSelect, setQuestionSelect] = useState({});
+    const [file, setFile] = useState();
+    const [questionSelect, setQuestionSelect] = useState({
+        id: ''
+        , content: ''
+        , answers: []
+        , questionType: ''
+    });
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
     const [isChooseTrue, setChooseTrue] = useState(false);
@@ -55,12 +60,22 @@ export const Questionmanager = (props) => {
     const [listCheckBox, setListCheckBox] = useState([]);
     const [isAllCheckBox, setIsAllCheckBox] = useState(true);
     const [isChooseActive, setIsChooseActive] = useState(false);
+    const [showOptions, setShowOptions] = useState(true);
+    const handleConfirmSelection = () => {
+        setShowOptions(false);
+    };
+
+    const handleQuestionTypeChange = (type) => {
+        setQuestionType(type);
+        handleConfirmSelection();
+    };
 
     const handleInputContent = (event) => {
         setContentQuestion(event.target.value);
     }
 
     const handleOptionChange = (event) => {
+        console.log(event.target.value);
         setSelectedOption(event.target.value);
         setChooseTrue(true);
     };
@@ -71,10 +86,8 @@ export const Questionmanager = (props) => {
         [CONTENT_QUESTION]: '',
         [QUESTION_GROUP_ID]: '',
         [ID_QUESTION]: '',
-        [ANSWER1]: '',
-        [ANSWER2]: '',
-        [ANSWER3]: '',
-        [ANSWER4]: '',
+        [QUESTION_TYPE]: '',
+
     };
     const handleAddAnswer = (event) => {
         event.preventDefault();
@@ -195,11 +208,32 @@ export const Questionmanager = (props) => {
             setIsQuestionGroupOpen(false);
         if (isChooseActive)
             setIsChooseActive(false);
+        setShowOptions(true)
+        setQuestionType('')
         setAnswer('');
         setSelectedOption('');
         setClickCount(1);
         setListAnswer([]);
         setChooseTrue(false);
+    }
+    const handleClickExport = () => {
+        exportListQuestionOfQuestionGroupService(props.id)
+            .then((res) => {
+                console.log(res)
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `Question.xlsx`); // Tên file
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                // Giải phóng URL để tránh rò rỉ bộ nhớ
+                window.URL.revokeObjectURL(url);
+                console.log("successeee")
+
+            }).catch((e) => {
+                console.log(e)
+            })
     }
 
     const handleClickAdd = () => {
@@ -211,72 +245,89 @@ export const Questionmanager = (props) => {
         defaultValues: initialValue,
         criteriaMode: "firstError"
     })
-
+    const handleChangeAnswer = (e, idAnswerQuestion) => {
+        console.log("handleChangeAnswer");
+        setListAnswer((prevListAnswer) => {
+            return prevListAnswer.map((item) => {
+                if (item.idAnswerQuestion === idAnswerQuestion) {
+                    return { ...item, answerContent: e.target.value };
+                }
+                return item;
+            });
+        });
+    }
     // const { defaultValue,on ...otherProps } = form.register(CONTENT_QUESTION);
+    const handleSubmitEdit = () => {
+        console.log("handleSubmitEdit");
+        console.log(listAnswer)
+        const newBody = {
+            content: contentQuestion,
+            answers: listAnswer,
+            id: questionSelect.id,
+            questionGroupId: questionSelect.questionGroupId,
+            questionType: questionSelect.questionType
+        }
+        newBody.answers.forEach((item) => {
+            if (item.idAnswerQuestion == selectedOption) {
+                item.isCorrect = true;
+            }
+            else {
+                item.isCorrect = false;
+            }
+        })
+        console.log(newBody)
+        updateQuestionService(newBody).then((res) => {
+            getAllQuestion();
+            toast.success('Edit question successfuly', { position: toast.POSITION.TOP_RIGHT });
+            handleClose();
+        }).catch((error) => {
+            toast.error('Edit question fail', { position: toast.POSITION.TOP_RIGHT });
+        })
+    }
+
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+
+    const handleUpload = () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        importListQuestionIntoQuestionGroupService(formData, props.id).then((res) => {
+            getAllActiveQuestionByQuestionGrID();
+        }).catch(e => {
+            toast.error("Cannot import file", { position: toast.POSITION.TOP_RIGHT })
+        })
+
+    };
 
     const submitForm = (body) => {
         handleClose();
         const newBody = {
             content: contentQuestion,
-            firstAnswer: {
-                answerContent: body.answer1
-            },
-            secondAnswer: {
-                answerContent: body.answer2,
+            answers: [],
 
-            },
-            thirdAnswer: {
-                answerContent: body.answer3,
-            },
-            fourthAnswer: {
-                answerContent: body.answer4
-            },
-            questionGroupId: body.questionGroupId
+            questionGroupId: body.questionGroupId,
+            questionType: questionType
         }
-
-        if (isEdit) {
-            switch (selectedOption) {
-                case 'firstAnswer':
-                    newBody.firstAnswer.isCorrect = true;
-                    break;
-                case 'secondAnswer':
-                    newBody.secondAnswer.isCorrect = true;
-                    break;
-                case 'thirdAnswer':
-                    newBody.thirdAnswer.isCorrect = true;
-                    break;
-                default:
-                    newBody.fourthAnswer.isCorrect = true;
-                    break;
-            }
-            let { questionGroupId, ...newBodys } = newBody;
-            newBodys.id = body.id;
-            updateQuestionService(newBodys).then((res) => {
-                getAllQuestion();
-                toast.success('Edit question successfuly', { position: toast.POSITION.TOP_RIGHT });
-            }).catch((error) => {
-                toast.error('Edit question fail', { position: toast.POSITION.TOP_RIGHT });
+        listAnswer.map((item, index) => {
+            newBody.answers.push({
+                'answerContent': item,
+                'isCorrect': false
             })
-        }
+        })
+
 
         if (isAdd) {
 
-            listAnswer.map((item, index) => {
+            listAnswer.forEach((item) => {
                 if (selectedOption === item) {
-                    switch (index) {
-                        case 0:
-                            newBody.firstAnswer.isCorrect = true;
-                            break;
-                        case 1:
-                            newBody.secondAnswer.isCorrect = true;
-                            break;
-                        case 2:
-                            newBody.thirdAnswer.isCorrect = true;
-                            break;
-                        default:
-                            newBody.fourthAnswer.isCorrect = true;
-                            break;
+
+                    const foundAnswer = newBody.answers.find((answer) => answer.answerContent === item);
+                    if (foundAnswer) {
+                        foundAnswer.isCorrect = true;
                     }
+
+
                 }
             })
             addQuestionByQuestionGroupService(newBody).then((res) => {
@@ -326,18 +377,18 @@ export const Questionmanager = (props) => {
         if (props.idClassroom)
             if (isModeActive)
                 getAllActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, size, data).then((res) => {
-                    setListAllQuestion(res.content);
-                    setIsLast(res.last);
-                    setIsFirst(res.first);
+                    setListAllQuestion(res.data.content);
+                    setIsLast(res.data.last);
+                    setIsFirst(res.data.first);
 
                     const pageNumbers2 = [];
-                    for (let i = 1; i <= res.totalPages; i++) {
+                    for (let i = 1; i <= res.data.totalPages; i++) {
                         pageNumbers2.push(i);
                     }
                     setPageNumbers(pageNumbers2);
-                    setTotalElements(res.totalElements);
-                    setOffset(res.pageable.offset);
-                    setNumberOfElements(res.numberOfElements);
+                    setTotalElements(res.data.totalElements);
+                    setOffset(res.data.pageable.offset);
+                    setNumberOfElements(res.data.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
@@ -349,18 +400,18 @@ export const Questionmanager = (props) => {
                 })
             else
                 getAllInActiveQuestionByIdClassroomService(props.idClassroom, undefined, undefined, undefined, size, data).then((res) => {
-                    setListAllQuestion(res.content);
-                    setIsLast(res.last);
-                    setIsFirst(res.first);
+                    setListAllQuestion(res.data.content);
+                    setIsLast(res.data.last);
+                    setIsFirst(res.data.first);
 
                     const pageNumbers2 = [];
-                    for (let i = 1; i <= res.totalPages; i++) {
+                    for (let i = 1; i <= res.data.totalPages; i++) {
                         pageNumbers2.push(i);
                     }
                     setPageNumbers(pageNumbers2);
-                    setTotalElements(res.totalElements);
-                    setOffset(res.pageable.offset);
-                    setNumberOfElements(res.numberOfElements);
+                    setTotalElements(res.data.totalElements);
+                    setOffset(res.data.pageable.offset);
+                    setNumberOfElements(res.data.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
@@ -373,18 +424,18 @@ export const Questionmanager = (props) => {
         else
             if (isModeActive)
                 getAllActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, size, data).then((res) => {
-                    setListAllQuestion(res.content);
-                    setIsLast(res.last);
-                    setIsFirst(res.first);
+                    setListAllQuestion(res.data.content);
+                    setIsLast(res.data.last);
+                    setIsFirst(res.data.first);
 
                     const pageNumbers2 = [];
-                    for (let i = 1; i <= res.totalPages; i++) {
+                    for (let i = 1; i <= res.data.totalPages; i++) {
                         pageNumbers2.push(i);
                     }
                     setPageNumbers(pageNumbers2);
-                    setTotalElements(res.totalElements);
-                    setOffset(res.pageable.offset);
-                    setNumberOfElements(res.numberOfElements);
+                    setTotalElements(res.data.totalElements);
+                    setOffset(res.data.pageable.offset);
+                    setNumberOfElements(res.data.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
@@ -396,18 +447,18 @@ export const Questionmanager = (props) => {
                 });
             else
                 getAllInActiveQuestionByQuestionGrIDService(props.id, undefined, undefined, undefined, size, data).then((res) => {
-                    setListAllQuestion(res.content);
-                    setIsLast(res.last);
-                    setIsFirst(res.first);
+                    setListAllQuestion(res.data.content);
+                    setIsLast(res.data.last);
+                    setIsFirst(res.data.first);
 
                     const pageNumbers2 = [];
-                    for (let i = 1; i <= res.totalPages; i++) {
+                    for (let i = 1; i <= res.data.totalPages; i++) {
                         pageNumbers2.push(i);
                     }
                     setPageNumbers(pageNumbers2);
-                    setTotalElements(res.totalElements);
-                    setOffset(res.pageable.offset);
-                    setNumberOfElements(res.numberOfElements);
+                    setTotalElements(res.data.totalElements);
+                    setOffset(res.data.pageable.offset);
+                    setNumberOfElements(res.data.numberOfElements);
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
@@ -430,22 +481,31 @@ export const Questionmanager = (props) => {
     const handleClickEdit = (item) => {
         setContentQuestion(item.content);
         setIsEdit(true);
-        setQuestionSelect(item);
+        getQuestionByIdService(item.id).then((res) => {
+            console.log("getQuestionByIdService ", res.data)
+            setQuestionSelect(res.data);
+            setListAnswer(res.data.answers)
+        }).catch(e => {
+            toast.error(`Get question ${item.id} fail !`, {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        })
+
     }
 
     const getAllInActiveQuestionByQuestionGrID = async (page, sortType, column, size, search) => {
         getAllInActiveQuestionByQuestionGrIDService(props.id, page, sortType, column, size, search).then((res) => {
-            setListAllQuestion(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setListAllQuestion(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
@@ -459,18 +519,18 @@ export const Questionmanager = (props) => {
 
     const getAllActiveQuestionByQuestionGrID = async (page, sortType, column, size, search) => {
         getAllActiveQuestionByQuestionGrIDService(props.id, page, sortType, column, size, search).then((res) => {
-            setListAllQuestion(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setListAllQuestion(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
 
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
@@ -484,18 +544,18 @@ export const Questionmanager = (props) => {
 
     const getAllActiveQuestionByIdClassroom = async (page, sortType, column, size, search) => {
         getAllActiveQuestionByIdClassroomService(props.idClassroom, page, sortType, column, size, search).then((res) => {
-            setListAllQuestion(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setListAllQuestion(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
 
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
@@ -509,18 +569,18 @@ export const Questionmanager = (props) => {
 
     const getAllInActiveQuestionByIdClassroom = async (page, sortType, column, size, search) => {
         getAllInActiveQuestionByIdClassroomService(props.idClassroom, page, sortType, column, size, search).then((res) => {
-            setListAllQuestion(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setListAllQuestion(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
 
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
@@ -552,7 +612,7 @@ export const Questionmanager = (props) => {
     };
 
     useEffect(() => {
-
+        console.log("Mount")
         if (props.id || props.idClassroom)
             getAllQuestion();
         else
@@ -587,6 +647,16 @@ export const Questionmanager = (props) => {
                                     <div className='flex gap-4  items-center justify-between'>
 
                                         <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question</Button>
+                                        <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>Export list question</Button>
+
+                                        <input type="file" id="file-upload" onChange={handleFileChange} className="hidden" />
+                                        <label htmlFor="file-upload" className="bg-blue-500 hover:bg-blue-700 text-white h-10 w-full inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset cursor-pointer rounded-lg">
+                                            Select File
+                                        </label>
+
+                                        <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
+                                            Upload
+                                        </button>
 
                                     </div>
                                 }
@@ -608,17 +678,9 @@ export const Questionmanager = (props) => {
                                             Question
                                         </th>
                                         <th scope="col" className="px-6 py-1 w-[150px]">
-                                            First answer
+                                            Question type
                                         </th>
-                                        <th scope="col" className="px-6 py-1 w-[150px]">
-                                            Second answer
-                                        </th>
-                                        <th scope="col" className="px-6 py-1 w-[150px]">
-                                            Third answer
-                                        </th>
-                                        <th scope="col" className="px-6 py-1 w-[150px]">
-                                            Fourth answer
-                                        </th>
+
                                         {
                                             props.id && (<th scope="col" className="px-6 py-1 w-[70px]">
                                                 Action
@@ -656,18 +718,9 @@ export const Questionmanager = (props) => {
                                                                 <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.content}>{item.content}</p>
                                                             </td>
                                                             <td className="px-6 py-1 w-[150px] " >
-                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.firstAnswer}>{item.firstAnswer}</p>
-                                                            </td>
-                                                            <td className="px-6 py-1 w-[150px] " >
-                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.secondAnswer}>{item.secondAnswer}</p>
-                                                            </td>
-                                                            <td className="px-6 py-1 w-[150px] " >
-                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.thirdAnswer}>{item.thirdAnswer}</p>
+                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.questionType}>{item.questionType}</p>
                                                             </td>
 
-                                                            <td className="px-6 py-1 w-[150px] " >
-                                                                <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.fourthAnswer}>{item.fourthAnswer}</p>
-                                                            </td>
                                                             {
                                                                 props.id && (<td className="px-6 py-1 w-[60px]">
                                                                     <Menu >
@@ -733,57 +786,72 @@ export const Questionmanager = (props) => {
                         <Modal className="bg-opacity-60 z-[105] m-auto" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
 
                             <Modal.Body>
-                                <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
-                                >
-                                    <div>
-                                        <p className="text-center text-lg font-medium">Edit question</p>
-                                        <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
-                                        <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
-                                    </div>
-                                    {/* <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} /> */}
-                                    <InputField name='id' disabled form={form} defaultValue={questionSelect.id} />
-                                    <InputField name={ANSWER1} label="First Answer" form={form} defaultValue={questionSelect.firstAnswer}
-                                        children={<><input
-                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                            type="radio"
-                                            name="options"
-                                            value={'firstAnswer'}
-                                            checked={selectedOption === 'firstAnswer'}
-                                            onChange={(event) => handleOptionChange(event)}
-                                        /></>} />
-                                    <InputField name={ANSWER2} label="Second Answer" form={form} defaultValue={questionSelect.secondAnswer}
-                                        children={<><input
-                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                            type="radio"
-                                            name="options"
-                                            value={'secondAnswer'}
-                                            checked={selectedOption === 'secondAnswer'}
-                                            onChange={(event) => handleOptionChange(event)}
-                                        /></>} />
-                                    <InputField name={ANSWER3} label="Third Answer" form={form} defaultValue={questionSelect.thirdAnswer}
-                                        children={<><input
-                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                            type="radio"
-                                            name="options"
-                                            value={'thirdAnswer'}
-                                            checked={selectedOption === 'thirdAnswer'}
-                                            onChange={(event) => handleOptionChange(event)}
-                                        /></>} />
-                                    <InputField name={ANSWER4} label="Fourth Answer" form={form} defaultValue={questionSelect.fourthAnswer}
-                                        children={<><input
-                                            className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                            type="radio"
-                                            name="options"
-                                            value={'fourthAnswer'}
-                                            checked={selectedOption === 'fourthAnswer'}
-                                            onChange={(event) => handleOptionChange(event)}
-                                        /></>} />
-                                    <Button onClick={() => handleClose()} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
-                                    <div className='flex justify-center'>
-                                        <Modal.Header />
-                                    </div>
-                                </form>
+                                {
+                                    questionSelect && (
+
+                                        <form onSubmit={form.handleSubmit(submitForm)}
+                                            className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
+                                        >
+                                            <div>
+                                                <p className="text-center text-lg font-medium">Edit question</p>
+                                                <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                                <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
+                                            </div>
+                                            {/* <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} /> */}
+
+                                            {
+
+                                                questionSelect?.answers?.map(
+                                                    (item, index) => {
+                                                        return (
+                                                            <>
+                                                                <label htmlFor={item} className="block pb-1 text-sm font-medium text-gray-700">{"Answer " + index}</label>
+                                                                <div className="relative flex justify-center">
+                                                                    <input
+
+                                                                        defaultValue={item.answerContent}
+                                                                        type={'text'}
+                                                                        name={item}
+                                                                        className={clsx("text-opacity-50", "border-2", "border-gray-500/75", "w-full", "rounded-lg", "p-4", "pe-12", "text-sm", "shadow-sm")}
+                                                                        placeholder={`Enter answer ${index}`}
+                                                                        onChange={(e) => handleChangeAnswer(e, item.idAnswerQuestion)}
+                                                                    />
+                                                                    <input
+                                                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                                                        type="radio"
+
+                                                                        value={item.idAnswerQuestion}
+                                                                        checked={selectedOption == item.idAnswerQuestion}
+                                                                        onChange={(event) => handleOptionChange(event)}
+                                                                    />
+                                                                </div>
+                                                            </>
+                                                            // <InputField name={item} label={"Answer "+ index} form={form} defaultValue={item.answerContent}
+                                                            //     children={<><input
+                                                            //         className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                                            //         type="radio"
+
+                                                            //         value={"Answer "+ index}
+                                                            //         checked={selectedOption === ("Answer "+ index) }
+                                                            //         onChange={(event) => handleOptionChange(event)}
+                                                            //     /></>} />
+                                                        )
+                                                    })
+
+
+                                            }
+
+
+                                            <Button handleOnClick={() => {
+                                                handleSubmitEdit();
+                                                console.log("Click");
+                                            }} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} >Submit</Button>
+                                            <div className='flex justify-center'>
+                                                <Modal.Header />
+                                            </div>
+                                        </form>
+                                    )
+                                }
                             </Modal.Body>
                         </Modal></>)
                 }
@@ -791,40 +859,97 @@ export const Questionmanager = (props) => {
                     <>
                         <Modal className="bg-opacity-60 z-[105] " show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Body>
-                                <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
-                                >
-                                    <p className="text-center text-lg font-medium">Add question</p>
-                                    <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
-                                    <InputField name={ANSWER1} disabled form={form} defaultValue={listAnswer[0] || ''} />
-                                    <InputField name={ANSWER2} disabled form={form} defaultValue={listAnswer[1] || ''} />
-                                    <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
-                                    <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} />
-                                    <div>
-                                        <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
-                                        <textarea
-                                            rows="4"
-                                            className='mt-0 border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4  text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
-                                    </div>
-                                    <div>
-                                        <label className='block pb-1 text-sm font-medium text-gray-700'>
-                                            Answer
-                                        </label>
-                                        <div className={clsx('relative flex justify-center ')}>
 
-                                            <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder='Enter answer'>
+                                {showOptions && (
+                                    // <div className='h-auto flex flex-col relative mb-0 space-y-4 rounded-lg pt-4 px-4 '>
+                                    //     <p className="text-center text-lg font-medium">Chọn loại câu hỏi</p>
+                                    //     <label className='flex items-center '>
+                                    //         <input
+                                    //             className='mx-2'
+                                    //             type="radio"
+                                    //             value="Multiple Choice"
+                                    //             checked={questionType === 'Multiple Choice'}
+                                    //             onChange={handleQuestionTypeChange}
+                                    //         />
+                                    //         <FontAwesomeIcon className='mx-1' icon={faQuestionCircle} />
+                                    //         <span>Multiple Choice</span>
+                                    //     </label>
+                                    //     <label className='flex items-center '>
+                                    //         <input
+                                    //             className='mx-2'
+                                    //             type="radio"
+                                    //             value="Fill in the blank"
+                                    //             checked={questionType === 'Fill in the blank'}
+                                    //             onChange={handleQuestionTypeChange}
+                                    //         />
+                                    //         <FontAwesomeIcon className='mx-1' icon={faEdit} />
+                                    //         <span>Fill in the blank</span>
+                                    //     </label>
+                                    //     <button onClick={handleConfirmSelection} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                                    //         Submit
+                                    //     </button>
+                                    //     <div className='flex justify-center'>
+                                    //         <Modal.Header />
+                                    //     </div>
+                                    // </div>
+                                    <div className='flex flex-col relative mb-0 space-y-4 rounded-lg pt-4 px-4 '>
+                                        <p className="text-center text-lg font-medium">Chọn loại câu hỏi</p>
+                                        <button className='flex items-center bg-gray-200 hover:bg-gray-300 p-2 rounded' onClick={() => handleQuestionTypeChange('Multiple Choice')}>
+                                            <FontAwesomeIcon className='mx-1' icon={faQuestionCircle} />
+                                            <span>Câu hỏi trắc nghiệm</span>
+                                        </button>
+                                        <button className='flex items-center bg-gray-200 hover:bg-gray-300 p-2 rounded' onClick={() => handleQuestionTypeChange('Fill in the blank')}>
+                                            <FontAwesomeIcon className='mx-1' icon={faEdit} />
+                                            <span>Điền chỗ trống</span>
+                                        </button>
 
-                                            </input>
-                                            <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('hover:bg-black hover:text-white font-bold border-2 m-1 px-5 py-3 border-black rounded-lg bg-white text-sm', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add</button>
+                                        <div className='flex justify-center'>
+                                            <Modal.Header />
                                         </div>
                                     </div>
-                                    <div ref={showAnswer} className='showAnswer flex flex-col' >
-                                    </div>
-                                    <Button onClick={() => handleClose()} className={clsx((clickCount <= 4 || !isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
-                                    <div className='flex justify-center'>
-                                        <Modal.Header />
-                                    </div>
-                                </form>
+                                )}
+                                {!showOptions &&
+                                    <>
+                                        {questionType === 'Multiple Choice' &&
+
+                                            <form onSubmit={form.handleSubmit(submitForm)}
+                                                className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
+                                            >
+                                                <p className="text-center text-lg font-medium">Add question</p>
+                                                <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
+                                                {/* <InputField name={ANSWER1} disabled form={form} defaultValue={listAnswer[0] || ''} />
+                                    <InputField name={ANSWER2} disabled form={form} defaultValue={listAnswer[1] || ''} />
+                                    <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
+                                    <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} /> */}
+                                                <div>
+                                                    <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                                    <textarea
+                                                        rows="4"
+                                                        className='mt-0 border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4  text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
+                                                </div>
+                                                <div>
+                                                    <label className='block pb-1 text-sm font-medium text-gray-700'>
+                                                        Answer
+                                                    </label>
+                                                    <div className={clsx('relative flex justify-center ')}>
+
+                                                        <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder='Enter answer'>
+
+                                                        </input>
+                                                        <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('hover:bg-black hover:text-white font-bold border-2 m-1 px-5 py-3 border-black rounded-lg bg-white text-sm', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add</button>
+                                                    </div>
+                                                </div>
+                                                <div ref={showAnswer} className='showAnswer flex flex-col' >
+                                                </div>
+                                                <Button className={clsx((clickCount <= 4 || !isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
+                                                <div className='flex justify-center'>
+                                                    <Modal.Header />
+                                                </div>
+                                            </form>
+                                        }
+
+                                    </>
+                                }
                             </Modal.Body>
                         </Modal></>)
                 }

@@ -9,6 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
 import clsx from 'clsx';
+import QuizQuestion from '../../../components/exam/QuizQuesiton';
 
 function ScoreDetail() {
       document.title = 'Score detail';
@@ -23,7 +24,7 @@ function ScoreDetail() {
       useEffect(() => {
             getMyScoreService(testId)
                   .then((res) => {
-                        setScore(res);
+                        setScore(res.data);
                   })
                   .catch((err) => {
 
@@ -90,7 +91,13 @@ function ScoreDetail() {
                                                       {
                                                             score?.submittedQuestions?.map((ques, index) => {
                                                                   return <div key={index} className='pt-10'>
-                                                                        <h3 className="pl-3 mb-4 font-semibold text-black dark:text-white">{index + 1}. {ques.content}</h3>
+                                                                        
+                                                                        {     
+                                                                       
+                                                                              <QuizQuestion indexQuestion={index} question={ques} showScore={true} />
+                                                                        }
+                                                                        
+                                                                        {/* <h3 className="pl-3 mb-4 font-semibold text-black dark:text-white">{index + 1}. {ques.content}</h3>
                                                                         <ul className="w-[90%] text-sm font-medium text-gray-900 bg-white border border-gray-200 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white">
                                                                               <li className="w-full border-b border-gray-200 rounded-t-lg dark:border-gray-600">
                                                                                     <div className="flex items-center ps-3">
@@ -125,7 +132,7 @@ function ScoreDetail() {
                                                                                     </div>
                                                                               </li>
 
-                                                                        </ul>
+                                                                        </ul> */}
                                                                   </div>
                                                             })
                                                       }

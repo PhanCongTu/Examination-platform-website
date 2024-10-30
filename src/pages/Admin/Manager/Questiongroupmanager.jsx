@@ -20,7 +20,7 @@ const QUESTIONGROUP_NAME = 'name';
 const DESCRIPTION = 'description';
 const IS_ENABLE = 'isEnable';
 const ID_QUESTIONGROUP = 'id';
-const ID_CLASSROOM = 'classroomId';
+const ID_CLASSROOM = 'subjectId';
 
 export const QuestionGroup = (props) => {
     document.title = 'Question group manager';
@@ -230,17 +230,17 @@ export const QuestionGroup = (props) => {
         if (isModeActive)
             getAllActivateQuestionGroupService(id, undefined, undefined, undefined, undefined, data).then((res) => {
 
-                setlistQuestionGroup(res.content);
-                setIsLast(res.last);
-                setIsFirst(res.first);
+                setlistQuestionGroup(res.data.content);
+                setIsLast(res.data.last);
+                setIsFirst(res.data.first);
                 const pageNumbers2 = [];
-                for (let i = 1; i <= res.totalPages; i++) {
+                for (let i = 1; i <= res.data.totalPages; i++) {
                     pageNumbers2.push(i);
                 }
                 setPageNumbers(pageNumbers2);
-                setTotalElements(res.totalElements);
-                setOffset(res.pageable.offset);
-                setNumberOfElements(res.numberOfElements);
+                setTotalElements(res.data.totalElements);
+                setOffset(res.data.pageable.offset);
+                setNumberOfElements(res.data.numberOfElements);
                 setIsLoading(false);
             }
             ).catch((error) => {
@@ -252,17 +252,17 @@ export const QuestionGroup = (props) => {
             );
         else
             getAllUnActiveQuestionGroupService(id, undefined, undefined, undefined, undefined, data).then((res) => {
-                setlistQuestionGroup(res.content);
-                setIsLast(res.last);
-                setIsFirst(res.first);
+                setlistQuestionGroup(res.data.content);
+                setIsLast(res.data.last);
+                setIsFirst(res.data.first);
                 const pageNumbers2 = [];
-                for (let i = 1; i <= res.totalPages; i++) {
+                for (let i = 1; i <= res.data.totalPages; i++) {
                     pageNumbers2.push(i);
                 }
                 setPageNumbers(pageNumbers2);
-                setTotalElements(res.totalElements);
-                setOffset(res.pageable.offset);
-                setNumberOfElements(res.numberOfElements);
+                setTotalElements(res.data.totalElements);
+                setOffset(res.data.pageable.offset);
+                setNumberOfElements(res.data.numberOfElements);
                 setIsLoading(false);
             }
             ).catch((error) => {
@@ -293,17 +293,17 @@ export const QuestionGroup = (props) => {
     const getAllActiveQuestionGroup = (page, sortType, column, size, search) => {
 
         getAllActivateQuestionGroupService(id, page, sortType, column, size, search).then((res) => {
-            setlistQuestionGroup(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setlistQuestionGroup(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }
         ).catch((error) => {
@@ -319,17 +319,17 @@ export const QuestionGroup = (props) => {
 
     const getAllUnActiveQuestionGroup = (page, sortType, column, size, search) => {
         getAllUnActiveQuestionGroupService(id, page, sortType, column, size, search).then((res) => {
-            setlistQuestionGroup(res.content);
-            setIsLast(res.last);
-            setIsFirst(res.first);
+            setlistQuestionGroup(res.data.content);
+            setIsLast(res.data.last);
+            setIsFirst(res.data.first);
             const pageNumbers2 = [];
-            for (let i = 1; i <= res.totalPages; i++) {
+            for (let i = 1; i <= res.data.totalPages; i++) {
                 pageNumbers2.push(i);
             }
             setPageNumbers(pageNumbers2);
-            setTotalElements(res.totalElements);
-            setOffset(res.pageable.offset);
-            setNumberOfElements(res.numberOfElements);
+            setTotalElements(res.data.totalElements);
+            setOffset(res.data.pageable.offset);
+            setNumberOfElements(res.data.numberOfElements);
             setIsLoading(false);
         }
         ).catch((error) => {
