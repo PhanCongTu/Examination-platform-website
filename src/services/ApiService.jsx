@@ -39,6 +39,36 @@ const exportListStudentOfClassUrl = 'exam/student/export/subject';
 const getQuestionByIdUrl = 'exam/question/{idQuestion}'
 const exportListQuestionOfQuestionGroupUrl = 'exam/question-group/export/questions'
 const importListQuestionIntoQuestionGroupUrl = 'exam/question-group/import/questions'
+const getReportTotalUrl='exam/report/total';
+const getReportTestsByMonthUrl='exam/report/testByMonth';
+
+export const getReportTestsByMonthService = async () => {
+      let accessToken = getAccessToken();
+
+      return await axios.request({
+            method: 'get',
+            url: getReportTestsByMonthUrl,
+            headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+
+      })
+}
+
+export const getReportTotalService = async () => {
+      let accessToken = getAccessToken();
+
+      return await axios.request({
+            method: 'get',
+            url: getReportTotalUrl,
+            headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+
+      })
+}
 
 export const importListQuestionIntoQuestionGroupService = async (formData, idQuestionGroup) => {
       let accessToken = getAccessToken();

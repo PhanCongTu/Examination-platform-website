@@ -7,9 +7,11 @@ import { faPenToSquare } from '@fortawesome/free-solid-svg-icons';
 import { toast } from 'react-toastify';
 import { displayNameInvalid, emailInvalid, emailRegex, passwordInvalid, passwordRegex } from '../../../utils/Constant';
 import { getUserInfo, saveCredential } from '../../../services/ApiService';
+import { useTranslation } from 'react-i18next';
 function MyInfo() {
+      const {t}=useTranslation();
       const navigate = useNavigate()
-      document.title = 'My infomation';
+      document.title = t('My information');
       // State for updating user profile
       const [toggleUpdateEmail, setToggleUpdateEmail] = React.useState(false);
       const [loginName, setLoginName] = React.useState("");
@@ -70,14 +72,14 @@ function MyInfo() {
                               saveCredential(userInfo);
                         }
 
-                        toast.success(`Update successfully!`, {
+                        toast.success(t('Update successfully!'), {
                               position: toast.POSITION.TOP_RIGHT,
                         });
                         getMyInfo()
                   })
                   .catch(err => {
                         getMyInfo()
-                        toast.error(`Update fail !`, {
+                        toast.error(t('Update fail !'), {
                               position: toast.POSITION.TOP_RIGHT,
                         });
                   })
@@ -85,13 +87,13 @@ function MyInfo() {
       const handleChangePassword = () => {
             setError()
             if (newPassword !== confirmNewPassword) {
-                  setError("Passwords does not match")
+                  setError(t("Passwords does not match"))
             } else if (!newPassword.match(passwordRegex)) {
                   setError(passwordInvalid)
             } else {
                   changePasswordService(oldPassword, newPassword)
                         .then(res => {
-                              toast.success(`Update successfully!`, {
+                              toast.success(t('Update successfully!'), {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
                         })
@@ -104,17 +106,17 @@ function MyInfo() {
             <>
                   <div className='grid pt-5 grid-cols-7 gap-10 w-[80%] mx-auto'>
                         <div className=' col-span-4 select-none'>
-                              <h1 className='text-[30px] font-bold pl-5 pt-3' >My Information</h1>
+                              <h1 className='text-[30px] font-bold pl-5 pt-3' >{t('My information')}</h1>
                               <hr className="h-px mb-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
                               <div className='grid grid-cols-2 gap-5'>
                                     <div className=''>
-                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >Login name</h3>
+                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('Login name')}</h3>
                                           <input disabled={true} value={loginName}
                                                 type="text" id="loginName"
                                                 className="opacity-90 pointer-events-none cursor-default block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 " required />
                                     </div>
                                     <div className=''>
-                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >Email address <FontAwesomeIcon onClick={() => handleToggleUpdateEmail()} className='pl-5 cursor-pointer' icon={faPenToSquare} /></h3>
+                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('Email address')}<FontAwesomeIcon onClick={() => handleToggleUpdateEmail()} className='pl-5 cursor-pointer' icon={faPenToSquare} /></h3>
                                           <input disabled={true} value={emailAddress}
                                                 type="text" id="emailAddress"
                                                 className="opacity-90 pointer-events-none cursor-default block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 " required />
@@ -123,7 +125,7 @@ function MyInfo() {
                               </div>
                               <div className='grid grid-cols-2 gap-5'>
                                     <div className=''>
-                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >Display name</h3>
+                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('Display name')}</h3>
                                           <input value={displayName}
                                                 onChange={(e) => handleChangeDisplayName(e.target.value)}
                                                 type="text" id="displayName"
@@ -131,7 +133,7 @@ function MyInfo() {
                                     </div>
                                     {(toggleUpdateEmail || newEmailAddress !== "") &&
                                           <div className=''>
-                                                <h3 className='text-[15px] font-bold pl-5 pt-3' >New email address</h3>
+                                                <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('New email address')}</h3>
                                                 <input value={newEmailAddress}
                                                       onChange={(e => handleChangeEmailAddress(e.target.value))}
                                                       type="text" id="displayName"
@@ -141,29 +143,29 @@ function MyInfo() {
                               </div>
                               <div className='flex justify-end items-center opacity-95 px-10 py-5    rounded-lg select-none mr-10 mt-1' >
                                     <div onClick={() => handleSubmitUpdateMyInfo()}
-                                          className='hover:bg-black hover:text-white flex select-none cursor-pointer justify-center items-center rounded-lg border-[3px] py-2 px-5 bg-white border-black' variant="outlined">Update</div>
+                                          className='hover:bg-black hover:text-white flex select-none cursor-pointer justify-center items-center rounded-lg border-[3px] py-2 px-5 bg-white border-black' variant="outlined">{t('Update')}</div>
                               </div>
                         </div>
                         <div className=' col-span-3 pl-10'>
-                              <h1 className='text-[30px] font-bold pl-5 pt-3' >Change password</h1>
+                              <h1 className='text-[30px] font-bold pl-5 pt-3' >{t('Change password')}</h1>
                               <hr className="h-px mb-8 bg-gray-200 border-0 dark:bg-gray-700"></hr>
                               <div className=''>
                                     <div className=''>
-                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >Old password</h3>
+                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('Old password')}</h3>
                                           <input onChange={(e) => handleChangeOldPassword(e.target.value)}
                                                 value={oldPassword}
                                                 type="password" id="oldPassword"
                                                 className=" block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 " required />
                                     </div>
                                     <div className=''>
-                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >New password</h3>
+                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('New password')}</h3>
                                           <input onChange={(e) => handleChangeNewPassword(e.target.value)}
                                                 value={newPassword}
                                                 type="password" id="newPassword"
                                                 className=" block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 " required />
                                     </div>
                                     <div className=''>
-                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >Confirm your new password</h3>
+                                          <h3 className='text-[15px] font-bold pl-5 pt-3' >{t('Confirm your new password')}</h3>
                                           <input onChange={(e) => handleChangeConfirmNewPassword(e.target.value)}
                                                 value={confirmNewPassword}
                                                 type="password" id="confirmNewPassword"
@@ -178,7 +180,7 @@ function MyInfo() {
                               {(oldPassword && newPassword && confirmNewPassword) &&
                                     < div className='flex justify-end items-center opacity-95 px-10 py-5    rounded-lg select-none mr-10 mt-1' >
                                           <button onClick={() => handleChangePassword()}
-                                                className=' hover:bg-black hover:text-white flex select-none cursor-pointer justify-center items-center rounded-lg border-[3px] py-2 px-5 bg-white border-black' variant="outlined">Change</button>
+                                                className=' hover:bg-black hover:text-white flex select-none cursor-pointer justify-center items-center rounded-lg border-[3px] py-2 px-5 bg-white border-black' variant="outlined">{t('Change')}</button>
                                     </div >
                               }
                         </div>

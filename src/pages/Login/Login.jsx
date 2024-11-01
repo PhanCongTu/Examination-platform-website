@@ -57,7 +57,7 @@ const Login = () => {
                         saveCredential(response.data)
                         let roles = getRoles()
                         if (roles.includes(ROLE_ADMIN))
-                              navigate(Path.AMCLASSMANAGER);
+                              navigate('/admin/');
                         else if(roles.includes(ROLE_TEACHER))
                               navigate(Path.TEACHERHOME)
                         else

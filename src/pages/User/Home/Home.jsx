@@ -23,15 +23,17 @@ import { getMy2WeeksAroundMCTestService } from '../../../services/UserService.js
 import { NavLink, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Path from '../../../utils/Path.jsx'
+import { useTranslation } from 'react-i18next'
 
 function classNames(...classes) {
       return classes.filter(Boolean).join(' ')
 }
 
 function Home() {
+      const {t}=useTranslation();
       // navigater
       const navigate = useNavigate();
-      document.title = 'Home';
+      document.title = t('Home');
       let today = startOfToday()
       let [selectedDay, setSelectedDay] = useState(today)
       let [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -90,7 +92,7 @@ function Home() {
                                                       onClick={previousMonth}
                                                       className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                                                 >
-                                                      <span className="sr-only">Previous month</span>
+                                                      <span className="sr-only">{t('Previous month')}</span>
                                                       <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
                                                 </button>
                                                 <button
@@ -98,7 +100,7 @@ function Home() {
                                                       type="button"
                                                       className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                                                 >
-                                                      <span className="sr-only">Next month</span>
+                                                      <span className="sr-only">{t('Next month')}</span>
                                                       <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
                                                 </button>
                                           </div>
@@ -170,7 +172,7 @@ function Home() {
                                     </div>
                                     <section className="mt-12 md:mt-0 md:pl-14">
                                           <h2 className="font-semibold text-black  px-3 rounded-lg">
-                                                Schedule start exams for{' '}
+                                                {t('Schedule start exams for')} {' '}
                                                 <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
                                                       {format(selectedDay, 'MMM dd, yyy')}
                                                 </time>
@@ -181,13 +183,13 @@ function Home() {
                                                             <Testing Test={test} IsDeadline={false} key={test.id} />
                                                       ))
                                                 ) : (
-                                                      <p>There are no exams for this date.</p>
+                                                      <p className='flex items-center px-4 py-2 space-x-4 group rounded-xl'>{t('There are no exams for this date.')}</p>
                                                 )}
                                           </ol>
                                     </section>
                                     <section className="mt-12 md:mt-0 md:pl-14">
                                           <h2 className="font-semibold text-red-600 px-3 rounded-lg">
-                                                Schedule due date exams for{' '}
+                                                {t('Schedule due date exams for')}{' '}
                                                 <time dateTime={format(selectedDay, 'yyyy-MM-dd')}>
                                                       {format(selectedDay, 'MMM dd, yyy')}
                                                 </time>
@@ -198,7 +200,7 @@ function Home() {
                                                             <Testing Test={test} IsDeadline={true} key={test.id} />
                                                       ))
                                                 ) : (
-                                                      <p>There are no exam deadlines for this date.</p>
+                                                      <p className='flex items-center px-4 py-2 space-x-4 group rounded-xl'>{t('There are no exam deadlines for this date.')}</p>
                                                 )}
                                           </ol>
                                     </section>
@@ -212,7 +214,9 @@ function Home() {
 
       )
 }
-function Testing({ Test, IsDeadline }) {
+function Testing({ Test, IsDeadline }) { 
+
+      const{t}=useTranslation();
       let startDateTime = Test.startDate;
       let endDateTime = Test.endDate;
 
@@ -232,11 +236,11 @@ function Testing({ Test, IsDeadline }) {
                                     {!IsDeadline ? format(endDateTime, `h:mm a ${isSameDay(endDateTime, startDateTime) ? '' : '(dd/MM)'} `) : format(endDateTime, 'h:mm a')}
                               </time>
                               {
-                                    endDateTime < new Date() ? <p className='pl-3 font-bold text-red-600'>Finished</p> : <></>
+                                    endDateTime < new Date() ? <p className='pl-3 font-bold text-red-600'>{t('Finished')}</p> : <></>
                               }
 
                         </div>
-                        <p>Subject: {Test.subjectName}</p>
+                        <p>{t('Subject')}: {Test.subjectName}</p>
                   </div>
 
                   <Menu
@@ -270,7 +274,7 @@ function Testing({ Test, IsDeadline }) {
                                                                   'block px-4 py-2 text-sm'
                                                             )}
                                                       >
-                                                            Go to this exam
+                                                            {t('Go to this exam')}
 
                                                       </NavLink>
                                                 )}
@@ -284,7 +288,7 @@ function Testing({ Test, IsDeadline }) {
                                                                   'block px-4 py-2 text-sm'
                                                             )}
                                                       >
-                                                            Go to subject
+                                                            {t('Go to subject')}
                                                       </NavLink>
                                                 )}
                                           </Menu.Item>

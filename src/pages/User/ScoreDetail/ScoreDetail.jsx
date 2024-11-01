@@ -10,9 +10,11 @@ import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
 import clsx from 'clsx';
 import QuizQuestion from '../../../components/exam/QuizQuesiton';
+import { useTranslation } from 'react-i18next';
 
 function ScoreDetail() {
-      document.title = 'Score detail';
+      const {t}=useTranslation();
+      document.title = t('Score detail');
       const { testId } = useParams();
       const navigate = useNavigate();
       const [score, setScore] = useState();
@@ -36,7 +38,7 @@ function ScoreDetail() {
                         <div className='bg-white opacity-95 min-h-screen h-full w-[80%] pt-6 rounded-lg select-none' >
                               <div onClick={() => navigate(-1)}
                                     className='flex justify-start items-center ml-10 cursor-pointer w-fit rounded-lg p-1'>
-                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to the previous page
+                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> {t('Back to the previous page')}
                               </div>
                               <div className='flex  justify-center items-center opacity-95  rounded-lg select-none' >
                                     <div className='w-[80%]  min-h-screen h-full opacity-95 rounded-lg select-none' >
@@ -49,11 +51,11 @@ function ScoreDetail() {
                                                                         <h5 className="flex justify-center mb-2 text-4xl font-bold tracking-tight text-gray-900 dark:text-white">
                                                                               {score.totalScore >= score.targetScore ?
                                                                                     <>
-                                                                                          <p className='text-green-600' >Passed</p>
+                                                                                          <p className='text-green-600' >{t('Passed')}</p>
                                                                                     </>
                                                                                     :
                                                                                     <>
-                                                                                          <p className='text-red-600' >Failed</p>
+                                                                                          <p className='text-red-600' >{t('Failed')}</p>
                                                                                     </>
                                                                               }
                                                                         </h5>
@@ -62,10 +64,10 @@ function ScoreDetail() {
                                                                               <span className='text-[20px] pb-3'>/10</span>
                                                                         </p>
                                                                         <div className=" text-[18px] mb-1 font-normal text-black dark:text-gray-400 select-none">
-                                                                              <p><strong>Exam name:</strong> {score?.multipleChoiceTest?.testName}</p>
-                                                                              <p><strong>Submitted on:</strong> {format(score?.submittedDate, 'MMM dd, yyy h:mm a')}</p>
-                                                                              <p><strong>Target score:</strong> {score?.targetScore || 0} / 10</p>
-                                                                              <p><strong>Test description:</strong> {score?.multipleChoiceTest?.description || 0}</p>
+                                                                              <p><strong>{t('Exam name')}:</strong> {score?.multipleChoiceTest?.testName}</p>
+                                                                              <p><strong>{t('Submitted on')}:</strong> {format(score?.submittedDate, 'MMM dd, yyy h:mm a')}</p>
+                                                                              <p><strong>{t('Target score')}:</strong> {score?.targetScore || 0} / 10</p>
+                                                                              <p><strong>{t('Description')}:</strong> {score?.multipleChoiceTest?.description || 0}</p>
                                                                         </div>
 
 
@@ -80,8 +82,8 @@ function ScoreDetail() {
                                                                   >
                                                                         Uh-oh!
                                                                   </h1>
-                                                                  <p className="mt-4 text-gray-500">We cannot find any result of this test.</p>
-                                                                  <p className="my-2 text-gray-500">Maybe you didn't take this exam!</p>
+                                                                  <p className="mt-4 text-gray-500">{t('We cannot find any result of this test.')}</p>
+                                                                  <p className="my-2 text-gray-500">{t("Maybe you didn't take this exam!")}</p>
                                                             </div>
                                                       </div>
                                                 </>
@@ -140,7 +142,7 @@ function ScoreDetail() {
                                           }
                                           <div className="flex w-full justify-center p-4 leading-normal">
                                                 <NavLink to={Path.HOME}
-                                                      className='flex w-80 select-none cursor-pointer justify-center items-center rounded-lg border-[2px] py-1 bg-white text-red-600 border-red-600' variant="outlined">Back to Home</NavLink>
+                                                      className='flex w-80 select-none cursor-pointer justify-center items-center rounded-lg border-[2px] py-1 bg-white text-red-600 border-red-600' variant="outlined">{t('Back to Home')}</NavLink>
                                           </div>
 
                                     </div>

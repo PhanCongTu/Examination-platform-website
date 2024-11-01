@@ -21,16 +21,22 @@ import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router-dom';
 import clsx from 'clsx';
+import { useTranslation } from 'react-i18next';
+import QuestionContentInput from '../../../components/exam/QuestionContentInput';
+import MultipleChoiceAnswers from '../../../components/exam/MultipleChoiceAnswers';
+import TrueFalseQuestion from '../../../components/exam/TrueFalseQuestion';
+import ShortAnswerQuestion from '../../../components/exam/ShortAnswerQuestion';
 const CONTENT_QUESTION = 'content';
 const QUESTION_GROUP_ID = 'questionGroupId';
 const QUESTION_TYPE = 'questionType';
 const ID_QUESTION = 'id';
 export const Questionmanager = (props) => {
     const navigate = useNavigate();
-    const [questionType, setQuestionType] = useState('multipleChoice');
+    const { t } = useTranslation();
+    const [questionType, setQuestionType] = useState('');
     const [contentQuestion, setContentQuestion] = useState('');
     const [listAnswer, setListAnswer] = useState([]);
-    const [clickCount, setClickCount] = useState(1);
+
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -45,6 +51,8 @@ export const Questionmanager = (props) => {
     const [numberOfElements, setNumberOfElements] = useState(0);
     const [isEdit, setIsEdit] = useState(false);
     const [file, setFile] = useState();
+    const [isChooseTrue, setChooseTrue] = useState(false);
+    const [selectedOption, setSelectedOption] = useState('');
     const [questionSelect, setQuestionSelect] = useState({
         id: ''
         , content: ''
@@ -53,10 +61,10 @@ export const Questionmanager = (props) => {
     });
     const [isLoading, setIsLoading] = useState(true);
     const [isDelete, setIsDelete] = useState(false);
-    const [isChooseTrue, setChooseTrue] = useState(false);
+
     const [isModeActive, setIsModeActivate] = useState(true);
-    const [answer, setAnswer] = useState('');
-    const [selectedOption, setSelectedOption] = useState('');
+
+
     const [listCheckBox, setListCheckBox] = useState([]);
     const [isAllCheckBox, setIsAllCheckBox] = useState(true);
     const [isChooseActive, setIsChooseActive] = useState(false);
@@ -74,13 +82,9 @@ export const Questionmanager = (props) => {
         setContentQuestion(event.target.value);
     }
 
-    const handleOptionChange = (event) => {
-        console.log(event.target.value);
-        setSelectedOption(event.target.value);
-        setChooseTrue(true);
-    };
 
-    const showAnswer = useRef(null);
+
+    // const showAnswer = useRef(null);
 
     const initialValue = {
         [CONTENT_QUESTION]: '',
@@ -89,64 +93,97 @@ export const Questionmanager = (props) => {
         [QUESTION_TYPE]: '',
 
     };
-    const handleAddAnswer = (event) => {
-        event.preventDefault();
-        if (answer === '') {
-            toast.error('Please enter answer', { position: toast.POSITION.TOP_RIGHT })
-        }
-        else {
-            const updatedListAnswer = [...listAnswer];
-            if (listAnswer.length === 0) {
-                updatedListAnswer.push(answer);
-                const label = document.createElement('label');
-                const input = document.createElement('input');
-                input.type = 'radio';
-                input.name = 'options';
-                input.value = answer;
-                input.className = 'mr-[5px]';
-                label.className = 'flex items-center'
-                setListAnswer(updatedListAnswer);
-                input.checked = selectedOption === input.value;
-                input.addEventListener('change', handleOptionChange);
-                // Object.assign(input, form.register('asnwer' + clickCount));
-                label.appendChild(input);
-                label.appendChild(document.createTextNode(answer));
-                showAnswer.current.appendChild(label);
-                setClickCount(clickCount + 1);
-                setAnswer('');
-            }
-            else {
-                if (updatedListAnswer.indexOf(answer) === -1) {
-                    updatedListAnswer.push(answer);
-                    const label = document.createElement('label');
-                    const input = document.createElement('input');
-                    input.type = 'radio';
-                    input.name = 'options';
-                    input.value = answer;
-                    input.className = 'mr-[5px]';
-                    label.className = 'flex items-center'
-                    setListAnswer(updatedListAnswer);
-                    input.checked = selectedOption === input.value;
-                    input.addEventListener('change', (event) => handleOptionChange(event));
-                    label.appendChild(input);
-                    label.appendChild(document.createTextNode(answer));
-                    showAnswer.current.appendChild(label);
-                    setClickCount(clickCount + 1);
-                    setAnswer('');
-                }
-                else {
-                    toast.error('Please enter an answer different from the one already given', toast.POSITION.TOP_RIGHT);
-                }
-            }
+    // const handleAddAnswer = (event) => {
+    //     event.preventDefault();
+    //     if (answer === '') {
+    //         toast.error(t('Please enter answer'), { position: toast.POSITION.TOP_RIGHT })
+    //     }
+    //     else {
+    //         const updatedListAnswer = [...listAnswer];
+    //         if (listAnswer.length === 0) {
+    //             updatedListAnswer.push(answer);
+    //             const label = document.createElement('label');
+    //             const input = document.createElement('input');
+    //             input.type = 'radio';
+    //             input.name = 'options';
+    //             input.value = answer;
+    //             input.className = 'mr-[5px]';
+    //             label.className = 'flex items-center'
+    //             setListAnswer(updatedListAnswer);
+    //             input.checked = selectedOption === input.value;
+    //             input.addEventListener('change', handleOptionChange);
+    //             // Object.assign(input, form.register('asnwer' + clickCount));
+    //             label.appendChild(input);
+    //             label.appendChild(document.createTextNode(answer));
+    //             showAnswer.current.appendChild(label);
+    //             setClickCount(clickCount + 1);
+    //             setAnswer('');
+    //         }
+    //         else {
+    //             if (updatedListAnswer.indexOf(answer) === -1) {
+    //                 updatedListAnswer.push(answer);
+    //                 const label = document.createElement('label');
+    //                 const input = document.createElement('input');
+    //                 input.type = 'radio';
+    //                 input.name = 'options';
+    //                 input.value = answer;
+    //                 input.className = 'mr-[5px]';
+    //                 label.className = 'flex items-center'
+    //                 setListAnswer(updatedListAnswer);
+    //                 input.checked = selectedOption === input.value;
+    //                 input.addEventListener('change', (event) => handleOptionChange(event));
+    //                 label.appendChild(input);
+    //                 label.appendChild(document.createTextNode(answer));
+    //                 showAnswer.current.appendChild(label);
+    //                 setClickCount(clickCount + 1);
+    //                 setAnswer('');
+    //             }
+    //             else {
+    //                 toast.error(t('Please enter an answer different from the one already given'), toast.POSITION.TOP_RIGHT);
+    //             }
+    //         }
 
-        }
+    //     }
 
 
-    }
+    // }
 
-    const handleInputAnswer = (event) => {
-        setAnswer(event.target.value);
-    }
+
+    // const handleAddAnswer = (event) => {
+    //     event.preventDefault();
+    //     if (answer.trim() === '') {
+    //         return toast.error(t('Please enter answer'), { position: toast.POSITION.TOP_RIGHT });
+    //     }
+
+    //     if (listAnswer.length >= 4) {
+    //         return toast.error(t('Maximum of 4 answers allowed'), { position: toast.POSITION.TOP_RIGHT });
+    //     }
+
+    //     if (isEditingAnswer !== null) {
+    //         // Cập nhật đáp án đang được chỉnh sửa
+    //         const updatedAnswers = listAnswer.map((item, index) => 
+    //             index === isEditingAnswer ? answer : item
+    //         );
+    //         setListAnswer(updatedAnswers);
+    //         setIsEditingAnswer(null);
+    //         setAnswer('');
+    //         toast.success(t('Answer updated successfully'), { position: toast.POSITION.TOP_RIGHT });
+    //     } else {
+    //         // Thêm đáp án mới vào danh sách
+    //         const updatedListAnswer = [...listAnswer, answer];
+    //         setListAnswer(updatedListAnswer);
+    //         setAnswer('');
+    //     }
+    // };
+
+    // const handleEditAnswer = (index) => {
+    //     // Đưa đáp án vào ô input để chỉnh sửa
+    //     setAnswer(listAnswer[index]);
+    //     setIsEditingAnswer(index);
+    // };
+    // const handleInputAnswer = (event) => {
+    //     setAnswer(event.target.value);
+    // }
 
     const isChecked = (itemId) => {
         const filteredItems = listCheckBox.filter((item) => item === itemId);
@@ -210,11 +247,13 @@ export const Questionmanager = (props) => {
             setIsChooseActive(false);
         setShowOptions(true)
         setQuestionType('')
-        setAnswer('');
+        setChooseTrue(false)
         setSelectedOption('');
-        setClickCount(1);
+        // setAnswer('');
+
+
         setListAnswer([]);
-        setChooseTrue(false);
+
     }
     const handleClickExport = () => {
         exportListQuestionOfQuestionGroupService(props.id)
@@ -229,10 +268,10 @@ export const Questionmanager = (props) => {
                 link.remove();
                 // Giải phóng URL để tránh rò rỉ bộ nhớ
                 window.URL.revokeObjectURL(url);
-                console.log("successeee")
+
 
             }).catch((e) => {
-                console.log(e)
+                toast.error(t('Export question fail !'), { position: toast.POSITION.TOP_RIGHT });
             })
     }
 
@@ -278,10 +317,10 @@ export const Questionmanager = (props) => {
         console.log(newBody)
         updateQuestionService(newBody).then((res) => {
             getAllQuestion();
-            toast.success('Edit question successfuly', { position: toast.POSITION.TOP_RIGHT });
+            toast.success('Edit question successfuly !', { position: toast.POSITION.TOP_RIGHT });
             handleClose();
         }).catch((error) => {
-            toast.error('Edit question fail', { position: toast.POSITION.TOP_RIGHT });
+            toast.error(t('Edit question fail !'), { position: toast.POSITION.TOP_RIGHT });
         })
     }
 
@@ -294,8 +333,9 @@ export const Questionmanager = (props) => {
         formData.append('file', file);
         importListQuestionIntoQuestionGroupService(formData, props.id).then((res) => {
             getAllActiveQuestionByQuestionGrID();
+            toast.success(t('Import successfuly !'), { position: toast.POSITION.TOP_RIGHT });
         }).catch(e => {
-            toast.error("Cannot import file", { position: toast.POSITION.TOP_RIGHT })
+            toast.error(t("Cannot import file !"), { position: toast.POSITION.TOP_RIGHT })
         })
 
     };
@@ -332,25 +372,25 @@ export const Questionmanager = (props) => {
             })
             addQuestionByQuestionGroupService(newBody).then((res) => {
                 getAllQuestion();
-                toast.success('Add question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                toast.success(t('Add question successfuly !'), { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
-                toast.error('Add question fail', { position: toast.POSITION.TOP_RIGHT });
+                toast.error(t('Add question fail !'), { position: toast.POSITION.TOP_RIGHT });
             })
         }
 
         if (isDelete)
             deleteQuestionService(body.id).then((res) => {
                 getAllQuestion();
-                toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                toast.success(t('Delete question successfuly !'), { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
-                toast.error('Delete question fail', { position: toast.POSITION.TOP_RIGHT });
+                toast.error(t('Delete question fail !'), { position: toast.POSITION.TOP_RIGHT });
             })
         if (isChooseActive)
             activeQuestionService(body.id).then((res) => {
                 getAllQuestion();
-                toast.success('Active question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                toast.success(t('Active question successfuly !'), { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
-                toast.error('Active question fail', { position: toast.POSITION.TOP_RIGHT });
+                toast.error(t('Active question fail !'), { position: toast.POSITION.TOP_RIGHT });
             })
         setActiveIndex(0);
 
@@ -372,6 +412,12 @@ export const Questionmanager = (props) => {
         setActiveIndex(index + 1);
         getAllQuestion(index + 1);
     }
+    const handleOptionChange = (event) => {
+        console.log(event.target.value);
+
+        setSelectedOption(event.target.value);
+        setChooseTrue(true);
+    };
 
     const handleSearch = (data) => {
         if (props.idClassroom)
@@ -392,7 +438,7 @@ export const Questionmanager = (props) => {
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
-                    toast.error(`Search question active fail !`, {
+                    toast.error(t('Search question fail !'), {
                         position: toast.POSITION.TOP_RIGHT,
                     });
                     removeCredential();
@@ -415,7 +461,7 @@ export const Questionmanager = (props) => {
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
-                    toast.error(`Get question inactive fail !`, {
+                    toast.error(t('Get question fail !'), {
                         position: toast.POSITION.TOP_RIGHT,
                     });
                     removeCredential();
@@ -439,7 +485,7 @@ export const Questionmanager = (props) => {
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
-                    toast.error(`Search question active fail !`, {
+                    toast.error(t('Search question fail !'), {
                         position: toast.POSITION.TOP_RIGHT,
                     });
                     removeCredential();
@@ -462,7 +508,7 @@ export const Questionmanager = (props) => {
                     setIsLoading(false);
                 }).catch((error) => {
                     setIsLoading(false);
-                    toast.error(`Search question inactive fail !`, {
+                    toast.error(t('Search question fail !'), {
                         position: toast.POSITION.TOP_RIGHT,
                     });
                     removeCredential();
@@ -486,7 +532,7 @@ export const Questionmanager = (props) => {
             setQuestionSelect(res.data);
             setListAnswer(res.data.answers)
         }).catch(e => {
-            toast.error(`Get question ${item.id} fail !`, {
+            toast.error(t('Get question {} fail !').replace('{}', `${item.id}`), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         })
@@ -509,7 +555,7 @@ export const Questionmanager = (props) => {
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get question inactive fail !`, {
+            toast.error(t('Get question fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -534,7 +580,7 @@ export const Questionmanager = (props) => {
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get question active fail !`, {
+            toast.error(t('Get question fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -559,7 +605,7 @@ export const Questionmanager = (props) => {
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get question active fail !`, {
+            toast.error(t('Get question fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -584,7 +630,7 @@ export const Questionmanager = (props) => {
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get question inactive fail !`, {
+            toast.error(t('Get question fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -622,14 +668,14 @@ export const Questionmanager = (props) => {
 
     return (
         <>
-            <div className=" pt-1 h-fit w-full flex-row flex ">
+            <div className=" pt-1 h-fit w-full flex-row flex justify-center items-center ">
                 <div className="pt-4 dark:border-gray-700 w-full">
                     <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
                         <div className="w-full overflow-auto shadow-md sm:rounded-lg">
                             <div className='p-3 items-center flex gap-4 float-right mb-[14px]'>
                                 {!props?.isAddManual &&
                                     <div className='w-[150px]'>
-                                        <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+                                        <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? t('Active') : t('Inactive')}</Toggle>
                                     </div>
                                 }
 
@@ -640,23 +686,25 @@ export const Questionmanager = (props) => {
                                             <svg className="w-5 h-5 text-white dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
                                         </Button>
                                     </div>
-                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
+                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Search for items")} />
 
                                 </div>
                                 {props.id &&
                                     <div className='flex gap-4  items-center justify-between'>
 
-                                        <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question</Button>
-                                        <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>Export list question</Button>
+                                        <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>{t('Add question')}</Button>
+                                        <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>{t('Export list question')}</Button>
 
                                         <input type="file" id="file-upload" onChange={handleFileChange} className="hidden" />
                                         <label htmlFor="file-upload" className="bg-blue-500 hover:bg-blue-700 text-white h-10 w-full inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset cursor-pointer rounded-lg">
-                                            Select File
+                                            {t('Select file')}
                                         </label>
+                                        {
+                                            file && <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
+                                                {t('Upload')}
+                                            </button>
+                                        }
 
-                                        <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
-                                            Upload
-                                        </button>
 
                                     </div>
                                 }
@@ -672,18 +720,18 @@ export const Questionmanager = (props) => {
                                             </div>
                                         </th>
                                         <th scope="col" className="px-6 py-1 w-[70px]">
-                                            ID question
+                                            {t('ID question')}
                                         </th>
                                         <th scope="col" className="px-6 py-1 w-[300px] " >
-                                            Question
+                                            {t('Question content')}
                                         </th>
                                         <th scope="col" className="px-6 py-1 w-[150px]">
-                                            Question type
+                                            {t('Question type')}
                                         </th>
 
                                         {
                                             props.id && (<th scope="col" className="px-6 py-1 w-[70px]">
-                                                Action
+                                                {t('Action')}
                                             </th>)
                                         }
 
@@ -731,9 +779,9 @@ export const Questionmanager = (props) => {
                                                                         </MenuHandler>
 
                                                                         {
-                                                                            isModeActive ? (<MenuList className='rounded-md z-[105]'> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem></MenuList>)
-                                                                                : (<MenuList className='rounded-md z-[105]'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >Active</MenuItem></MenuList>)
+                                                                            isModeActive ? (<MenuList className='rounded-md z-[105]'> <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>{t('Edit')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >{t('Delete')}</MenuItem></MenuList>)
+                                                                                : (<MenuList className='rounded-md z-[105]'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickActive(item) }} >{t('Active')}</MenuItem></MenuList>)
                                                                         }
 
 
@@ -766,7 +814,7 @@ export const Questionmanager = (props) => {
                     </div>
                     {
                         isLoading ? (<>
-                            <h1 className='text-sm pl-1'>Loading...</h1>
+                            <h1 className='text-sm pl-1'>{t('Loading...')}</h1>
                         </>) : (listAllQuestion.length === 0 && (<>
                             <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                                 <div className="text-center">
@@ -775,7 +823,7 @@ export const Questionmanager = (props) => {
                                     >
                                         Uh-oh!
                                     </h1>
-                                    <p className="mt-4 text-gray-500">We cannot find any question.</p>
+                                    <p className="mt-4 text-gray-500">{t('We cannot find any question.')}</p>
                                 </div>
                             </div>
                         </>))
@@ -793,8 +841,8 @@ export const Questionmanager = (props) => {
                                             className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                         >
                                             <div>
-                                                <p className="text-center text-lg font-medium">Edit question</p>
-                                                <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
+                                                <p className="text-center text-lg font-medium">{t('Edit question')}</p>
+                                                <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">{t('Question content')}</label>
                                                 <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
                                             </div>
                                             {/* <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} /> */}
@@ -805,7 +853,7 @@ export const Questionmanager = (props) => {
                                                     (item, index) => {
                                                         return (
                                                             <>
-                                                                <label htmlFor={item} className="block pb-1 text-sm font-medium text-gray-700">{"Answer " + index}</label>
+                                                                <label htmlFor={item} className="block pb-1 text-sm font-medium text-gray-700">{t("Answer ") + index}</label>
                                                                 <div className="relative flex justify-center">
                                                                     <input
 
@@ -813,7 +861,7 @@ export const Questionmanager = (props) => {
                                                                         type={'text'}
                                                                         name={item}
                                                                         className={clsx("text-opacity-50", "border-2", "border-gray-500/75", "w-full", "rounded-lg", "p-4", "pe-12", "text-sm", "shadow-sm")}
-                                                                        placeholder={`Enter answer ${index}`}
+                                                                        placeholder={t('Enter answer ') + index}
                                                                         onChange={(e) => handleChangeAnswer(e, item.idAnswerQuestion)}
                                                                     />
                                                                     <input
@@ -845,7 +893,7 @@ export const Questionmanager = (props) => {
                                             <Button handleOnClick={() => {
                                                 handleSubmitEdit();
                                                 console.log("Click");
-                                            }} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} >Submit</Button>
+                                            }} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} >{t('Submit')}</Button>
                                             <div className='flex justify-center'>
                                                 <Modal.Header />
                                             </div>
@@ -893,14 +941,14 @@ export const Questionmanager = (props) => {
                                     //     </div>
                                     // </div>
                                     <div className='flex flex-col relative mb-0 space-y-4 rounded-lg pt-4 px-4 '>
-                                        <p className="text-center text-lg font-medium">Chọn loại câu hỏi</p>
+                                        <p className="text-center text-lg font-medium">{t('Choose question type')}</p>
                                         <button className='flex items-center bg-gray-200 hover:bg-gray-300 p-2 rounded' onClick={() => handleQuestionTypeChange('Multiple Choice')}>
                                             <FontAwesomeIcon className='mx-1' icon={faQuestionCircle} />
-                                            <span>Câu hỏi trắc nghiệm</span>
+                                            <span>{t('Muitiple choice')}</span>
                                         </button>
                                         <button className='flex items-center bg-gray-200 hover:bg-gray-300 p-2 rounded' onClick={() => handleQuestionTypeChange('Fill in the blank')}>
                                             <FontAwesomeIcon className='mx-1' icon={faEdit} />
-                                            <span>Điền chỗ trống</span>
+                                            <span>{t('Fill in the blank')}</span>
                                         </button>
 
                                         <div className='flex justify-center'>
@@ -909,45 +957,74 @@ export const Questionmanager = (props) => {
                                     </div>
                                 )}
                                 {!showOptions &&
+                                    // <>
+                                    //     {questionType === 'Multiple Choice' &&
+
+                                    //         <form onSubmit={form.handleSubmit(submitForm)}
+                                    //             className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
+                                    //         >
+                                    //             <p className="text-center text-lg font-medium">{t('Add question')}</p>
+
+
+                                    //             <div>
+                                    //                 <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">{t('Question content')}</label>
+                                    //                 <textarea
+                                    //                     rows="4"
+                                    //                     className='mt-0 border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4  text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
+                                    //             </div>
+                                    //             <div>
+                                    //                 <label className='block pb-1 text-sm font-medium text-gray-700'>
+                                    //                     {t('Answer')}
+                                    //                 </label>
+                                    //                 <div className={clsx('relative flex justify-center ')}>
+
+                                    //                     <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder={t('Enter answer ')}>
+
+                                    //                     </input>
+                                    //                     <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('hover:bg-black hover:text-white font-bold border-2 m-1 px-5 py-3 border-black rounded-lg bg-white text-sm', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >{t('Add')}</button>
+                                    //                 </div>
+                                    //             </div>
+                                    //             <div ref={showAnswer} className='showAnswer flex flex-col' >
+                                    //             </div>
+                                    //             <Button className={clsx((clickCount <= 4 || !isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>{t('Submit')}</Button>
+                                    //             <div className='flex justify-center'>
+                                    //                 <Modal.Header />
+                                    //             </div>
+                                    //         </form>
+                                    //     }
+
+                                    // </>
                                     <>
-                                        {questionType === 'Multiple Choice' &&
+                                        <p className="text-center text-lg font-medium">{t('Add question')}</p>
+                                        <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
+                                        <QuestionContentInput onChange={handleInputContent} />
+                                        {questionType === 'Multiple Choice' && (
+                                            <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg ">
 
-                                            <form onSubmit={form.handleSubmit(submitForm)}
-                                                className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
-                                            >
-                                                <p className="text-center text-lg font-medium">Add question</p>
-                                                <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
-                                                {/* <InputField name={ANSWER1} disabled form={form} defaultValue={listAnswer[0] || ''} />
-                                    <InputField name={ANSWER2} disabled form={form} defaultValue={listAnswer[1] || ''} />
-                                    <InputField name={ANSWER3} disabled form={form} defaultValue={listAnswer[2] || ''} />
-                                    <InputField name={ANSWER4} disabled form={form} defaultValue={listAnswer[3] || ''} /> */}
-                                                <div>
-                                                    <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">Question</label>
-                                                    <textarea
-                                                        rows="4"
-                                                        className='mt-0 border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4  text-sm ' onChange={(event) => { handleInputContent(event) }} defaultValue={''}></textarea>
-                                                </div>
-                                                <div>
-                                                    <label className='block pb-1 text-sm font-medium text-gray-700'>
-                                                        Answer
-                                                    </label>
-                                                    <div className={clsx('relative flex justify-center ')}>
-
-                                                        <input value={answer} onChange={(event) => { handleInputAnswer(event) }} type="text" className={clsx('text-opacity-50 border-2 border-gray-500/75  rounded-lg p-4 pe-12 text-sm shadow-sm w-full h-full', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} placeholder='Enter answer'>
-
-                                                        </input>
-                                                        <button onClick={(event) => { handleAddAnswer(event) }} className={clsx('hover:bg-black hover:text-white font-bold border-2 m-1 px-5 py-3 border-black rounded-lg bg-white text-sm', clickCount <= 4 ? '' : 'pointer-events-none opacity-50')} >Add</button>
-                                                    </div>
-                                                </div>
-                                                <div ref={showAnswer} className='showAnswer flex flex-col' >
-                                                </div>
-                                                <Button className={clsx((clickCount <= 4 || !isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} type='submit'>Submit</Button>
-                                                <div className='flex justify-center'>
-                                                    <Modal.Header />
-                                                </div>
+                                                <MultipleChoiceAnswers
+                                                    handleOptionChange={handleOptionChange}
+                                                    selectedOption={selectedOption}
+                                                    setListAnswer={setListAnswer}
+                                                    listAnswer={listAnswer}
+                                                    isChooseTrue={isChooseTrue}
+                                                />
                                             </form>
-                                        }
+                                        )}
 
+                                        {questionType === 'True/False' && (
+                                            <TrueFalseQuestion form={form} submitForm={submitForm} />
+                                        )}
+
+                                        {questionType === 'Short Answer' && (
+                                            <ShortAnswerQuestion handleInputContent={handleInputContent} />
+                                        )}
+
+                                        {/* {questionType === 'Essay' && (
+                                            <EssayQuestion handleInputContent={handleInputContent} />
+                                        )} */}
+                                        <div className='flex justify-center'>
+                                            <Modal.Header />
+                                        </div>
                                     </>
                                 }
                             </Modal.Body>
@@ -962,12 +1039,12 @@ export const Questionmanager = (props) => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTION} disabled form={form} defaultValue={questionSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
+                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Warning')} </p>
+                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to delete ?')}</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button className="bg-red-500" type='submit'>Delete</Button>
-                                        <Button handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                        <Button className="bg-red-500" type='submit'>{t('Delete')}</Button>
+                                        <Button handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</Button>
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -982,12 +1059,12 @@ export const Questionmanager = (props) => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTION} disabled form={form} defaultValue={questionSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Confirm </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
+                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Confirm')} </p>
+                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to active ?')}</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button className="bg-red-500" type='submit'>Confirm</Button>
-                                        <Button handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                                        <Button className="bg-red-500" type='submit'>{t('Confirm')}</Button>
+                                        <Button handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</Button>
                                     </div>
                                 </form>
                             </Modal.Body>

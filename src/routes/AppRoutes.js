@@ -28,6 +28,7 @@ import HomeTeacher from '../pages/Teacher/Home/HomeTeacher'
 import SubjectDetail from '../pages/User/SubjectDetail/SubjectDetail'
 import MySubjects from '../pages/User/MySubjects/MySubjects'
 import MyAllTest from '../pages/User/MyAllTest/MyAllTest'
+import Dashboard from '../pages/Admin/Manager/Dashboard'
 export const AppRoutes = () => {
 
   return (
@@ -52,6 +53,7 @@ export const AppRoutes = () => {
           <Route path={Path.MY_ALL_TEST} element={<MyAllTest />} />
         </Route>
         <Route path='/admin' element={<Admin />}>
+          <Route path={''} element ={<Dashboard/>}/>
           <Route path={Path.AMCLASSMANAGER} element={<Classmanager />} />
           <Route path={Path.AMQUESTIONGROUPMANAGER} element={<QuestionGroup />} />
           <Route path={Path.AMEXAMINATIONMANAGER} element={<Examinationmanager />} />

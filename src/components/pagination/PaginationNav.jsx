@@ -1,9 +1,10 @@
 import clsx from 'clsx';
 import React, { useState, useTransition } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 const PaginationNav = ({ pageNumbers, handlePrevious, handleNext, activeIndex, handleClickPage, offset, numberOfElements, totalElements, isFirst, isLast, isActive }) => {
-  const {t}=useTransition();
+  const {t}=useTranslation();
   function getSubarray(arr, i) {
     const n = arr.length;
     let start_index, end_index;

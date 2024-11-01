@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import Path from '../../../utils/Path'
 import { removeCredential } from '../../../services/ApiService';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBook } from '@fortawesome/free-solid-svg-icons';
+import { faBook, faHome } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
 export const Sidebar = (props) => {
@@ -33,6 +33,14 @@ export const Sidebar = (props) => {
                   <span className="self-center text-xl font-semibold whitespace-nowrap dark:text-white">{t('Admin')}</span>
                </p>
                <ul className="space-y-2 font-medium w-[250px]">
+               <li className=''>
+                     <NavLink to={'/admin/'} className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} onClick={() => handleOnClick(false)}>
+
+                     <FontAwesomeIcon icon={faHome} style={{height:20, color:'GrayText'}}/>
+
+                        <span className="flex-1 ml-3 whitespace-nowrap">{t('Dashboard')}</span>
+                     </NavLink>
+                  </li>
                   <li className=''>
                      <NavLink className={({ isActive }) => (isActive ? 'flex items-center p-2 rounded-lg dark:text-white bg-gradient-to-r from-orange-300 to-red-300 text-[#fff]' : 'flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group')} to={Path.AMCLASSMANAGER} onClick={() => handleOnClick(false)} >
                         <svg width="20px" height="20px" className="w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 392.60 392.60" stroke="#95505b" transform="matrix(1, 0, 0, 1, 0, 0)rotate(0)">

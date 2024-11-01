@@ -15,6 +15,7 @@ import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useTranslation } from 'react-i18next';
 const QUESTIONGROUP_CODE = 'code';
 const QUESTIONGROUP_NAME = 'name';
 const DESCRIPTION = 'description';
@@ -23,7 +24,8 @@ const ID_QUESTIONGROUP = 'id';
 const ID_CLASSROOM = 'subjectId';
 
 export const QuestionGroup = (props) => {
-    document.title = 'Question group manager';
+    const {t}= useTranslation();
+    document.title = t('Question group management');
     let { id } = useParams();
     const [isShowQuestion, setIsShowQuestion] = useState(false);
     const [isModeActive, setIsModeActivate] = useState(true);
@@ -57,13 +59,13 @@ export const QuestionGroup = (props) => {
     const yupObject = yup.object().shape({
         [QUESTIONGROUP_CODE]: yup
             .string()
-            .required("The code of question group is required."),
+            .required(t("The code of question group is required.")),
         [QUESTIONGROUP_NAME]: yup
             .string()
-            .required("The name of question group is required."),
+            .required(t("The name of question group is required.")),
         [DESCRIPTION]: yup
             .string()
-            .required("The description of question group is required."),
+            .required(t("The description of question group is required.")),
     });
     const handleClickDelete = (item) => {
         setIsDelete(true);
@@ -138,7 +140,7 @@ export const QuestionGroup = (props) => {
 
                 getAllQuestionGroup();
             }).catch((error) => {
-                toast.error(`Update question group fail !`, {
+                toast.error(t('Update question group fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -149,7 +151,7 @@ export const QuestionGroup = (props) => {
                 getAllQuestionGroup();
             }
             ).catch((error) => {
-                toast.error(`Add question group fail !`, {
+                toast.error(t('Add question group fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -187,9 +189,9 @@ export const QuestionGroup = (props) => {
             handleClose();
             deleteQuestionGroupService(questionGrId).then((res) => {
                 getAllQuestionGroup();
-                toast.success('Delete question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                toast.success(t('Delete question group successfuly !'), { position: toast.POSITION.TOP_RIGHT });
             }).catch((error) => {
-                toast.error(`Delete question group fail !`, {
+                toast.error(t('Delete question group fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -200,10 +202,10 @@ export const QuestionGroup = (props) => {
         if (isChooseActionActive) {
             handleClose();
             activeQuestionGroupService(questionGrId).then((res) => {
-                toast.success('Active question successfuly', { position: toast.POSITION.TOP_RIGHT });
+                toast.success('Active question group successfuly !', { position: toast.POSITION.TOP_RIGHT });
                 getAllQuestionGroup();
             }).catch((error) => {
-                toast.error(`Active question group fail !`, {
+                toast.error(t('Active question group fail !'), {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             })
@@ -245,7 +247,7 @@ export const QuestionGroup = (props) => {
             }
             ).catch((error) => {
                 setIsLoading(false);
-                toast.error(`Search question group fail !`, {
+                toast.error('Search question group fail !', {
                     position: toast.POSITION.TOP_RIGHT,
                 });
             }
@@ -267,7 +269,7 @@ export const QuestionGroup = (props) => {
             }
             ).catch((error) => {
                 setIsLoading(false);
-                toast.error(`Search question group fail !`, {
+                toast.error('Search question group fail !', {
                     position: toast.POSITION.TOP_RIGHT,
                 });
                 removeCredential();
@@ -308,7 +310,7 @@ export const QuestionGroup = (props) => {
         }
         ).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get question group fail !`, {
+            toast.error(t('Get question group fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -336,7 +338,7 @@ export const QuestionGroup = (props) => {
             removeCredential();
             navigate(Path.LOGIN);
             setIsLoading(false);
-            toast.error(`Get question group fail !`, {
+            toast.error(t('Get question group fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         }
@@ -369,11 +371,11 @@ export const QuestionGroup = (props) => {
 
     return (
         <div>
-            <div className=" pt-4 h-full w-full flex-row flex">
+            <div className=" pt-4 h-full w-full flex-row flex justify-center items-center">
                 <div className="pt-4 dark:border-gray-700">
                     {!id ? <></> : <>
                         <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-                            Question group manager
+                            {t('Question group management')}
                         </div>
                     </>}
 
@@ -382,10 +384,10 @@ export const QuestionGroup = (props) => {
                             <div className='p-3 items-center flex gap-4 justify-between'>
                                 <div onClick={() => navigate(-1)}
                                     className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
-                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> {t('Back to previous page')}
                                 </div>
                                 <div className='w-[200px]'>
-                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle>
+                                    <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? t('Active') : t('Inactive')}</Toggle>
 
                                 </div>
                                 <div className="relative float-right">
@@ -394,12 +396,12 @@ export const QuestionGroup = (props) => {
                                             <svg className="w-5 h-5 text-white " aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
                                         </Button>
                                     </div>
-                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
+                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Search for items")} />
 
                                 </div>
                                 {
                                     !props.id && <div className='flex gap-4  items-center justify-between'>
-                                        <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add question group</Button>
+                                        <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>{t('Add question group')}</Button>
                                     </div>
                                 }
 
@@ -409,28 +411,28 @@ export const QuestionGroup = (props) => {
                                     <tr>
 
                                         <th scope="col" className="px-6 py-3 w-[100px]">
-                                            ID question group
+                                            {t('ID question group')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[300px]">
-                                            Question group name
+                                            {t('Question group name')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[300px]">
-                                            Question group code
+                                            {t('Question group code')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[70px]">
-                                            Status
+                                            {t('Status')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
-                                            Total question
+                                            {t('Total question')}
                                         </th>
                                         {
                                             !props.id && <th scope="col" className="px-6 py-3 w-[150px]">
-                                                Action
+                                               {t('Action')}
                                             </th>
                                         }
                                         {
                                             props.id && <th scope="col" className="px-6 py-3 w-[50px]">
-                                                Number question
+                                                {t('Number question')}
                                             </th>
                                         }
 
@@ -468,8 +470,8 @@ export const QuestionGroup = (props) => {
                                                                 <div className="flex items-center">
                                                                     {
                                                                         item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                                                            Active</>
-                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                                                            {t('Active')}</>
+                                                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>{t('Inactive')}</>)
                                                                     }
                                                                 </div>
                                                             </th>
@@ -484,9 +486,9 @@ export const QuestionGroup = (props) => {
                                                                 !props.id && <th className="px-6 py-4 flex w-[150px]">
                                                                     {
                                                                         isModeActive ? (<>
-                                                                            <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</p> &nbsp;/&nbsp;
-                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-red-600 dark:text-red-500 hover:underline">Delete</p></>)
-                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-green-600 dark:text-green-500 hover:underline">Active</p>)
+                                                                            <p onClick={() => { handleClickEdit(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">{t('Edit')}</p> &nbsp;/&nbsp;
+                                                                            <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-red-600 dark:text-red-500 hover:underline">{t('Delete')}</p></>)
+                                                                            : (<p onClick={() => { handleClickActive(item) }} className="cursor-pointer font-medium text-green-600 dark:text-green-500 hover:underline">{t('Active')}</p>)
                                                                     }
 
 
@@ -526,7 +528,7 @@ export const QuestionGroup = (props) => {
                     </div>
                     {
                         isLoading ? (<>
-                            <h1 className='text-sm pl-1'>Loading...</h1>
+                            <h1 className='text-sm pl-1'>{t('Loading...')}</h1>
                         </>) : (listQuestionGroup.length === 0 && (<>
                             <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                                 <div className="text-center">
@@ -535,7 +537,7 @@ export const QuestionGroup = (props) => {
                                     >
                                         Uh-oh!
                                     </h1>
-                                    <p className="mt-4 text-gray-500">We cannot find any question group.</p>
+                                    <p className="mt-4 text-gray-500">{t('We cannot find any question group.')}</p>
                                 </div>
                             </div>
                         </>))
@@ -548,15 +550,15 @@ export const QuestionGroup = (props) => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
-                                    <p className="text-center text-lg font-medium"> Edit Question Group </p>
+                                    <p className="text-center text-lg font-medium"> {t('Edit question group')} </p>
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
-                                    <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={questionGroupSelect.name} />
-                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={questionGroupSelect.code} />
-                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={questionGroupSelect.description || ""} />
+                                    <InputField name={QUESTIONGROUP_NAME} label={t("Question group name")} form={form} defaultValue={questionGroupSelect.name} />
+                                    <InputField name={QUESTIONGROUP_CODE} label={t("Question group code")} form={form} defaultValue={questionGroupSelect.code} />
+                                    <InputField name={DESCRIPTION} label={t("Description")} form={form} defaultValue={questionGroupSelect.description || ""} />
 
 
                                     <div className='flex justify-around'>
-                                        <Button className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                        <Button className="bg-blue-800 w-[100px]" type='submit'>{t('Submit')}</Button>
                                     </div>
                                     <div className='flex justify-center'>
                                         <Modal.Header />
@@ -572,13 +574,13 @@ export const QuestionGroup = (props) => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
-                                    <p className="text-center text-lg font-medium">Add question group</p>
+                                    <p className="text-center text-lg font-medium">{t('Add question group')}</p>
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={id} />
-                                    <InputField name={QUESTIONGROUP_NAME} label="Question group name" form={form} defaultValue={''} />
-                                    <InputField name={QUESTIONGROUP_CODE} label="Question group code" form={form} defaultValue={''} />
-                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
+                                    <InputField name={QUESTIONGROUP_NAME} label={t("Question group name")} form={form} defaultValue={''} />
+                                    <InputField name={QUESTIONGROUP_CODE} label={t("Question group code")} form={form} defaultValue={''} />
+                                    <InputField name={DESCRIPTION} label={t("Description")} form={form} defaultValue={''} />
                                     <div className='flex justify-around'>
-                                        <Button className="bg-blue-800 w-[100px]" type='submit'>Submit</Button>
+                                        <Button className="bg-blue-800 w-[100px]" type='submit'>{t('Submit')}</Button>
                                     </div>
                                     <div className='flex justify-center'>
                                         <Modal.Header />
@@ -596,11 +598,11 @@ export const QuestionGroup = (props) => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
+                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Warning')} </p>
+                                    <h1 className='text-[16px] text-center'>{('Are you sure you want to delete ?')}</h1>
                                     <div className='flex gap-3'>
-                                        <Button handleOnClick={() => handleDeleteQuestionGr(questionGroupSelect.id)} className="bg-red-500 w-[100px]" type='button'>Delete</Button>
-                                        <Button handleOnClick={() => handleClose()} className=" bg-blue-500">Cancel</Button>
+                                        <Button handleOnClick={() => handleDeleteQuestionGr(questionGroupSelect.id)} className="bg-red-500 w-[100px]" type='button'>{t('Delete')}</Button>
+                                        <Button handleOnClick={() => handleClose()} className=" bg-blue-500">{t('Cancel')}</Button>
                                     </div>
                                 </div>
                             </Modal.Body>
@@ -615,12 +617,12 @@ export const QuestionGroup = (props) => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-green-400 uppercase"> Confirm </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to active ?</h1>
+                                    <p className="text-center text-[20px] font-medium text-green-400 uppercase"> {t('Confirm')} </p>
+                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to active ?')}</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <Button handleOnClick={() => handleActiveQuestionGr(questionGroupSelect.id)} className="bg-blue-400" type='submit'>Confirm</Button>
-                                        <Button handleOnClick={() => handleClose()} className=" bg-red-500">Cancel</Button>
+                                        <Button handleOnClick={() => handleActiveQuestionGr(questionGroupSelect.id)} className="bg-blue-400" type='submit'>{t('Confirm')}</Button>
+                                        <Button handleOnClick={() => handleClose()} className=" bg-red-500">{t('Cancel')}</Button>
                                     </div>
                                 </div>
                             </Modal.Body>
@@ -631,7 +633,7 @@ export const QuestionGroup = (props) => {
                         <>
                             <Modal className="fixed bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-full m-10' } }} popup onClose={() => handleClose()} >
                                 <Modal.Header >
-                                    <h1>Question of question group</h1>
+                                    <h1>{t('Question of question group')}</h1>
                                     <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                                 </Modal.Header>
                                 <Modal.Body className='flex justify-center '>

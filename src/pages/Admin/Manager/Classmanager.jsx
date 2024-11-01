@@ -20,6 +20,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from 'flowbite-react';
+import { useTranslation } from 'react-i18next';
 const CLASS_CODE = 'subjectCode';
 const CLASS_NAME = 'subjectName';
 const DESCRIPTION = 'description';
@@ -27,7 +28,7 @@ const IS_PRIVATE = 'isPrivate';
 const ID_CLASS = 'id';
 
 export const Classmanager = () => {
-    const {t}=useTransition();
+    const {t}=useTranslation();
     const navigate = useNavigate();
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
@@ -283,13 +284,13 @@ export const Classmanager = () => {
     };
 
     useEffect(() => {
-        document.title = t("Subject management")
+        document.title = t("Subject management");
         getAllClass();
     }, [isModeActive]);
     return (
         <>
 
-            <div className=" p-4 h-full w-full flex-row flex">
+            <div className=" p-4 h-full w-full flex-row flex justify-center items-center">
                 <div className="p-4 dark:border-gray-700">
                     <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
                         {t('Subject management')}

@@ -12,12 +12,14 @@ import Path from '../../../utils/Path';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
+import { useTranslation } from 'react-i18next';
 
 const ID_CLASSROOM = 'subjectId';
 const ID_STUDENT = 'studentId';
 
 const Studentmanager = ({ showByIdClassRoom = true }) => {
-  document.title = 'Student manager';
+  const { t } = useTranslation();
+  document.title = t('Student management');
   const { idClassRoom } = useParams();
   const [isAddConfirm, setIsAddConfirm] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
@@ -76,8 +78,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
     showByIdClassRoom = true;
     if (isAddConfirm)
       addStudentToClass(body);
-    else if (isDelete){
-      toast.success('Delete student of class successfuly', {
+    else if (isDelete) {
+      toast.success(t('Delete student of subject successfuly !'), {
         position: toast.POSITION.TOP_RIGHT
       })
       deleteStudentOfClassroom(body);
@@ -88,7 +90,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
     deleteStudentOfClassroomService(body).then((res) => {
       getAllStudentOfClass();
     }).catch((error) => {
-      toast.error('Delete student of class fail', {
+      toast.error(t('Delete student of subject fail !'), {
         position: toast.POSITION.TOP_RIGHT
       })
       removeCredential();
@@ -99,11 +101,11 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
   const addStudentToClass = (body) => {
     addStudentToClassService(body).then((res) => {
       //getAllStudentOfClass();
-      toast.success('Add student to class successfuly', {
+      toast.success(t('Add student to subject successfuly !'), {
         position: toast.POSITION.TOP_RIGHT
       })
     }).catch((error) => {
-      toast.error('Add student to class fail', {
+      toast.error(t('Add student to subject fail !'), {
         position: toast.POSITION.TOP_RIGHT
       })
       removeCredential();
@@ -127,21 +129,21 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
     setActiveIndex(index + 1);
     getAllStudent(index + 1);
   }
-  const handleClickExport=()=>{
-    exportListStudentOfClassService(idClassRoom,"excel").then((res)=>{
+  const handleClickExport = () => {
+    exportListStudentOfClassService(idClassRoom, "excel").then((res) => {
       console.log(res)
       const url = window.URL.createObjectURL(new Blob([res]));
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `ss.xlsx`); // Tên file
+      link.setAttribute('download', `Student.xlsx`); // Tên file
       document.body.appendChild(link);
       link.click();
       link.remove();
       // Giải phóng URL để tránh rò rỉ bộ nhớ
-    window.URL.revokeObjectURL(url);
+      window.URL.revokeObjectURL(url);
       console.log("successeee")
-    
-    }).catch((e)=>{
+
+    }).catch((e) => {
       console.log(e)
     })
   }
@@ -164,7 +166,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
-        toast.error(`Search student fail !`, {
+        toast.error(t('Search student fail !'), {
           position: toast.POSITION.TOP_RIGHT,
         });
         removeCredential();
@@ -186,7 +188,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
-        toast.error(`Search verified student fail !`, {
+        toast.error(t('Search verified student fail !'), {
           position: toast.POSITION.TOP_RIGHT,
         });
         removeCredential();
@@ -209,7 +211,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
         setIsLoading(false);
       }).catch((error) => {
         setIsLoading(false);
-        toast.error(`Search student fail !`, {
+        toast.error(t('Search student fail !'), {
           position: toast.POSITION.TOP_RIGHT,
         });
         removeCredential();
@@ -234,7 +236,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
-      toast.error(`Get student fail !`, {
+      toast.error(t('Get student fail !'), {
         position: toast.POSITION.TOP_RIGHT,
       });
       removeCredential();
@@ -260,7 +262,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
     }).catch((error) => {
       console.log(error)
       setIsLoading(false);
-      toast.error(`Get student fail !`, {
+      toast.error('Get student fail !', {
         position: toast.POSITION.TOP_RIGHT,
       });
       removeCredential();
@@ -284,7 +286,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
-      toast.error(`Get verified student fail !`, {
+      toast.error(t('Get verified student fail !'), {
         position: toast.POSITION.TOP_RIGHT,
       });
       removeCredential();
@@ -307,23 +309,23 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
   };
 
   useEffect(() => {
-    document.title = "Student Mananger Admin"
+
     getAllStudent();
   }, [checkShowByIdClassroom]);
 
 
   return (
     <>
-      <div className=" p-4 h-full min-h-[550px] w-full flex-row flex">
+      <div className=" p-4 h-full min-h-[550px] w-full flex-row flex justify-center items-center">
         <div className="pb-4 dark:border-gray-700">
           {((idClassRoom && showByIdClassRoom)) && <>
             <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-              List students in classroom
+              {t('List students in subject')}
             </div>
           </>}
           {((!idClassRoom && !showByIdClassRoom) && <>
             <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-              All students
+              {t('All students')}
             </div>
           </>)}
 
@@ -332,7 +334,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
               <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
                 <div onClick={() => navigate(-1)}
                   className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
-                  <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                  <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> {t('Back to previous page')}
                 </div>
                 {/* <Toggle checked={isModeActive} handleToggle={setIsModeActivate} >{isModeActive ? 'Active' : 'Inactive'}</Toggle> */}
                 <div className="relative">
@@ -341,13 +343,13 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                       <svg className="w-5 h-5 text-white dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
                     </Button>
                   </div>
-                  <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
+                  <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Search for items")} />
                 </div>
                 <div className='flex gap-4  items-center justify-between'>
                   {idClassRoom && showByIdClassRoom && (
                     <div className='w-full flex flex-row'>
-<Button className="bg-blue-800 w-auto mr-1" handleOnClick={() => { handleClickAdd() }}>Add student to subject</Button>
-<Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>Export list student of subject</Button>
+                      <Button className="bg-blue-800 w-auto mr-1" handleOnClick={() => { handleClickAdd() }}>{t('Add student to subject')}</Button>
+                      <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>{t('Export list student of subject')}</Button>
                     </div>
                   )}
 
@@ -358,38 +360,38 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <tr>
 
                     <th scope="col" className="px-6 py-3 w-[150px]">
-                      ID student
+                      {t('ID student')}
                     </th>
                     <th scope="col" className={clsx("px-6 py-3 w-[300px]")} >
-                      Student name
+                      {t('Student name')}
                     </th>
                     <th scope="col" className="px-6 py-3 w-[400px]">
-                      Email
+                      {t('Email')}
                     </th>
                     {!showByIdClassRoom ?
                       (
                         <>
 
                           <th scope="col" className="px-6 py-3 w-[200px]">
-                            Email Verified
+                            {t('Email verified')}
                           </th>
                           <th scope="col" className="px-6 py-3 w-[70px]">
-                            Active
+                            {t('Active')}
                           </th>
                         </>
                       )
                       :
                       (!idClassRoom && (<>
                         <th scope="col" className="px-6 py-3 w-[200px]">
-                          Email Verified
+                          {t('Email verified')}
                         </th>
                         <th scope="col" className="px-6 py-3 w-[70px]">
-                          Active
+                          {t('Active')}
                         </th>
                       </>))
                     }
                     {idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
-                      Action
+                      {t('Action')}
                     </th>)}
                   </tr>
                 </thead>
@@ -418,8 +420,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                                   <div className="flex items-center">
                                     {
                                       item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
-                                        Verified</>
-                                      ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div>Unverified</>)
+                                        {t('Verified')}</>
+                                      ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div>{t('Unverified')}</>)
                                     }
                                   </div>
                                 </td>
@@ -427,8 +429,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                                   <div className="flex items-center">
                                     {
                                       item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                        Active</>
-                                      ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                        {t('Active')}</>
+                                      ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> {t('Inactive')}</>)
                                     }
                                   </div>
                                 </td></>) : (!idClassRoom && (<>
@@ -437,8 +439,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                                     <div className="flex items-center">
                                       {
                                         item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500  mr-2"></div>
-                                          Verified</>
-                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500  mr-2"></div>Unverified</>)
+                                          {t('Verified')}</>
+                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500  mr-2"></div>{t('Unverified')}</>)
                                       }
                                     </div>
                                   </td>
@@ -446,14 +448,14 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                                     <div className="flex items-center">
                                       {
                                         item.isEnable === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
-                                          Active</>
-                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> Passive</>)
+                                          {t('Active')}</>
+                                        ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> {t('Inactive')}</>)
                                       }
                                     </div>
                                   </td></>))}
                               {showByIdClassRoom === false && idClassRoom && (
                                 <td className="px-6 py-4 flex w-[150px]">
-                                  <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Add</p>
+                                  <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">{t('Add')}</p>
 
 
                                 </td>)
@@ -462,7 +464,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                               {showByIdClassRoom === true && idClassRoom && (
                                 <td className="px-6 py-4 flex w-[150px]">
 
-                                  <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">Delete</p>
+                                  <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">{t('Delete')}</p>
 
                                 </td>)
 
@@ -494,7 +496,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
           </div>
           {
             isLoading ? (<>
-              <h1 className='text-sm pl-1'>Loading...</h1>
+              <h1 className='text-sm pl-1'>{t('Loading...')}</h1>
             </>) : (listAllStudent.length === 0 && (<>
               <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                 <div className="text-center">
@@ -514,7 +516,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
             <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => { handleClose() }} >
               <Modal.Header >
                 <div className='flex justify-center mr-[3px]'>
-                  <div className='flex uppercase !text-center text-[23px] font-black'>Add student to class</div>
+                  <div className='flex uppercase !text-center text-[23px] font-black'>{t('Add student to subject')}</div>
                 </div>
                 <hr className=" border mx-3 border-gray-300 !outline-none " />
               </Modal.Header>
@@ -535,12 +537,12 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                 >
                   <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
                   <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
-                  <p className="text-center text-[20px] font-medium text-lime-400 uppercase"> Alert </p>
-                  <h1 className='text-[16px] text-center'>Are you sure you want to add this student to this class?</h1>
+                  <p className="text-center text-[20px] font-medium text-lime-400 uppercase"> {t('Alert')} </p>
+                  <h1 className='text-[16px] text-center'>{t('Are you sure you want to add this student to this subject?')}</h1>
                   <div className='invisible py-3'></div>
                   <div className='flex gap-3'>
-                    <Button className="bg-blue-500" type='submit'>Confirm</Button>
-                    <Button handleOnClick={() => handleClose()} className="bg-yellow-300">Cancel</Button>
+                    <Button className="bg-blue-500" type='submit'>{t('Confirm')}</Button>
+                    <Button handleOnClick={() => handleClose()} className="bg-yellow-300">{t('Cancel')}</Button>
                   </div>
                 </form>
               </Modal.Body>
@@ -557,12 +559,12 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                 >
                   <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
                   <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
-                  <p className="text-center text-[20px] font-medium text-yellow-400 uppercase"> Alert </p>
-                  <h1 className='text-[16px] text-center'>Are you sure want to remove this student from your current classroom?</h1>
+                  <p className="text-center text-[20px] font-medium text-yellow-400 uppercase"> {t('Alert')} </p>
+                  <h1 className='text-[16px] text-center'>{t('Are you sure want to remove this student from current subject ?')}</h1>
                   <div className='invisible py-3'></div>
                   <div className='flex gap-3'>
-                    <Button className="bg-red-500" type='submit'>Confirm</Button>
-                    <Button handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</Button>
+                    <Button className="bg-red-500" type='submit'>{t('Confirm')}</Button>
+                    <Button handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</Button>
                   </div>
                 </form>
               </Modal.Body>

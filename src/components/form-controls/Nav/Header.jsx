@@ -84,10 +84,10 @@ export const Header = () => {
     return (
         <div className='shadow-[5px_9px_30px_4px_#00000024] rounded-b-md fixed z-50 w-full'>
             <nav className="relative bg-white border-gray-200 dark:bg-gray-900">
-                <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
+                <div className="max-w-screen-xl flex flex-row items-center justify-between mx-auto p-4">
                     <div className="flex items-center">
                         <img src={TestIcon} className="h-8 mr-3" alt="Flowbite Logo" />
-                        <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">{t("Examination platform")}</span>
+                        <span className="self-center md:text-2xl text-xl font-semibold whitespace-nowrap dark:text-white">{t("Examination platform")}</span>
                     </div>
                     <form className="w-2/6 ">
                         <label htmlFor="default-search" className="w-auto mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">{t('Search')}</label>
@@ -150,7 +150,7 @@ export const Header = () => {
                         </div>
                         : <></>}
 
-                    <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
+                    <div className="items-center justify-between hidden md:flex md:w-auto md:order-1" id="navbar-user">
                         <ul className="flex flex-col justify-center items-center font-medium md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                             <li>
                                 <NavLink to={Path.HOME} className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500">

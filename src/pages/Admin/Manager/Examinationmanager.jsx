@@ -23,6 +23,7 @@ import { QuestionGroup } from './Questiongroupmanager'
 import { Questionmanager } from './Questionmanager'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup';
+import { useTranslation } from 'react-i18next'
 const ID_EXAM = 'id';
 const EXAM_NAME = 'testName';
 const START_DATE = 'startDate';
@@ -33,7 +34,8 @@ const DESCRIPTION = 'description';
 const TARGET_SCORE = 'targetScore';
 
 export const Examinationmanager = () => {
-    document.title = 'Examination manager';
+    const {t}=useTranslation();
+    document.title = t('Examination management');
     const { idClassRoom } = useParams();
     const navigate = useNavigate();
     const [chooseQuestionByQuestionGr, setChooseQuestionByQr] = useState([]);
@@ -69,22 +71,22 @@ export const Examinationmanager = () => {
     const yupObject = yup.object().shape({
         [START_DATE]: yup
             .string()
-            .required("The start date of exam is required."),
+            .required(t("The start date of exam is required.")),
         [END_DATE]: yup
             .string()
-            .required("The end date of exam is required."),
+            .required(t("The end date of exam is required.")),
         [EXAM_NAME]: yup
             .string()
-            .required("The name of exam is required."),
+            .required(t("The name of exam is required.")),
         [EXAM_TEST_TIME]: yup
             .string()
-            .required("The testing time of exam is required."),
+            .required(t("The testing time of exam is required.")),
         [DESCRIPTION]: yup
             .string()
-            .required("The description of exam is required."),
+            .required(t("The description of exam is required.")),
         [TARGET_SCORE]: yup
             .string()
-            .required("The target score of exam is required.")
+            .required(t("The target score of exam is required."))
     });
     const handleClickDelete = (item) => {
         setIsDelete(true);
@@ -136,9 +138,9 @@ export const Examinationmanager = () => {
         body.startDate = convertDateToMiliseconds(body.startDate);
         body.endDate = convertDateToMiliseconds(body.endDate);
         if (convertDateToMiliseconds(body.startDate) - convertDateToMiliseconds(body.endDate) >= 0) {
-            toast.error("Please choose end date must be after start date", toast.POSITION.TOP_RIGHT);
+            toast.error(t("Please choose end date must be after start date"), toast.POSITION.TOP_RIGHT);
         } else if (body.targetScore < 0 || body.targetScore > 10) {
-            toast.error("The target score must be from 0 to 10", toast.POSITION.TOP_RIGHT);
+            toast.error(t("The target score must be from 0 to 10"), toast.POSITION.TOP_RIGHT);
         } else if (isEdit) {
             let { subjectId, ...newBody } = body;
             updateExam(newBody);
@@ -208,7 +210,7 @@ export const Examinationmanager = () => {
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get exam fail !`, {
+            toast.error(t('Get exam fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -229,7 +231,7 @@ export const Examinationmanager = () => {
         updateExamService(body).then((res) => {
             getAllExam();
         }).catch((error) => {
-            toast.error(`Update exam fail !`, {
+            toast.error(t('Update exam fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         })
@@ -239,7 +241,7 @@ export const Examinationmanager = () => {
         deleteExamService(id).then((res) => {
             getAllExam();
         }).catch((error) => {
-            toast.error(`Delete exam fail !`, {
+            toast.error(t('Delete exam fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         })
@@ -248,11 +250,11 @@ export const Examinationmanager = () => {
     const addExamByIdClassroom = (body) => {
         addExamByIdClassroomService(body).then((res) => {
             getAllExam();
-            toast.success(`Add exam successful !`, {
+            toast.success(t('Add exam successful !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         }).catch((error) => {
-            toast.error(`Add exam fail !`, {
+            toast.error(t('Add exam fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
         })
@@ -275,7 +277,7 @@ export const Examinationmanager = () => {
             setIsLoading(false);
         }).catch((error) => {
             setIsLoading(false);
-            toast.error(`Get Exam fail !`, {
+            toast.error(t('Get exam fail !'), {
                 position: toast.POSITION.TOP_RIGHT,
             });
             removeCredential();
@@ -292,7 +294,7 @@ export const Examinationmanager = () => {
     };
 
     useEffect(() => {
-        document.title = "Examination Mananger Admin"
+       
         setCheckExamStart([]);
         if (idClassRoom)
             getAllExam();
@@ -303,20 +305,20 @@ export const Examinationmanager = () => {
 
     return (
         <>
-            <div className=" p-4 h-full w-full flex-row flex">
+            <div className=" p-4 h-full w-full flex-row flex justify-center items-center">
                 <div className="p-4 dark:border-gray-700">
                     <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-                        Examination manager
+                        {t('Examination management')}
                     </div>
                     <div className="flex items-center justify-start h-auto mb-4 bg-gray-100">
                         <div className=" overflow-auto shadow-md sm:rounded-lg">
                             <div className='p-3 items-center flex gap-4 justify-between mb-[14px]'>
                                 <div onClick={() => navigate(-1)}
                                     className='top 0 flex justify-start items-center cursor-pointer w-fit rounded-lg p-5'>
-                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to previous page
+                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> {t('Back to previous page')}
                                 </div>
                                 <div className='w-[150px]'>
-                                    <Toggle checked={isEnded} handleToggle={setIsEnded} >{isEnded ? 'Finished' : 'On Going'}</Toggle>
+                                    <Toggle checked={isEnded} handleToggle={setIsEnded} >{isEnded ? t('Finished') : t('On Going')}</Toggle>
                                 </div>
                                 <div className="relative float-right">
                                     <div className="absolute inset-y-0 right-0 flex items-center pl-3 ">
@@ -324,11 +326,11 @@ export const Examinationmanager = () => {
                                             <svg className="w-5 h-5 text-white dark:text-gray-400" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd"></path></svg>
                                         </ButtonE>
                                     </div>
-                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Search for items" />
+                                    <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Search for items")} />
 
                                 </div>
                                 <div className='flex gap-4  items-center justify-between'>
-                                    <ButtonE className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>Add Exam</ButtonE>
+                                    <ButtonE className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>{t('Add exam')}</ButtonE>
 
                                 </div>
                             </div>
@@ -337,25 +339,25 @@ export const Examinationmanager = () => {
                                     <tr>
 
                                         <th scope="col" className="px-6 py-3">
-                                            ID Exam
+                                            {t('ID exam')}
                                         </th>
                                         <th scope="col" className="px-6 py-3  w-[300px]" >
-                                            Exam name
+                                            {t('Exam name')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
-                                            Start date
+                                            {t('Start date')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
-                                            End date
+                                            {t('End date')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
-                                            Exam time
+                                            {t('Exam time')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[150px]">
-                                            Target score
+                                            {t('Target score')}
                                         </th>
                                         <th scope="col" className="px-6 py-3 w-[60px]" >
-                                            Action
+                                            {t('Action')}
                                         </th>
 
                                     </tr>
@@ -398,9 +400,10 @@ export const Examinationmanager = () => {
                                                                     </MenuHandler>
                                                                     <MenuList className='rounded-md'>
                                                                         {
-                                                                            checkExamStart.indexOf(item.id) > -1 ? <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>Show student score has joined exam</MenuItem> : (<>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>Edit</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >Delete</MenuItem>
+                                                                            checkExamStart.indexOf(item.id) > -1 ? 
+                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>{t('Show student score has joined exam')}</MenuItem> : (<>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>{t('Edit')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >{t('Delete')}</MenuItem>
                                                                             </>)
                                                                         }
                                                                     </MenuList>
@@ -432,7 +435,7 @@ export const Examinationmanager = () => {
                     </div>
                     {
                         isLoading ? (<>
-                            <h1 className='text-sm pl-1'>Loading...</h1>
+                            <h1 className='text-sm pl-1'>{t('Loading...')}</h1>
                         </>) : (listAllExam.length === 0 && (
                             <>
                                 <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
@@ -442,7 +445,7 @@ export const Examinationmanager = () => {
                                         >
                                             Uh-oh!
                                         </h1>
-                                        <p className="mt-4 text-gray-500">We cannot find any exam in this subject.</p>
+                                        <p className="mt-4 text-gray-500">{t('We cannot find any exam in this subject.')}</p>
                                     </div>
                                 </div>
                             </>))
@@ -456,18 +459,18 @@ export const Examinationmanager = () => {
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
                                 >
-                                    <p className="text-center text-lg font-medium">Edit exam</p>
-                                    <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={examSelect.testName} />
-                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={examSelect.description || ""} />
+                                    <p className="text-center text-lg font-medium">{t('Edit exam')}</p>
+                                    <InputField name={EXAM_NAME} label={t("Exam name")} form={form} defaultValue={examSelect.testName} />
+                                    <InputField name={DESCRIPTION} label={t("Description")} form={form} defaultValue={examSelect.description || ""} />
                                     <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
-                                    <InputField type='number' name={EXAM_TEST_TIME} label="Time test" form={form} defaultValue={examSelect.testingTime} />
-                                    <InputField type='number' name={TARGET_SCORE} label="Target of score" form={form} defaultValue={examSelect.targetScore} />
+                                    <InputField type='number' name={EXAM_TEST_TIME} label={t("Exam time")} form={form} defaultValue={examSelect.testingTime} />
+                                    <InputField type='number' name={TARGET_SCORE} label={t("Target score")} form={form} defaultValue={examSelect.targetScore} />
                                     <div className='flex'>
-                                        <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.startDate)} />
-                                        <DatePicker name={END_DATE} label="End date" form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.endDate)} />
+                                        <DatePicker name={START_DATE} label={t("Start date")} form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.startDate)} />
+                                        <DatePicker name={END_DATE} label={t("End date")} form={form} defaultValue={setFormatDateYYYYMMDD(examSelect.endDate)} />
                                     </div>
                                     <div className='flex justify-around'>
-                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>Submit</ButtonE>
+                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 w-[100px]" type='submit'>{t('Submit')}</ButtonE>
                                     </div>
                                     <div className='flex justify-center m-0'>
                                         <Modal.Header />
@@ -485,34 +488,34 @@ export const Examinationmanager = () => {
                                     className="relative mb-0 space-y-4 rounded-lg px-4 pt-4 shadow-lg"
                                 >
                                     <div className='flex items-center justify-center'>
-                                        <p className="text-center text-lg font-medium">Add Exam </p>
+                                        <p className="text-center text-lg font-medium">{t('Add exam')}</p>
 
                                     </div>
-                                    <InputField name={EXAM_NAME} label="Exam name" form={form} defaultValue={''} />
-                                    <InputField name={DESCRIPTION} label="Description" form={form} defaultValue={''} />
+                                    <InputField name={EXAM_NAME} label={t("Exam name")} form={form} defaultValue={''} />
+                                    <InputField name={DESCRIPTION} label={t("Description")} form={form} defaultValue={''} />
                                     <InputField name={ID_SUBJECT} disabled form={form} defaultValue={idClassRoom} />
-                                    <InputField type='number' name={EXAM_TEST_TIME} label="Time test (minutes)" form={form} defaultValue={''} />
-                                    <InputField type='number' name={TARGET_SCORE} label="Target of score (x/10)" form={form} defaultValue={''} />
+                                    <InputField type='number' name={EXAM_TEST_TIME} label={t("Time test (minutes)")} form={form} defaultValue={''} />
+                                    <InputField type='number' name={TARGET_SCORE} label={t("Target score (x/10)")} form={form} defaultValue={''} />
                                     <div className='flex'>
-                                        <DatePicker name={START_DATE} label="Start date" form={form} defaultValue={''} />
-                                        <DatePicker name={END_DATE} label="End date" form={form} defaultValue={''} />
+                                        <DatePicker name={START_DATE} label={t("Start date")} form={form} defaultValue={''} />
+                                        <DatePicker name={END_DATE} label={t("End date")} form={form} defaultValue={''} />
                                         <div className=' w-[150px]'>
                                             <Menu placement='bottom-start' >
                                                 <MenuHandler>
                                                     <Button className='bg-black mt-[20px] hover:bg-gray-500'>
-                                                        Add question
+                                                        {t('Add question')}
                                                     </Button>
                                                 </MenuHandler >
                                                 <MenuList className='rounded-md z-[102]'>
-                                                    <MenuItem className='z-[102]rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenRandomQuestion() }}>Add random by question group</MenuItem>
-                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenManualQuestion() }}>Add manual</MenuItem>
+                                                    <MenuItem className='z-[102]rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenRandomQuestion() }}>{t('Add random by question group')}</MenuItem>
+                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleOpenManualQuestion() }}>{t('Add manual')}</MenuItem>
                                                 </MenuList>
                                             </Menu>
                                         </div>
                                     </div>
 
                                     <div className='flex justify-around'>
-                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 !w-[80px]" type='submit'>Submit</ButtonE>
+                                        <ButtonE onClick={() => handleClose()} className="bg-blue-800 !w-[80px]" type='submit'>{t('Submit')}</ButtonE>
                                     </div>
                                     <div className='flex justify-center m-0'>
                                         <Modal.Header />
@@ -530,12 +533,12 @@ export const Examinationmanager = () => {
                                     className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> Warning </p>
-                                    <h1 className='text-[16px] text-center'>Are you sure you want to delete ?</h1>
+                                    <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Warning')} </p>
+                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to delete ?')}</h1>
                                     <div className='invisible py-3'></div>
                                     <div className='flex gap-3'>
-                                        <ButtonE className="bg-red-500" type='submit'>Delete</ButtonE>
-                                        <ButtonE handleOnClick={() => handleClose()} className="bg-blue-400">Cancel</ButtonE>
+                                        <ButtonE className="bg-red-500" type='submit'>{t('Delete')}</ButtonE>
+                                        <ButtonE handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</ButtonE>
                                     </div>
                                 </form>
                             </Modal.Body>
@@ -552,7 +555,7 @@ export const Examinationmanager = () => {
 
                                 <div className="flex justify-around pb-4 ">
                                     <Button
-                                        onClick={() => handleCloseShowChooseRandomQuestion()} className="bg-blue-400">Submit</Button>
+                                        onClick={() => handleCloseShowChooseRandomQuestion()} className="bg-blue-400">{t('Submit')}</Button>
                                     <Modal.Header className='hover:cursor-pointer  border-[2px] rounded-lg' />
                                 </div>
                             </Modal.Body>
@@ -564,7 +567,7 @@ export const Examinationmanager = () => {
                     <>
                         <Modal className="bg-opacity-60 z-[103]" show={true} theme={{ 'content': { 'base': 'w-[1200px] ' } }} popup onClose={() => handleCloseShowChooseManualQuestion()} >
                             <Modal.Header >
-                                <h1>Choose question</h1>
+                                <h1>{t('Choose question')}</h1>
                                 <hr className="relative left-0 right-0 my-2 border-black-200 focus-v !outline-none " />
                             </Modal.Header>
                             <Modal.Body>
@@ -573,7 +576,7 @@ export const Examinationmanager = () => {
 
                                 </div>
                                 <div className="flex justify-center p-4">
-                                    <Button onClick={() => { handleCloseShowChooseManualQuestion() }} className="bg-blue-400">Submit</Button>
+                                    <Button onClick={() => { handleCloseShowChooseManualQuestion() }} className="bg-blue-400">{t('Submit')}</Button>
                                 </div>
 
                             </Modal.Body>

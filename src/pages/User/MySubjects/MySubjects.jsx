@@ -16,12 +16,14 @@ import { removeCredential } from '../../../services/ApiService';
 import { DESCREASE, INSCREASE } from '../../../utils/Constant';
 import { Pagination } from '@mui/material';
 import classroomAVT from '../../../assets/classroom_avatar.png';
+import { useTranslation } from 'react-i18next';
 const SUBJECT_NAME = 'subjectName';
 const SUBJECT_CODE = 'subjectCode';
 
 function MySubjects() {
+      const {t}=useTranslation();
       const navigate = useNavigate();
-      document.title = 'My subjects';
+      document.title = t('My subjects');
       const [subjects, setSubject] = useState([])
 
       // Default value to get request
@@ -87,33 +89,33 @@ function MySubjects() {
 
                               <div className=" flex justify-end">
 
-                                    <p className='flex items-center pr-5 '>Sort by:</p>
+                                    <p className='flex items-center pr-5 '>{t('Sort by')}:</p>
                                     <div className="flex items-center pr-5 w-48">
 
                                           <select onChange={(e) => handleSortBy(e.target.value)} id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                <option value={SUBJECT_NAME}>Subject name</option>
-                                                <option value={SUBJECT_CODE}>Subject code</option>
+                                                <option value={SUBJECT_NAME}>{t('Subject name')}</option>
+                                                <option value={SUBJECT_CODE}>{t('Subject code')}</option>
                                           </select>
 
                                     </div>
-                                    <p className='flex items-center pr-5 '>Sort type:</p>
+                                    <p className='flex items-center pr-5 '>{t('Sort type')}:</p>
                                     <div className="flex items-center pr-5 w-48">
 
                                           <select onChange={(e) => handleSortType(e.target.value)} id="countries" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                                <option value={INSCREASE}>Increase</option>
-                                                <option value={DESCREASE}>Decrease</option>
+                                                <option value={INSCREASE}>{t('Increase')}</option>
+                                                <option value={DESCREASE}>{t('Decrease')}</option>
                                           </select>
 
                                     </div>
                                     <label htmlFor="default-search" className="w-auto mb-2 text-sm font-medium text-gray-900 sr-only dark:text-white">Search</label>
                                     <div className="relative w-80">
-                                          <input onChange={(e) => onSearchChange(e.target.value)} type="search" id="default-search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Subject name or subject code" required />
+                                          <input onChange={(e) => onSearchChange(e.target.value)} type="search" id="default-search" className="block w-full p-4 ps-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Subject name or subject code")} required />
                                           <button onClick={() => handleSearch()} className="text-white absolute end-2.5 bottom-2.5 bg-gray-700 hover:bg-black focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                                Search</button>
+                                                {t('Search')}</button>
                                     </div>
                               </div>
                               <div className=" flex justify-start pl-20">
-                                    <p className='flex items-center pr-5 '>Found total {totalElements} results</p>
+                                    <p className='flex items-center pr-5 '>{t('Found total')} {totalElements} {t('results')}</p>
                               </div>
                               <div className='flex justify-start flex-wrap gap-7  px-20 md:px-10 sm:px-32'>
                                     {subjects?.map((subject, key) => {
@@ -135,7 +137,7 @@ function MySubjects() {
                                                 </CardBody>
                                                 <CardFooter className="pt-0 flex justify-end">
 
-                                                      <NavLink className="bg-black px-5 py-2 rounded-md text-white" to={Path.SUBJECT_DETAIL.replace(':subjectId', subject.id)}>Detail</NavLink>
+                                                      <NavLink className="bg-black px-5 py-2 rounded-md text-white" to={Path.SUBJECT_DETAIL.replace(':subjectId', subject.id)}>{t('Detail')}</NavLink>
 
                                                 </CardFooter>
                                           </Card>
@@ -149,7 +151,7 @@ function MySubjects() {
                                                       >
                                                             Uh-oh!
                                                       </h1>
-                                                      <p className="mt-4 text-gray-500">We cannot find any subject.</p>
+                                                      <p className="mt-4 text-gray-500">{t('We cannot find any subject.')}</p>
                                                 </div>
                                           </div>
                                           : <></>}

@@ -10,10 +10,12 @@ import {
       differenceInSeconds
 } from 'date-fns'
 import QuizQuestion from '../../../components/exam/QuizQuesiton';
+import { useTranslation } from 'react-i18next';
 
 
 function DoMCTest() {
-      document.title = 'Testing';
+      const {t}=useTranslation();
+      document.title = t('Testing');
       const navigate = useNavigate();
       let location = useLocation();
       const [MCTestId, setMCTestId] = useState(location?.state?.mctestid);
@@ -179,7 +181,7 @@ function DoMCTest() {
                         <div className='bg-white opacity-95 min-h-screen h-full w-[80%] pt-6 rounded-lg select-none' >
                               <div onClick={() => navigate(-1)}
                                     className='flex justify-start items-center ml-10 cursor-pointer w-fit rounded-lg p-1'>
-                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> Back to the previous page
+                                    <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> {t('Back to the previous page')}
                               </div>
                               <div className='flex  justify-center items-center opacity-95  rounded-lg select-none' >
                                     <div className='w-[80%]  min-h-screen h-full opacity-95 rounded-lg select-none' >
@@ -229,7 +231,7 @@ function DoMCTest() {
                                                 }
                                                 <div className='flex justify-end items-center opacity-95 px-10 py-5    rounded-lg select-none mr-10 mt-1' >
                                                       <div onClick={() => handleSubmit()}
-                                                            className='hover:bg-black hover:text-white flex select-none cursor-pointer justify-center items-center rounded-lg border-[3px] py-2 px-5 bg-white border-black' variant="outlined">Submit</div>
+                                                            className='hover:bg-black hover:text-white flex select-none cursor-pointer justify-center items-center rounded-lg border-[3px] py-2 px-5 bg-white border-black' variant="outlined">{t('Submit')}</div>
                                                 </div>
                                           </div>
                                     </div>
