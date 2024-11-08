@@ -11,6 +11,8 @@ import { format } from 'date-fns';
 import clsx from 'clsx';
 import QuizQuestion from '../../../components/exam/QuizQuesiton';
 import { useTranslation } from 'react-i18next';
+import { Pagination } from '@mui/material';
+
 
 function ScoreDetail() {
       const {t}=useTranslation();
@@ -18,20 +20,25 @@ function ScoreDetail() {
       const { testId } = useParams();
       const navigate = useNavigate();
       const [score, setScore] = useState();
-
+      const [totalPages, setTotalPages] = useState(0);
+      const [page, setPage] = useState(0);
+      const [size] = useState(12);
       if (!getAccessToken() || !getRoles()?.includes(ROLE_STUDENT)) {
             removeCredential()
             navigate(Path.LOGIN)
       }
       useEffect(() => {
-            getMyScoreService(testId)
+            getMyScoreService(testId, page, undefined, undefined, size)
                   .then((res) => {
+                        console.log(res.data);
                         setScore(res.data);
+                        
+                        setTotalPages(res.data.submittedQuestions.totalPages);
                   })
                   .catch((err) => {
 
                   })
-      }, [])
+      }, [page])
       return (
             <>
                   <div className='min-h-screen h-full  bg-repeat p-5 flex justify-center ' style={{ backgroundImage: "url(" + classroomPNG + ")" }}>
@@ -40,6 +47,7 @@ function ScoreDetail() {
                                     className='flex justify-start items-center ml-10 cursor-pointer w-fit rounded-lg p-1'>
                                     <FontAwesomeIcon className='mr-3' icon={faLeftLong} /> {t('Back to the previous page')}
                               </div>
+                         
                               <div className='flex  justify-center items-center opacity-95  rounded-lg select-none' >
                                     <div className='w-[80%]  min-h-screen h-full opacity-95 rounded-lg select-none' >
 
@@ -89,13 +97,11 @@ function ScoreDetail() {
                                                 </>
                                           }
                                           {
-                                                score?.submittedQuestions?.length > 0 && <div className='pl-10 pb-10 rounded-lg select-none bg-slate-200' >
+                                                score?.submittedQuestions?.content.length > 0 && <div className='pl-10 pb-10 rounded-lg select-none bg-slate-200' >
                                                       {
-                                                            score?.submittedQuestions?.map((ques, index) => {
-                                                                  return <div key={index} className='pt-10'>
-                                                                        
+                                                            score?.submittedQuestions?.content?.map((ques, index) => {
+                                                                  return <div key={index} className='pt-10'>    
                                                                         {     
-                                                                       
                                                                               <QuizQuestion indexQuestion={index} question={ques} showScore={true} />
                                                                         }
                                                                         
@@ -138,6 +144,9 @@ function ScoreDetail() {
                                                                   </div>
                                                             })
                                                       }
+                                                      <div className='flex justify-center p-5 pb-20'>
+                                                            <Pagination count={totalPages} defaultPage={1} onChange={(e, value) => setPage(value - 1)} boundaryCount={2} />
+                                                      </div>
                                                 </div>
                                           }
                                           <div className="flex w-full justify-center p-4 leading-normal">

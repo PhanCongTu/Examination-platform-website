@@ -5,7 +5,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 
 
-export default function MultipleChoiceAnswers({ listAnswer, setListAnswer, handleOptionChange, selectedOption, isChooseTrue }) {
+export default function MultipleChoiceAnswers({ questionSelect, listAnswer, setListAnswer, handleOptionChange, selectedOption, isChooseTrue }) {
     const { t } = useTranslation();
     const [isEditingAnswer, setIsEditingAnswer] = useState(null);
     const [answer, setAnswer] = useState('');
@@ -50,11 +50,23 @@ export default function MultipleChoiceAnswers({ listAnswer, setListAnswer, handl
 
     const handleEditValueAnswer = (event) => {
         if (isEditingAnswer != null) {
-            const updatedAnswers = listAnswer.map((item, index) =>
-                index === isEditingAnswer ? event.target.value : item
-            );
+            const updatedAnswers = listAnswer.map((item, index) => {
+                if (questionSelect != null) {
+                    if (index === isEditingAnswer)
+                        return {
+                            ...item,
+                            'answerContent': event.target.value
+                        }
+                    return item
+                } else {
+
+                    if (index === isEditingAnswer)
+                        return event.target.value
+                    return item;
+                }
+            });
             setListAnswer(updatedAnswers);
-            
+
         }
     }
     return (
@@ -82,18 +94,18 @@ export default function MultipleChoiceAnswers({ listAnswer, setListAnswer, handl
                         <input
                             type="radio"
                             name="options"
-                            value={ans}
+                            value={questionSelect ? ans.idAnswerQuestion : ans}
                             className="mr-2"
-                            checked={selectedOption === ans}
+                            checked={questionSelect ? (selectedOption == ans.idAnswerQuestion):(selectedOption === ans)}
                             onChange={(event) => handleOptionChange(event)}
                         />
                         {
                             isEditingAnswer === index ? (<input
-                                className="border border-gray-300"
+                                className="border border-gray-300  rounded-lg p-2 pe-12 text-sm shadow-sm"
                                 type="text"
-                                defaultValue={ans}
+                                defaultValue={questionSelect ? ans.answerContent : ans}
                                 onChange={(event) => handleEditValueAnswer(event)}
-                            />) : (<span className="mr-2">{ans}</span>)
+                            />) : (<span className="mr-2 rounded-lg p-4 pe-12 text-sm shadow-sm">{questionSelect ? ans.answerContent : ans}</span>)
                         }
                         {
                             isEditingAnswer === index ? (<button
@@ -111,13 +123,15 @@ export default function MultipleChoiceAnswers({ listAnswer, setListAnswer, handl
                             </button>)
                         }
 
-                        <button
-                            type="button"
-                            onClick={() => handleDeleteAnswer(index)}
-                            className="text-red-500 hover:text-red-700 mx-1"
-                        >
-                            {t('Delete')}
-                        </button>
+                        {!questionSelect &&
+                            <button
+                                type="button"
+                                onClick={() => handleDeleteAnswer(index)}
+                                className="text-red-500 hover:text-red-700 mx-1"
+                            >
+                                {t('Delete')}
+                            </button>
+                            }
                     </div>
                 ))}
             </div>

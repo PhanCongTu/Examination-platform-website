@@ -8,7 +8,7 @@ import Path from '../../../utils/Path';
 import { ROLE_TEACHER } from '../../../utils/Constant';
 function VerifyEmail() {
       const navigate = useNavigate();
-      const [roles,setRoles]=useState([]);
+      const [roles, setRoles] = useState([]);
       document.title = 'Verify email address';
       const [code, setCode] = React.useState();
       const [isSend, setIsSend] = React.useState(false);
@@ -19,8 +19,16 @@ function VerifyEmail() {
             sendEmailVerifyCodeService()
                   .then(ress => { })
                   .catch(err => {
-                        removeCredential()
-                        navigate(Path.LOGIN)
+                        // removeCredential()
+                        // navigate(Path.LOGIN)
+                        console.log(err.response.data.message)
+                        toast.error(`${err.response.data.message}`, {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
+                        if (roles?.includes(ROLE_TEACHER))
+                              navigate(Path.TEACHERHOME)
+                        else
+                              navigate(Path.HOME)
                   })
       }
       const handleCodeChange = (code) => {
@@ -29,7 +37,10 @@ function VerifyEmail() {
       const handleVerifyEmail = () => {
             code && verifyEmailService(code)
                   .then(res => {
-                        navigate(Path.HOME)
+                        if (roles?.includes(ROLE_TEACHER))
+                              navigate(Path.TEACHERHOME)
+                        else
+                              navigate(Path.HOME)
                         toast.success(`Verify successfully!`, {
                               position: toast.POSITION.TOP_RIGHT,
                         });
@@ -42,12 +53,12 @@ function VerifyEmail() {
                               position: toast.POSITION.TOP_RIGHT,
                         });
                   })
-      }  
-     
-      useEffect(()=>{
-          
-          setRoles(getRoles());
-      },[])
+      }
+
+      useEffect(() => {
+
+            setRoles(getRoles());
+      }, [])
       return (
             <div className='mt-12 select-none'>
                   <div className="mx-auto max-w-screen-xl px-4 py-2 sm:px-6 lg:px-8">
@@ -72,7 +83,7 @@ function VerifyEmail() {
                                     <p onClick={() => handleSendEmailVerifyCode()}
                                           className='underline cursor-pointer text-center text-sm text-gray-500'>{isSend ? "Send again" : "Send code"}</p>
                                     <div className=" flex justify-end items-center ">
-                                    <NavLink className=' text-center rounded-lg text-black0 py-1 px-5 border-black border-2 bg-white text-sm' to={roles?.includes(ROLE_TEACHER)?"/teacher/home":"/home"} >Verify later</NavLink>
+                                          <NavLink className=' text-center rounded-lg text-black0 py-1 px-5 border-black border-2 bg-white text-sm' to={roles?.includes(ROLE_TEACHER) ? "/teacher/home" : "/home"} >Verify later</NavLink>
                                     </div>
 
                               </div>

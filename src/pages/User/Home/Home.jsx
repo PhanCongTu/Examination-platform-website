@@ -24,13 +24,14 @@ import { NavLink, useNavigate } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import Path from '../../../utils/Path.jsx'
 import { useTranslation } from 'react-i18next'
+import { useWebSocket } from '../../../routes/WebSocketProvider.js'
 
 function classNames(...classes) {
       return classes.filter(Boolean).join(' ')
 }
 
 function Home() {
-      const {t}=useTranslation();
+      const { t } = useTranslation();
       // navigater
       const navigate = useNavigate();
       document.title = t('Home');
@@ -45,6 +46,13 @@ function Home() {
             start: firstDayCurrentMonth,
             end: endOfMonth(firstDayCurrentMonth),
       })
+      const { isConnected } = useWebSocket();
+
+      useEffect(() => {
+            if (isConnected) {
+                  console.log('WebSocket is connected, ready to receive notifications');
+            }
+      }, [isConnected]);
 
       function previousMonth() {
             let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 })
@@ -57,10 +65,10 @@ function Home() {
       }
 
       let selectedDayTests = MCTest.filter((test) =>
-          
+
             isSameDay(new Date(test.startDate), selectedDay)
-      
-           
+
+
       )
       let selectedDayEndedTests = MCTest.filter((test) =>
             isSameDay(new Date(test.endDate), selectedDay)
@@ -177,13 +185,23 @@ function Home() {
                                                       {format(selectedDay, 'MMM dd, yyy')}
                                                 </time>
                                           </h2>
-                                          <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                          <ol className="mt-4 text-sm leading-6 text-gray-500">
                                                 {selectedDayTests.length > 0 ? (
-                                                      selectedDayTests.map((test) => (
+                                                      selectedDayTests.slice(0, 5).map((test) => (
                                                             <Testing Test={test} IsDeadline={false} key={test.id} />
                                                       ))
                                                 ) : (
                                                       <p className='flex items-center px-4 py-2 space-x-4 group rounded-xl'>{t('There are no exams for this date.')}</p>
+                                                )}
+                                                {selectedDayTests.length > 5 && (
+                                                      <div className="mt-4 text-center">
+                                                            <NavLink
+                                                                  to={Path.MY_ALL_TEST}
+                                                                  className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                                                            >
+                                                                  {t('View all tests')}
+                                                            </NavLink>
+                                                      </div>
                                                 )}
                                           </ol>
                                     </section>
@@ -194,13 +212,23 @@ function Home() {
                                                       {format(selectedDay, 'MMM dd, yyy')}
                                                 </time>
                                           </h2>
-                                          <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                                          <ol className="mt-4 text-sm leading-6 text-gray-500">
                                                 {selectedDayEndedTests.length > 0 ? (
-                                                      selectedDayEndedTests.map((test) => (
+                                                      selectedDayEndedTests.slice(0, 5).map((test) => (
                                                             <Testing Test={test} IsDeadline={true} key={test.id} />
                                                       ))
                                                 ) : (
                                                       <p className='flex items-center px-4 py-2 space-x-4 group rounded-xl'>{t('There are no exam deadlines for this date.')}</p>
+                                                )}
+                                                {selectedDayEndedTests.length > 3 && (
+                                                      <div className="mt-4 text-center">
+                                                            <NavLink
+                                                                  to={Path.MY_ALL_TEST}
+                                                                  className=' px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                                                            >
+                                                                  {t('View all tests')}
+                                                            </NavLink>
+                                                      </div>
                                                 )}
                                           </ol>
                                     </section>
@@ -214,9 +242,9 @@ function Home() {
 
       )
 }
-function Testing({ Test, IsDeadline }) { 
+function Testing({ Test, IsDeadline }) {
 
-      const{t}=useTranslation();
+      const { t } = useTranslation();
       let startDateTime = Test.startDate;
       let endDateTime = Test.endDate;
 

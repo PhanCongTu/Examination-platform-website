@@ -105,6 +105,7 @@ export const Examinationmanager = () => {
     }
 
     const handleShowStudentScore = (item) => {
+        console.log(`/admin/score/${item.id}`)
         navigate(`/admin/score/${item.id}`);
     }
 
@@ -305,7 +306,7 @@ export const Examinationmanager = () => {
 
     return (
         <>
-            <div className=" p-4 h-full w-full flex-row flex justify-center items-center">
+            <div className=" p-4 h-full w-full flex-row flex justify-center">
                 <div className="p-4 dark:border-gray-700">
                     <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
                         {t('Examination management')}

@@ -371,7 +371,7 @@ export const QuestionGroup = (props) => {
 
     return (
         <div>
-            <div className=" pt-4 h-full w-full flex-row flex justify-center items-center">
+            <div className=" pt-4 h-full w-full flex-row flex justify-center">
                 <div className="pt-4 dark:border-gray-700">
                     {!id ? <></> : <>
                         <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>

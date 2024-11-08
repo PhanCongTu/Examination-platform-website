@@ -1,27 +1,17 @@
 
-'use client';
-
-import { Modal } from 'flowbite-react';
-import { clsx } from 'clsx'
-export function ModalCustom(props) {
-    const { openModal, isClose, children, className } = props
-
+export default function ModalCustom({ title, onClose, children }) {
     return (
-        <>
-            {
-                openModal ?
-                    <>
-                        <div className='fixed bg-black opacity-60 top-0 right-0 left-0 bottom-0 rounded-none w-full h-full z-[100]'></div>
-                        <Modal className="top-1/4 left-0 right-0 z-[101] m-auto w-96" show={true} size="md" popup onClose={isClose} >
-                            <Modal.Header />
-                            <Modal.Body>
-                                {children}
-                            </Modal.Body>
-                        </Modal>
-                    </>
-                    :
-                    <></>
-            }
-        </>
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50" onClick={onClose}>
+            <div className="bg-white p-6 rounded-lg w-1/3 relative" onClick={(e) => e.stopPropagation()}>
+                <h2 className="text-xl font-semibold mb-4">{title}</h2>
+                {children}
+                <button 
+                    onClick={onClose} 
+                    className="absolute top-2 right-2 text-gray-600 hover:text-gray-900 font-bold text-2xl"
+                >
+                    &times;
+                </button>
+            </div>
+        </div>
     );
 }

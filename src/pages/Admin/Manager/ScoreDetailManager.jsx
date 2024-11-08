@@ -2,13 +2,16 @@ import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate, NavLink } from 'react-router-dom';
 import { getScoreOfStudentService } from '../../../services/UserService';
 import classroomPNG from '../../../assets/classroomPNG.png';
-import Path from '../../../utils/Path';
+
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
-import clsx from 'clsx';
+
 import { useTranslation } from 'react-i18next';
 import QuizQuestion from '../../../components/exam/QuizQuesiton';
+import { Pagination } from '@mui/material';
+import { toast } from 'react-toastify';
+import { exportScorePDFService } from '../../../services/ApiService';
 function ScoreDetailManager() {
       const { t } = useTranslation();
       document.title = t('Score detail management');
@@ -17,20 +20,43 @@ function ScoreDetailManager() {
       const [MCTestId, setMCTestId] = useState(location?.state?.testId);
       const [StudentId, setStudentId] = useState(location?.state?.studentId);
       const [score, setScore] = useState();
-
+      const [totalPages, setTotalPages] = useState(0);
+      const [page, setPage] = useState(0);
+      const [size] = useState(12);
+      const handleClickExport = () => {
+            exportScorePDFService(score.id).then((res) => {
+              console.log(res)
+              const url = window.URL.createObjectURL(new Blob([res]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', `ScoreDetail.pdf`); // Tên file
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              window.URL.revokeObjectURL(url);
+              console.log("successeee")
+        
+            }).catch((e) => {
+              console.log(e)
+            })
+          }
       useEffect(() => {
-            getScoreOfStudentService(StudentId, MCTestId)
+            getScoreOfStudentService(StudentId, MCTestId, page, undefined, undefined, size)
                   .then((res) => {
                         console.log(res);
-                        setScore(res.data.content);
+                        setScore(res.data);
+                        setTotalPages(res.data.submittedQuestions.totalPages);
                   })
                   .catch((err) => {
+                        toast.error(t('Get score fail !'), {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
                   })
-      }, [])
+      }, [page])
 
       return (
             <>
-                  <div className='min-h-screen h-full w-screen  bg-repeat p-5 flex justify-center items-center ' style={{ backgroundImage: "url(" + classroomPNG + ")" }}>
+                  <div className='min-h-screen h-full w-screen  bg-repeat p-5 flex justify-center ' style={{ backgroundImage: "url(" + classroomPNG + ")" }}>
                         <div className='bg-white opacity-95 min-h-screen h-full w-[80%] pt-6 rounded-lg select-none' >
                               <div onClick={() => navigate(-1)}
                                     className='flex justify-start items-center ml-10 cursor-pointer w-fit rounded-lg p-1'>
@@ -67,7 +93,14 @@ function ScoreDetailManager() {
                                                                               <p><strong>{t('Target score') + ":"}</strong> {score?.targetScore || 0} / 10</p>
                                                                               <p><strong>{t('Description') + ':'}</strong> {score?.multipleChoiceTest?.description || 0}</p>
                                                                         </div>
-
+                                                                        <div className='flex items-center justify-end'>
+                                                                              <button
+                                                                                    onClick={() => {handleClickExport()}}
+                                                                                    className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+                                                                              >
+                                                                                    {t('Export pdf score')}
+                                                                              </button>
+                                                                        </div>
 
                                                                   </div>
                                                             </div>
@@ -87,9 +120,9 @@ function ScoreDetailManager() {
                                                 </>
                                           }
                                           {
-                                                score?.submittedQuestions?.length > 0 && <div className='pl-10 pb-10 rounded-lg select-none bg-slate-200' >
+                                                score?.submittedQuestions?.content?.length > 0 && <div className='pl-10 pb-10 rounded-lg select-none bg-slate-200' >
                                                       {
-                                                            score?.submittedQuestions?.map((ques, index) => {
+                                                            score?.submittedQuestions?.content?.map((ques, index) => {
                                                                   return <div key={index} className='pt-10'>
                                                                         {
 
@@ -97,7 +130,14 @@ function ScoreDetailManager() {
                                                                         }
                                                                   </div>
                                                             })
+
                                                       }
+
+                                                      <div className='flex justify-center p-5 pb-20'>
+
+                                                            <Pagination count={totalPages} defaultPage={1} onChange={(e, value) => setPage(value - 1)} boundaryCount={2} />
+                                                      </div>
+
                                                 </div>
                                           }
                                           <div className="flex w-full justify-center p-4 leading-normal">
@@ -107,8 +147,8 @@ function ScoreDetailManager() {
 
                                     </div>
                               </div>
-                        </div>
-                  </div>
+                        </div >
+                  </div >
             </>
       )
 }

@@ -13,7 +13,7 @@ import {
 
 } from "@material-tailwind/react";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faQuestionCircle, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faQuestionCircle, faEdit, faCheckCircle } from '@fortawesome/free-solid-svg-icons';
 
 import { exportListQuestionOfQuestionGroupService, activeQuestionService, addQuestionByQuestionGroupService, deleteQuestionService, getAllActiveQuestionByIdClassroomService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByIdClassroomService, getAllInActiveQuestionByQuestionGrIDService, getQuestionByIdService, removeCredential, updateQuestionService, importListQuestionIntoQuestionGroupService } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
@@ -78,8 +78,8 @@ export const Questionmanager = (props) => {
         handleConfirmSelection();
     };
 
-    const handleInputContent = (event) => {
-        setContentQuestion(event.target.value);
+    const handleInputContent = (data) => {
+        setContentQuestion(data);
     }
 
 
@@ -284,21 +284,12 @@ export const Questionmanager = (props) => {
         defaultValues: initialValue,
         criteriaMode: "firstError"
     })
-    const handleChangeAnswer = (e, idAnswerQuestion) => {
-        console.log("handleChangeAnswer");
-        setListAnswer((prevListAnswer) => {
-            return prevListAnswer.map((item) => {
-                if (item.idAnswerQuestion === idAnswerQuestion) {
-                    return { ...item, answerContent: e.target.value };
-                }
-                return item;
-            });
-        });
-    }
+
     // const { defaultValue,on ...otherProps } = form.register(CONTENT_QUESTION);
     const handleSubmitEdit = () => {
         console.log("handleSubmitEdit");
         console.log(listAnswer)
+        console.log(selectedOption);
         const newBody = {
             content: contentQuestion,
             answers: listAnswer,
@@ -306,14 +297,40 @@ export const Questionmanager = (props) => {
             questionGroupId: questionSelect.questionGroupId,
             questionType: questionSelect.questionType
         }
-        newBody.answers.forEach((item) => {
-            if (item.idAnswerQuestion == selectedOption) {
-                item.isCorrect = true;
-            }
-            else {
-                item.isCorrect = false;
-            }
-        })
+       
+      
+        if (questionSelect.questionType === 'Multiple Choice') {
+            newBody.answers.forEach((item) => {
+                console.log(selectedOption);
+                if (item.idAnswerQuestion == selectedOption) {
+                    console.log("Start change option ", selectedOption, item.idAnswerQuestion)
+                    item.isCorrect = true;
+    
+                }
+                else {
+                    item.isCorrect = false;
+    
+                }
+            })
+        } else if (questionSelect.questionType === 'True/False') {
+            newBody.answers.forEach((item) => {
+                if (item.answerContent == selectedOption) {
+                    
+                    item.isCorrect = true;
+    
+                }
+                else {
+                    item.isCorrect = false;
+    
+                }
+            })
+            // newBody.answers = [
+            //     { answerContent: 'True', isCorrect: selectedOption === 'True', idAnswerQuestion: 1 },
+            //     { answerContent: 'False', isCorrect: selectedOption === 'False', idAnswerQuestion: 2 },
+            // ];
+        } else if (questionSelect.questionType === 'Fill in the blank') {
+          
+        }
         console.log(newBody)
         updateQuestionService(newBody).then((res) => {
             getAllQuestion();
@@ -335,12 +352,14 @@ export const Questionmanager = (props) => {
             getAllActiveQuestionByQuestionGrID();
             toast.success(t('Import successfuly !'), { position: toast.POSITION.TOP_RIGHT });
         }).catch(e => {
+            console.log(e)
             toast.error(t("Cannot import file !"), { position: toast.POSITION.TOP_RIGHT })
         })
 
     };
 
     const submitForm = (body) => {
+        console.log('submitForm')
         handleClose();
         const newBody = {
             content: contentQuestion,
@@ -349,27 +368,43 @@ export const Questionmanager = (props) => {
             questionGroupId: body.questionGroupId,
             questionType: questionType
         }
-        listAnswer.map((item, index) => {
-            newBody.answers.push({
-                'answerContent': item,
-                'isCorrect': false
-            })
-        })
+        // listAnswer.map((item, index) => {
+        //     newBody.answers.push({
+        //         'answerContent': item,
+        //         'isCorrect': false
+        //     })
+        // })
 
 
         if (isAdd) {
 
-            listAnswer.forEach((item) => {
-                if (selectedOption === item) {
+            if (questionType === 'Multiple Choice') {
+                listAnswer.forEach((item) => {
+                    newBody.answers.push({
+                        answerContent: item,
+                        isCorrect: item === selectedOption
+                    });
+                });
+            }
 
-                    const foundAnswer = newBody.answers.find((answer) => answer.answerContent === item);
-                    if (foundAnswer) {
-                        foundAnswer.isCorrect = true;
-                    }
 
+            if (questionType === 'True/False') {
 
-                }
-            })
+                const trueFalseAnswers = [
+                    { answerContent: 'True', isCorrect: selectedOption === 'True' },
+                    { answerContent: 'False', isCorrect: selectedOption === 'False' },
+                ];
+                newBody.answers = trueFalseAnswers;
+            }
+
+            if (questionType === 'Fill in the blank') {
+                newBody.answers.push({
+                    answerContent: listAnswer[0],
+                    isCorrect: true
+                });
+            }
+            console.log(listAnswer[0])
+            console.log(newBody);
             addQuestionByQuestionGroupService(newBody).then((res) => {
                 getAllQuestion();
                 toast.success(t('Add question successfuly !'), { position: toast.POSITION.TOP_RIGHT });
@@ -392,6 +427,9 @@ export const Questionmanager = (props) => {
             }).catch((error) => {
                 toast.error(t('Active question fail !'), { position: toast.POSITION.TOP_RIGHT });
             })
+        if (isEdit) {
+            handleSubmitEdit();
+        }
         setActiveIndex(0);
 
     }
@@ -530,6 +568,7 @@ export const Questionmanager = (props) => {
         getQuestionByIdService(item.id).then((res) => {
             console.log("getQuestionByIdService ", res.data)
             setQuestionSelect(res.data);
+            setQuestionType(res.data.questionType)
             setListAnswer(res.data.answers)
         }).catch(e => {
             toast.error(t('Get question {} fail !').replace('{}', `${item.id}`), {
@@ -763,7 +802,7 @@ export const Questionmanager = (props) => {
                                                                 {item.id}
                                                             </th>
                                                             <td className="px-6 py-1 w-[300px] ">
-                                                                <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.content}>{item.content}</p>
+                                                                <p onClick={() => { }} className="cursor-pointer font-medium dark:text-blue-500 hover:underline max-w-[300px] line-clamp-1" title={item.content} dangerouslySetInnerHTML={{ __html: item.content }}></p>
                                                             </td>
                                                             <td className="px-6 py-1 w-[150px] " >
                                                                 <p className=" truncate font-medium  max-w-[150px] line-clamp-1" title={item.questionType}>{item.questionType}</p>
@@ -837,67 +876,84 @@ export const Questionmanager = (props) => {
                                 {
                                     questionSelect && (
 
-                                        <form onSubmit={form.handleSubmit(submitForm)}
-                                            className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
-                                        >
-                                            <div>
-                                                <p className="text-center text-lg font-medium">{t('Edit question')}</p>
-                                                <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">{t('Question content')}</label>
-                                                <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea>
-                                            </div>
+
+                                        <>
+                                            <p className="text-center text-lg font-medium">{t('Edit question')}</p>
+                                            <QuestionContentInput onChange={handleInputContent} defaultContent={questionSelect.content} />
+                                            {/* <label htmlFor={CONTENT_QUESTION} className="block pb-1 text-sm font-medium text-gray-700">{t('Question content')}</label>
+                                                <textarea className='border-2 resize-none outline-none border-gray-500/75 w-full rounded-lg p-4 pe-12 text-sm ' defaultValue={questionSelect.content} onChange={(event) => { handleInputContent(event) }} ></textarea> */}
+
                                             {/* <InputField name={CONTENT_QUESTION} label="Question" form={form} defaultValue={questionSelect.content} /> */}
 
                                             {
 
-                                                questionSelect?.answers?.map(
-                                                    (item, index) => {
-                                                        return (
-                                                            <>
-                                                                <label htmlFor={item} className="block pb-1 text-sm font-medium text-gray-700">{t("Answer ") + index}</label>
-                                                                <div className="relative flex justify-center">
-                                                                    <input
+                                                // questionSelect?.answers?.map(
+                                                //     (item, index) => {
+                                                //         return (
+                                                //             <>
+                                                //                 <label htmlFor={item} className="block pb-1 text-sm font-medium text-gray-700">{t("Answer ") + index}</label>
+                                                //                 <div className="relative flex justify-center">
+                                                //                     <input
 
-                                                                        defaultValue={item.answerContent}
-                                                                        type={'text'}
-                                                                        name={item}
-                                                                        className={clsx("text-opacity-50", "border-2", "border-gray-500/75", "w-full", "rounded-lg", "p-4", "pe-12", "text-sm", "shadow-sm")}
-                                                                        placeholder={t('Enter answer ') + index}
-                                                                        onChange={(e) => handleChangeAnswer(e, item.idAnswerQuestion)}
-                                                                    />
-                                                                    <input
-                                                                        className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                                                        type="radio"
+                                                //                         defaultValue={item.answerContent}
+                                                //                         type={'text'}
+                                                //                         name={item}
+                                                //                         className={clsx("text-opacity-50", "border-2", "border-gray-500/75", "w-full", "rounded-lg", "p-4", "pe-12", "text-sm", "shadow-sm")}
+                                                //                         placeholder={t('Enter answer ') + index}
+                                                //                         onChange={(e) => handleChangeAnswer(e, item.idAnswerQuestion)}
+                                                //                     />
+                                                //                     <input
+                                                //                         className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
+                                                //                         type="radio"
 
-                                                                        value={item.idAnswerQuestion}
-                                                                        checked={selectedOption == item.idAnswerQuestion}
-                                                                        onChange={(event) => handleOptionChange(event)}
-                                                                    />
-                                                                </div>
+                                                //                         value={item.idAnswerQuestion}
+                                                //                         checked={selectedOption == item.idAnswerQuestion}
+                                                //                         onChange={(event) => handleOptionChange(event)}
+                                                //                     />
+                                                //                 </div>
+                                                //             </>
+
+                                                //         )
+                                                //     })
+                                                questionSelect && (
+                                                    <>
+                                                        <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg ">
+                                                            {questionType === 'Multiple Choice' && (<>
+
+                                                                <MultipleChoiceAnswers
+                                                                    handleOptionChange={handleOptionChange}
+                                                                    selectedOption={selectedOption}
+                                                                    setListAnswer={setListAnswer}
+                                                                    listAnswer={listAnswer}
+                                                                    isChooseTrue={isChooseTrue}
+                                                                    questionSelect={questionSelect}
+
+                                                                />
+
                                                             </>
-                                                            // <InputField name={item} label={"Answer "+ index} form={form} defaultValue={item.answerContent}
-                                                            //     children={<><input
-                                                            //         className=' absolute mt-0 mb-0 mr-1 top-[25%] right-0  w-6 h-1/2'
-                                                            //         type="radio"
+                                                            )}
 
-                                                            //         value={"Answer "+ index}
-                                                            //         checked={selectedOption === ("Answer "+ index) }
-                                                            //         onChange={(event) => handleOptionChange(event)}
-                                                            //     /></>} />
-                                                        )
-                                                    })
+                                                            {questionType === 'True/False' && (
+                                                                <TrueFalseQuestion selectedOption={selectedOption} handleOptionChange={handleOptionChange} questionSelect={questionSelect} />
+                                                            )}
 
+                                                            {questionType === 'Fill in the blank' && (
+                                                                <ShortAnswerQuestion listAnswer={listAnswer} setListAnswer={setListAnswer} questionSelect={questionSelect} />
+                                                            )}
+
+                                                            {/* {questionType === 'Essay' && (
+                                                        <EssayQuestion handleInputContent={handleInputContent} />
+                                                    )} */}
+                                                        </form>
+                                                        <div className='flex justify-center'>
+                                                            <Modal.Header />
+                                                        </div>
+                                                    </>
+                                                )
 
                                             }
 
-
-                                            <Button handleOnClick={() => {
-                                                handleSubmitEdit();
-                                                console.log("Click");
-                                            }} className={clsx((!isChooseTrue) ? 'pointer-events-none opacity-50 bg-blue-800' : "bg-blue-800")} >{t('Submit')}</Button>
-                                            <div className='flex justify-center'>
-                                                <Modal.Header />
-                                            </div>
-                                        </form>
+                                        </>
                                     )
                                 }
                             </Modal.Body>
@@ -950,7 +1006,10 @@ export const Questionmanager = (props) => {
                                             <FontAwesomeIcon className='mx-1' icon={faEdit} />
                                             <span>{t('Fill in the blank')}</span>
                                         </button>
-
+                                        <button className='flex items-center bg-gray-200 hover:bg-gray-300 p-2 rounded' onClick={() => handleQuestionTypeChange('True/False')}>
+                                            <FontAwesomeIcon className='mx-1' icon={faCheckCircle} />
+                                            <span>{t('True/False')}</span>
+                                        </button>
                                         <div className='flex justify-center'>
                                             <Modal.Header />
                                         </div>
@@ -995,11 +1054,11 @@ export const Questionmanager = (props) => {
 
                                     // </>
                                     <>
-                                        <p className="text-center text-lg font-medium">{t('Add question')}</p>
+                                        <p className="text-center text-lg font-medium m-2">{t('Add question')}</p>
                                         <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
                                         <QuestionContentInput onChange={handleInputContent} />
-                                        {questionType === 'Multiple Choice' && (
-                                            <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg ">
+                                        <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg ">
+                                            {questionType === 'Multiple Choice' && (
 
                                                 <MultipleChoiceAnswers
                                                     handleOptionChange={handleOptionChange}
@@ -1008,20 +1067,21 @@ export const Questionmanager = (props) => {
                                                     listAnswer={listAnswer}
                                                     isChooseTrue={isChooseTrue}
                                                 />
-                                            </form>
-                                        )}
 
-                                        {questionType === 'True/False' && (
-                                            <TrueFalseQuestion form={form} submitForm={submitForm} />
-                                        )}
+                                            )}
 
-                                        {questionType === 'Short Answer' && (
-                                            <ShortAnswerQuestion handleInputContent={handleInputContent} />
-                                        )}
+                                            {questionType === 'True/False' && (
+                                                <TrueFalseQuestion  selectedOption={selectedOption} handleOptionChange={handleOptionChange}  />
+                                            )}
 
-                                        {/* {questionType === 'Essay' && (
+                                            {questionType === 'Fill in the blank' && (
+                                                <ShortAnswerQuestion listAnswer={listAnswer} setListAnswer={setListAnswer} />
+                                            )}
+
+                                            {/* {questionType === 'Essay' && (
                                             <EssayQuestion handleInputContent={handleInputContent} />
                                         )} */}
+                                        </form>
                                         <div className='flex justify-center'>
                                             <Modal.Header />
                                         </div>

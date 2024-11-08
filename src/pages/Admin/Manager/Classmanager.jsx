@@ -21,6 +21,7 @@ import { faBars, faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { Modal } from 'flowbite-react';
 import { useTranslation } from 'react-i18next';
+import Teachermanager from './Teachermanager';
 const CLASS_CODE = 'subjectCode';
 const CLASS_NAME = 'subjectName';
 const DESCRIPTION = 'description';
@@ -28,8 +29,9 @@ const IS_PRIVATE = 'isPrivate';
 const ID_CLASS = 'id';
 
 export const Classmanager = () => {
-    const {t}=useTranslation();
+    const { t } = useTranslation();
     const navigate = useNavigate();
+    const [teacher,setTeacher]=useState({});
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -48,6 +50,7 @@ export const Classmanager = () => {
     const [isToggle, setIsToggle] = useState(true);
     const [isModeActive, setIsModeActivate] = useState(true);
     const [isChooseActive, setIsChooseActive] = useState(false);
+    const [isShowTeacher, setIsShowTeacher] = useState(false);
     const initialValue = {
         [CLASS_CODE]: '',
         [CLASS_NAME]: '',
@@ -76,6 +79,12 @@ export const Classmanager = () => {
     const handleClickOpenQuestionGroup = (item) => {
         navigate(`/admin/questiongr/${item.id}`)
     }
+
+    const handleShowTeacher = (item) => {
+        setIsShowTeacher(true);
+        setClassSelect(item);
+    }
+
     const handleClickDelete = (item) => {
         setIsDelete(true);
         setClassSelect(item);
@@ -92,7 +101,9 @@ export const Classmanager = () => {
             setIsQuestionGroupOpen(false);
         if (isChooseActive)
             setIsChooseActive(false);
-    }
+        if(isShowTeacher)
+            setIsShowTeacher(false)
+    }   
 
     const handleClickAdd = () => {
         setIsAdd(true);
@@ -290,7 +301,7 @@ export const Classmanager = () => {
     return (
         <>
 
-            <div className=" p-4 h-full w-full flex-row flex justify-center items-center">
+            <div className=" p-4 h-full w-full flex-row flex justify-center ">
                 <div className="p-4 dark:border-gray-700">
                     <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
                         {t('Subject management')}
@@ -391,6 +402,7 @@ export const Classmanager = () => {
                                                                             isModeActive ? (<MenuList className='rounded-md'><MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>{t('Edit')}</MenuItem>
                                                                                 <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >{t('Delete')}</MenuItem>
                                                                                 <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudent(item) }} >{t('Show student of subject')}</MenuItem>
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowTeacher(item) }} >{t('Add management teacher for subject')}</MenuItem>
                                                                                 <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickOpenQuestionGroup(item) }}>{t('Show question group of subject')}</MenuItem>
                                                                                 <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowExamOfClass(item) }}>{t('Show examination of subject')}</MenuItem>
                                                                             </MenuList>)
@@ -479,7 +491,7 @@ export const Classmanager = () => {
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={''} />
                                     <InputField name={CLASS_NAME} label={t("Subject name")} form={form} defaultValue={''} />
                                     <InputField name={CLASS_CODE} label={t("Subject code")} form={form} defaultValue={''} />
-                                    <InputField name={DESCRIPTION} label={t("Description" )}form={form} defaultValue={''} />
+                                    <InputField name={DESCRIPTION} label={t("Description")} form={form} defaultValue={''} />
                                     {/* <Toggle checked={isToggle} handleToggle={setIsToggle} >Is Private</Toggle> */}
                                     <div className='flex justify-around'>
                                         <ButtonS className="bg-blue-800 w-[100px]" type='submit'>{t('Submit')}</ButtonS>
@@ -512,28 +524,42 @@ export const Classmanager = () => {
                             </Modal.Body>
                         </Modal></>)
                 }
-                {isChooseActive && (
-                    <>
-                        <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
-                            <Modal.Header />
-                            <Modal.Body>
-                                <form
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
-                                >
-                                    <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
-                                    <p className="text-center text-[20px] font-medium text-green-300 uppercase"> {t('Confirm')} </p>
-                                    <h1 className='text-[16px] text-center'>{t('Are you sure you want to active ?')}</h1>
-                                    <div className='invisible py-3'></div>
-                                    <div className='flex gap-3'>
-                                        <ButtonS handleOnClick={() => handleClickActiveClass(classSelect.id)} className="bg-red-500" type='submit'>{t('Submit')}</ButtonS>
-                                        <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</ButtonS>
-                                    </div>
-                                </form>
-                            </Modal.Body>
-                        </Modal></>)
-                }
 
-            </div >
+                {isShowTeacher && (
+                    <>
+                        <Modal className="bg-opacity-60 z-[101] " show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => handleClose()} >
+                            <Modal.Header />
+                            <Modal.Body className='flex justify-center w-full'>
+                                    <div className='flex justify-center '>
+                                        <Teachermanager idSubject={classSelect.id}  selectTeacher={handleClose}/>
+                                    </div>
+                        
+                        
+                        </Modal.Body>
+                    </Modal></>)
+                }
+            {isChooseActive && (
+                <>
+                    <Modal className="bg-opacity-60 z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+                        <Modal.Header />
+                        <Modal.Body>
+                            <form
+                                className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                            >
+                                <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
+                                <p className="text-center text-[20px] font-medium text-green-300 uppercase"> {t('Confirm')} </p>
+                                <h1 className='text-[16px] text-center'>{t('Are you sure you want to active ?')}</h1>
+                                <div className='invisible py-3'></div>
+                                <div className='flex gap-3'>
+                                    <ButtonS handleOnClick={() => handleClickActiveClass(classSelect.id)} className="bg-red-500" type='submit'>{t('Submit')}</ButtonS>
+                                    <ButtonS handleOnClick={() => handleClose()} className="bg-blue-400">{t('Cancel')}</ButtonS>
+                                </div>
+                            </form>
+                        </Modal.Body>
+                    </Modal></>)
+            }
+
+        </div >
         </ >
 
     )

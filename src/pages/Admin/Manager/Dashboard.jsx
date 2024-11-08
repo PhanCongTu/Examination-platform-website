@@ -24,7 +24,7 @@ ChartJS.register(
     Legend
 );
 function Dashboard() {
-    const {t}=useTranslation();
+    const { t } = useTranslation();
     const [counts, setCounts] = useState({
         totalTests: 0,
         totalSubjects: 0,
@@ -132,7 +132,7 @@ function Dashboard() {
                     font: {
                         size: 15, // Giảm kích thước phông chữ
                     },
-                 
+
                 },
             },
             y: {
@@ -141,41 +141,42 @@ function Dashboard() {
         },
     };
     useEffect(() => {
-        document.title=t('Admin dashboard');
+        document.title = t('Admin dashboard');
         getReportTotal();
         getReportTestsByMonth();
     }, []);
     return (
-        <div className="min-h-screen w-full max-w-screen-2xl p-4">
+        <>
+            <div className=" w-full p-4 h-full ">
 
-            <h2 className="text-3xl font-bold text-center text-gray-800 mb-8">{t('Admin dashboard')}</h2>
+                <h2 className="text-3xl font-bold text-center text-gray-800 mb-4">{t('Admin dashboard')}</h2>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                <div className="bg-blue-500 text-white p-6 rounded-lg shadow-md text-center">
-                    <h3 className="text-xl font-semibold mb-2">{t('Total students')}</h3>
-                    <p className="text-3xl font-bold">{counts.totalStudent}</p>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-3">
+                    <div className="bg-blue-500 text-white p-6 rounded-lg shadow-md text-center">
+                        <h3 className="text-xl font-semibold mb-2">{t('Total students')}</h3>
+                        <p className="text-3xl font-bold">{counts.totalStudent}</p>
+                    </div>
+                    <div className="bg-green-500 text-white p-6 rounded-lg shadow-md text-center">
+                        <h3 className="text-xl font-semibold mb-2">{t('Total tests')}</h3>
+                        <p className="text-3xl font-bold">{counts?.totalTests}</p>
+                    </div>
+                    <div className="bg-purple-500 text-white p-6 rounded-lg shadow-md text-center">
+                        <h3 className="text-xl font-semibold mb-2">{t('Total subjects')}</h3>
+                        <p className="text-3xl font-bold">{counts?.totalSubjects}</p>
+                    </div>
                 </div>
-                <div className="bg-green-500 text-white p-6 rounded-lg shadow-md text-center">
-                    <h3 className="text-xl font-semibold mb-2">{t('Total tests')}</h3>
-                    <p className="text-3xl font-bold">{counts?.totalTests}</p>
-                </div>
-                <div className="bg-purple-500 text-white p-6 rounded-lg shadow-md text-center">
-                    <h3 className="text-xl font-semibold mb-2">{t('Total subjects')}</h3>
-                    <p className="text-3xl font-bold">{counts?.totalSubjects}</p>
+
+                <div className="bg-slate-300 p-3 rounded-lg shadow-md h-auto max-w-screen-lg w-full mx-auto overflow-hidden">
+                    <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center p-2">Test Statistics</h3>
+
+                    <div className=" w-full overflow-hidden">
+                        <Bar data={chartData} options={options} />
+                    </div>
                 </div>
             </div>
-
-            <div className="bg-slate-300 p-6 rounded-lg shadow-md max-w-screen-lg w-full mx-auto">
-                <h3 className="text-2xl font-semibold text-gray-800 mb-4 text-center p-2">Test Statistics</h3>
-                {/* <Bar data={chartData} /> */}
-                
-
-                <div className="relative w-full ">
-                    <Bar data={chartData} options={options} />
-                </div>
-            </div>
-        </div>
+        </>
     );
+
 }
 
 export default Dashboard;

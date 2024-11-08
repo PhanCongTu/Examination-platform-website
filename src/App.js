@@ -1,6 +1,7 @@
 import { createContext, useContext, useState } from 'react';
 import './App.css';
 import { AppRoutes } from './routes/AppRoutes';
+import { WebSocketProvider } from './routes/WebSocketProvider';
 
 const LanguageContext = createContext();
 function App() {
@@ -8,7 +9,9 @@ function App() {
   return (
     <div className="app h-full">
       <LanguageContext.Provider value={{ language, setLanguage }}>
-      <AppRoutes />
+        <WebSocketProvider>
+          <AppRoutes />
+        </WebSocketProvider>
 
       </LanguageContext.Provider>
 

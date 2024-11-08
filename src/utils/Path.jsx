@@ -20,6 +20,14 @@ const Path = {
     SCORE_DETAIL: '/my/score-detail/:testId',
     MY_ALL_SCORES: '/my/all-scores',
     MY_ALL_TEST: '/my/all-tests',
-    TEACHERHOME:'/teacher/home/'
+    TEACHERHOME:'/teacher/home/',
+    TEACHER_SUBJECTS_MANAGE:'/teacher/subject',
+    TEACHER_MANAGE_TESTS:'/teacher/examination',
+    TEACHER_SUBJECT_DETAIL: '/teacher/subject-detail/:subjectId',
+    TEACHER_SCORE_DETAIL: '/teacher/score-detail/:scoreId',
+    TEACHER_MANAGER_QUESGR: '/teacher/questiongr/:subjectId?',
+    TEACHER_MANAGER_QUESTION: '/teacher/question/:questionGroupId?',
+    TEACHER_MANAGER_SCORE: '/teacher/score/:idExam?',
+    
 }
 export default Path

@@ -7,24 +7,23 @@ import PaginationNav from '../../../components/pagination/PaginationNav';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addStudentToClassService, deleteStudentOfClassroomService, exportListStudentOfClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
+import { addTeacherManageSubjectService, deleteStudentOfClassroomService, exportListStudentOfClassService, getAllActiveStudentService, getAllActiveTeacherService, getAllTeacherOfClassService, getAllVerifiedTeacherService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 import { useTranslation } from 'react-i18next';
 
-const ID_CLASSROOM = 'subjectId';
-const ID_STUDENT = 'studentId';
+const ID_SUBJECT = 'subjectId';
+const ID_TEACHER = 'teacherId';
 
-const Studentmanager = ({ showByIdClassRoom = true }) => {
+const Teachermanager = ({ idSubject ,selectTeacher }) => {
   const { t } = useTranslation();
-  document.title = t('Student management');
-  const { idClassRoom } = useParams();
+  document.title = t('Teacher management');
+  
   const [isAddConfirm, setIsAddConfirm] = useState(false);
-  const [isAdd, setIsAdd] = useState(false);
   const [searchData, setSearchData] = useState('');
-  const [listAllStudent, setlistAllStudent] = useState([]);
+  const [listAllTeacher, setlistAllTeacher] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
   const [pageNumbers, setPageNumbers] = useState([]);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -32,39 +31,36 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
   const [isLast, setIsLast] = useState(false);
   const [offset, setOffset] = useState(0);
   const [numberOfElements, setNumberOfElements] = useState(0);
-  const [studentSelect, setStudentSelect] = useState({});
+  const [teacherSelect, setTeacherSelect] = useState({});
   const [isLoading, setIsLoading] = useState(true);
-  const [checkShowByIdClassroom, setCheckShowByIdClassroom] = useState(false);
+  const [checkselectTeacher, setCheckselectTeacher] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const navigate = useNavigate();
   const initialValue = {
-    [ID_CLASSROOM]: '',
-    [ID_STUDENT]: ''
+    [ID_SUBJECT]: '',
+    [ID_TEACHER]: ''
   };
 
   const handleClose = () => {
-    setCheckShowByIdClassroom(true);
-    if (isAdd)
-      setIsAdd(false);
+    setCheckselectTeacher(true);
+   
     if (isAddConfirm)
       setIsAddConfirm(false);
     if (isDelete)
       setIsDelete(false);
   }
 
-  const handleClickAdd = () => {
-    setIsAdd(true);
-  }
+
 
   const handleClickDelete = (item) => {
     setIsDelete(true);
-    setStudentSelect(item);
+    setTeacherSelect(item);
   }
 
   const handleClickAddConfirm = (item) => {
     console.log(item)
     setIsAddConfirm(true);
-    setStudentSelect(item);
+    setTeacherSelect(item);
   }
 
   const form = useForm({
@@ -75,37 +71,26 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   const submitForm = (body) => {
     handleClose();
-    showByIdClassRoom = true;
+    
     if (isAddConfirm)
-      addStudentToClass(body);
+      addTeacherManageSubject(body);
     else if (isDelete) {
       toast.success(t('Delete student of subject successfuly !'), {
         position: toast.POSITION.TOP_RIGHT
       })
-      deleteStudentOfClassroom(body);
+     
     }
   }
 
-  const deleteStudentOfClassroom = (body) => {
-    deleteStudentOfClassroomService(body).then((res) => {
-      getAllStudentOfClass();
-    }).catch((error) => {
-      toast.error(t('Delete student of subject fail !'), {
-        position: toast.POSITION.TOP_RIGHT
-      })
-      removeCredential();
-      navigate(Path.LOGIN);
-    })
-  }
 
-  const addStudentToClass = (body) => {
-    addStudentToClassService(body).then((res) => {
-      //getAllStudentOfClass();
-      toast.success(t('Add student to subject successfuly !'), {
+  const addTeacherManageSubject = (body) => {
+    addTeacherManageSubjectService(body).then((res) => {
+      selectTeacher();
+      toast.success(t('Add teacher manage for subject successfuly !'), {
         position: toast.POSITION.TOP_RIGHT
       })
     }).catch((error) => {
-      toast.error(t('Add student to subject fail !'), {
+      toast.error(t('Add teacher manage for subject fail !'), {
         position: toast.POSITION.TOP_RIGHT
       })
       removeCredential();
@@ -115,22 +100,22 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   const handleClickPage = (index) => {
     setActiveIndex(index);
-    getAllStudent(index);
+    getAllTeacher(index);
   };
 
   const handlePrevious = (index) => {
 
     setActiveIndex(index - 1);
-    getAllStudent(index - 1);
+    getAllTeacher(index - 1);
   }
 
   const handleNext = (index) => {
 
     setActiveIndex(index + 1);
-    getAllStudent(index + 1);
+    getAllTeacher(index + 1);
   }
   const handleClickExport = () => {
-    exportListStudentOfClassService(idClassRoom, "excel").then((res) => {
+    exportListStudentOfClassService(idSubject, "excel").then((res) => {
       console.log(res)
       const url = window.URL.createObjectURL(new Blob([res]));
       const link = document.createElement('a');
@@ -149,9 +134,9 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
   }
   const handleSearch = (data) => {
     console.log(data)
-    if (showByIdClassRoom && idClassRoom)
-      getAllStudentOfClassService(idClassRoom, undefined, undefined, undefined, undefined, data).then((res) => {
-        setlistAllStudent(res.data.content);
+    if (selectTeacher && idSubject)
+      getAllVerifiedTeacherService(undefined, undefined, undefined, undefined, data).then((res) => {
+        setlistAllTeacher(res.data.content);
         setIsLast(res.data.last);
         setIsFirst(res.data.first);
 
@@ -172,107 +157,17 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
         removeCredential();
         navigate(Path.LOGIN);
       });
-    else if (!showByIdClassRoom && idClassRoom) {
-      getAllVerifiedStudentService(undefined, undefined, undefined, undefined, data).then((res) => {
-        setlistAllStudent(res.data.content);
-        setIsLast(res.data.last);
-        setIsFirst(res.data.first);
-        const pageNumbers2 = [];
-        for (let i = 1; i <= res.data.totalPages; i++) {
-          pageNumbers2.push(i);
-        }
-        setPageNumbers(pageNumbers2);
-        setTotalElements(res.data.totalElements);
-        setOffset(res.data.pageable?.offset);
-        setNumberOfElements(res.data.numberOfElements);
-        setIsLoading(false);
-      }).catch((error) => {
-        setIsLoading(false);
-        toast.error(t('Search verified student fail !'), {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        removeCredential();
-        navigate(Path.LOGIN);
-      });
-    }
     else {
-      getAllActiveStudentService(undefined, undefined, undefined, undefined, data).then((res) => {
-        setlistAllStudent(res.data.content);
-        setIsLast(res.data.last);
-        setIsFirst(res.data.first);
-        const pageNumbers2 = [];
-        for (let i = 1; i <= res.data.totalPages; i++) {
-          pageNumbers2.push(i);
-        }
-        setPageNumbers(pageNumbers2);
-        setTotalElements(res.data.totalElements);
-        setOffset(res.data.pageable?.offset);
-        setNumberOfElements(res.data.numberOfElements);
-        setIsLoading(false);
-      }).catch((error) => {
-        setIsLoading(false);
-        toast.error(t('Search student fail !'), {
-          position: toast.POSITION.TOP_RIGHT,
-        });
-        removeCredential();
-        navigate(Path.LOGIN);
-      });
+      
+      
     }
   }
 
-  const getAllActiveStudent = async (page, sortType, column, size, search) => {
-    getAllActiveStudentService(page, sortType, column, size, search).then((res) => {
-      setlistAllStudent(res.data.content);
-      setIsLast(res.data.last);
-      setIsFirst(res.data.first);
-      const pageNumbers2 = [];
-      for (let i = 1; i <= res.data.totalPages; i++) {
-        pageNumbers2.push(i);
-      }
-      setPageNumbers(pageNumbers2);
-      setTotalElements(res.data.totalElements);
-      setOffset(res.data.pageable?.offset);
-      setNumberOfElements(res.data.numberOfElements);
-      setIsLoading(false);
-    }).catch((error) => {
-      setIsLoading(false);
-      toast.error(t('Get student fail !'), {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      removeCredential();
-      navigate(Path.LOGIN);
-    });
+ 
 
-  }
-
-  const getAllStudentOfClass = async (page, sortType, column, size, search) => {
-    getAllStudentOfClassService(idClassRoom, page, sortType, column, size, search).then((res) => {
-      setlistAllStudent(res.data.content);
-      setIsLast(res.data.last);
-      setIsFirst(res.data.first);
-      const pageNumbers2 = [];
-      for (let i = 1; i <= res.data.totalPages; i++) {
-        pageNumbers2.push(i);
-      }
-      setPageNumbers(pageNumbers2);
-      setTotalElements(res.data.totalElements);
-      setOffset(res.data.pageable?.offset);
-      setNumberOfElements(res.data.numberOfElements);
-      setIsLoading(false);
-    }).catch((error) => {
-      console.log(error)
-      setIsLoading(false);
-      toast.error('Get student fail !', {
-        position: toast.POSITION.TOP_RIGHT,
-      });
-      removeCredential();
-      navigate(Path.LOGIN);
-    });
-  }
-
-  const getAllVerifiedStudent = (page, sortType, column, size, search) => {
-    getAllVerifiedStudentService(page, sortType, column, size, search).then((res) => {
-      setlistAllStudent(res.data.content);
+  const getAllVerifiedTeacher = (page, sortType, column, size, search) => {
+    getAllVerifiedTeacherService(page, sortType, column, size, search).then((res) => {
+      setlistAllTeacher(res.data.content);
       setIsLast(res.data.last);
       setIsFirst(res.data.first);
       const pageNumbers2 = [];
@@ -286,7 +181,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
       setIsLoading(false);
     }).catch((error) => {
       setIsLoading(false);
-      toast.error(t('Get verified student fail !'), {
+      toast.error(t('Get a list of failed verified teachers!'), {
         position: toast.POSITION.TOP_RIGHT,
       });
       removeCredential();
@@ -294,38 +189,59 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
     });
   }
 
-  const getAllStudent = (page, sortType, column, size, search) => {
-    if (showByIdClassRoom && idClassRoom)
-      getAllStudentOfClass(page, sortType, column, size, search);
-    else if (!showByIdClassRoom && idClassRoom)
-      getAllVerifiedStudent(page, sortType, column, size = 6, search);
-    else
-      getAllActiveStudent(page, sortType, column, size, search);
+  const getAllTeacher = (page, sortType, column, size, search) => {
+    if (selectTeacher&& idSubject)
+      getAllVerifiedTeacher(page, sortType, column, size = 6, search);
+    else if(!idSubject ){
+      getAllActiveTeacher(page, sortType, column, size , search);
+    }
 
   }
-
+  const getAllActiveTeacher=(page, sortType, column, size, search)=>{
+    getAllActiveTeacherService(page, sortType, column, size, search).then((res) => {
+      setlistAllTeacher(res.data.content);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
+      const pageNumbers2 = [];
+      for (let i = 1; i <= res.data.totalPages; i++) {
+        pageNumbers2.push(i);
+      }
+      setPageNumbers(pageNumbers2);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable.offset);
+      setNumberOfElements(res.data.numberOfElements);
+      setIsLoading(false);
+    }).catch((error) => {
+      setIsLoading(false);
+      toast.error(t('Get teacher fail !'), {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+      removeCredential();
+      navigate(Path.LOGIN);
+    });
+  }
   const isActive = (index) => {
     return index === activeIndex;
   };
 
   useEffect(() => {
 
-    getAllStudent();
-  }, [checkShowByIdClassroom]);
+    getAllTeacher();
+  }, [checkselectTeacher]);
 
 
   return (
     <>
       <div className=" p-4 h-full min-h-[550px] w-full flex-row flex justify-center">
         <div className="pb-4 dark:border-gray-700">
-          {((idClassRoom && showByIdClassRoom)) && <>
+          {((idSubject && selectTeacher)) && <>
             <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-              {t('List students in subject')}
+              {t('List teacher verified')}
             </div>
           </>}
-          {((!idClassRoom && !showByIdClassRoom) && <>
+          {((!idSubject && !selectTeacher) && <>
             <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
-              {t('All students')}
+              {t('All teachers')}
             </div>
           </>)}
 
@@ -346,10 +262,10 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <input onChange={(e) => { setSearchData(e.target.value) }} type="text" id="table-search" className="block p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg w-80 bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder={t("Search for items")} />
                 </div>
                 <div className='flex gap-4  items-center justify-between'>
-                  {idClassRoom && showByIdClassRoom && (
+                  {idSubject && selectTeacher && (
                     <div className='w-full flex flex-row'>
-                      <Button className="bg-blue-800 w-auto mr-1" handleOnClick={() => { handleClickAdd() }}>{t('Add student to subject')}</Button>
-                      <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>{t('Export list student of subject')}</Button>
+                      {/* <Button className="bg-blue-800 w-auto mr-1" handleOnClick={() => { handleClickAdd() }}>{t('Add teacher manager to subject')}</Button> */}
+                      {/* <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>{t('Export list student of subject')}</Button> */}
                     </div>
                   )}
 
@@ -360,15 +276,15 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                   <tr>
 
                     <th scope="col" className="px-6 py-3 w-[150px]">
-                      {t('ID student')}
+                      {t('ID teacher')}
                     </th>
                     <th scope="col" className={clsx("px-6 py-3 w-[300px]")} >
-                      {t('Student name')}
+                      {t('Teacher name')}
                     </th>
                     <th scope="col" className="px-6 py-3 w-[400px]">
                       {t('Email')}
                     </th>
-                    {!showByIdClassRoom ?
+                    {!selectTeacher ?
                       (
                         <>
 
@@ -381,7 +297,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </>
                       )
                       :
-                      (!idClassRoom && (<>
+                      (!idSubject && (<>
                         <th scope="col" className="px-6 py-3 w-[200px]">
                           {t('Email verified')}
                         </th>
@@ -390,7 +306,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                         </th>
                       </>))
                     }
-                    {idClassRoom && (<th scope="col" className="px-6 py-3 w-[150px]">
+                    {idSubject && (<th scope="col" className="px-6 py-3 w-[150px]">
                       {t('Action')}
                     </th>)}
                   </tr>
@@ -398,8 +314,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                 <tbody>
                   {
                     !isLoading &&
-                    (listAllStudent.length !== 0 && (
-                      listAllStudent.map(
+                    (listAllTeacher.length !== 0 && (
+                      listAllTeacher.map(
                         (item, index) => {
                           console.log(item)
                           return (
@@ -414,14 +330,14 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                               <td className="px-6 py-4 w-[400px] " >
                                 <p className=" truncate font-medium  w-full line-clamp-1" title={item.emailAddress}>{item.emailAddress}</p>
                               </td>
-                              {!showByIdClassRoom ? (<>
+                              {!selectTeacher ? (<>
 
                                 <td className="px-6 py-4 w-[200px]">
                                   <div className="flex items-center">
                                     {
-                                      item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div>
+                                      item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div>
                                         {t('Verified')}</>
-                                      ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-green-500 mr-2"></div>{t('Unverified')}</>)
+                                      ) : (<><div className="h-2.5 w-2.5 rounded-full  bg-red-500 mr-2"></div>{t('Unverified')}</>)
                                     }
                                   </div>
                                 </td>
@@ -433,13 +349,14 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                                       ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2"></div> {t('Inactive')}</>)
                                     }
                                   </div>
-                                </td></>) : (!idClassRoom && (<>
+                                </td></>) : (!idSubject && (<>
 
                                   <td className="px-6 py-4 w-[200px]">
                                     <div className="flex items-center">
                                       {
-                                        item.isEmailAddressVerified === true ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500  mr-2"></div>
-                                          {t('Verified')}</>
+                                        item.isEmailAddressVerified === true ? (<>
+                                        <div className="h-2.5 w-2.5 rounded-full bg-green-500  mr-2">{t('Verified')}</div>
+                                          </>
                                         ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500  mr-2"></div>{t('Unverified')}</>)
                                       }
                                     </div>
@@ -453,22 +370,20 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                                       }
                                     </div>
                                   </td></>))}
-                              {showByIdClassRoom === false && idClassRoom && (
+                              {selectTeacher  && idSubject && (
                                 <td className="px-6 py-4 flex w-[150px]">
-                                  <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">{t('Add')}</p>
-
-
+                                  <p onClick={() => { handleClickAddConfirm(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">{t('Add teacher manager to subject')}</p>
                                 </td>)
 
                               }
-                              {showByIdClassRoom === true && idClassRoom && (
+                              {/* {selectTeacher === true && idSubject && (
                                 <td className="px-6 py-4 flex w-[150px]">
 
                                   <p onClick={() => { handleClickDelete(item) }} className="cursor-pointer font-medium text-blue-600 dark:text-blue-500 hover:underline">{t('Delete')}</p>
 
                                 </td>)
 
-                              }
+                              } */}
                             </tr>
                           )
                         }
@@ -497,7 +412,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
           {
             isLoading ? (<>
               <h1 className='text-sm pl-1'>{t('Loading...')}</h1>
-            </>) : (listAllStudent.length === 0 && (<>
+            </>) : (listAllTeacher.length === 0 && (<>
               <div className="grid w-full h-32 mt-5 px-4 bg-white place-content-center">
                 <div className="text-center">
                   <h1
@@ -505,40 +420,25 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                   >
                     Uh-oh!
                   </h1>
-                  <p className="mt-4 text-gray-500">We cannot find any students.</p>
+                  <p className="mt-4 text-gray-500">{t('We cannot find any teachers.')}</p>
                 </div>
               </div>
             </>))
           }
         </div>
-        {isAdd && (
-          <>
-            <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => { handleClose() }} >
-              <Modal.Header >
-                <div className='flex justify-center mr-[3px]'>
-                  <div className='flex uppercase !text-center text-[23px] font-black'>{t('Add student to subject')}</div>
-                </div>
-                <hr className=" border mx-3 border-gray-300 !outline-none " />
-              </Modal.Header>
-              <Modal.Body className='flex justify-center w-full'>
-                <div className='flex justify-center '>
-                  <Studentmanager showByIdClassRoom={false} />
-                </div>
-              </Modal.Body>
-            </Modal></>)
-        }
+        
         {isAddConfirm && (
           <>
-            <Modal className="bg-opacity-60  z-[101]" show={true} size="md" popup onClose={() => handleClose()} >
+            <Modal className="bg-opacity-60  z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => handleClose()} >
               <Modal.Header />
               <Modal.Body>
                 <form onSubmit={form.handleSubmit(submitForm)}
                   className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                 >
-                  <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
-                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
+                  <InputField name={ID_SUBJECT} disabled form={form} defaultValue={idSubject} />
+                  <InputField name={ID_TEACHER} disabled form={form} defaultValue={teacherSelect.id} />
                   <p className="text-center text-[20px] font-medium text-lime-400 uppercase"> {t('Alert')} </p>
-                  <h1 className='text-[16px] text-center'>{t('Are you sure you want to add this student to this subject?')}</h1>
+                  <h1 className='text-[16px] text-center'>{t('Are you sure you want to add this teacher as the manager of this subject?')}</h1>
                   <div className='invisible py-3'></div>
                   <div className='flex gap-3'>
                     <Button className="bg-blue-500" type='submit'>{t('Confirm')}</Button>
@@ -557,8 +457,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                 <form onSubmit={form.handleSubmit(submitForm)}
                   className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
                 >
-                  <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
-                  <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
+                  <InputField name={ID_SUBJECT} disabled form={form} defaultValue={idSubject} />
+                  <InputField name={ID_TEACHER} disabled form={form} defaultValue={teacherSelect.id} />
                   <p className="text-center text-[20px] font-medium text-yellow-400 uppercase"> {t('Alert')} </p>
                   <h1 className='text-[16px] text-center'>{t('Are you sure want to remove this student from current subject ?')}</h1>
                   <div className='invisible py-3'></div>
@@ -575,4 +475,4 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
 
   )
 }
-export default React.memo(Studentmanager)
+export default React.memo(Teachermanager)

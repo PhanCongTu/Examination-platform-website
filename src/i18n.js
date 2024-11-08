@@ -239,6 +239,16 @@ i18n
           'Total tests': 'Total tests',
           'Total subjects': 'Total subjects',
           'Export list question': 'Export list question',
+          'Confirm submit test': 'Confirm submit test',
+          'Saved': 'Saved',
+          'Add management teacher for subject': 'Add management teacher for subject',
+          'Teacher management': 'Teacher management',
+          'List teacher verified': 'List teacher verified',
+'All teachers':'All teachers',
+
+
+
+
 
           // more translations...
         }
@@ -480,6 +490,27 @@ i18n
           'Total tests': 'Tổng số bài kiểm tra',
           'Total subjects': 'Tổng số môn học',
           'Export list question': 'Xuất danh sách câu hỏi',
+          'Confirm submit test': 'Xác nhận nộp bài',
+          'Saved': 'Đã lưu',
+          'Add management teacher for subject': 'Thêm giáo viên quản lý cho môn học',
+          'Teacher management': 'Quản lý giáo viên',
+          'List teacher verified': 'Danh sách giáo viên đã xác thực',
+          'All teachers':'Tất cả giáo viên',
+          'Add teacher manager to subject':'Thêm giáo viên quản lý cho lớp học',
+          'Are you sure you want to add this teacher as the manager of this subject?':'Bạn có chắc chắn muốn thêm giáo viên này vào làm người quản lý môn học này không?',
+          'We cannot find any teachers.':"Không thể tìm thấy bất kỳ giáo viên.",
+          'Add teacher manage for subject successfuly !':'Thêm giáo viên quản lý môn học thành công !',
+          'Add teacher manage for subject fail !':'Thêm giáo viên quản lý môn học thất bại !',
+          'Get teacher fail !':'Lấy danh sách giáo viên thất bại',
+          'Get a list of failed verified teachers!':'Lấy danh sách giáo viên xác minh thất bại!',
+          "Get list management subject fail !":'Lấy danh sách môn học quản lý thất bại !',
+          "You don't currently manage any subjects.":'Bạn hiện tại chưa quản lý môn học nào.',
+          'Number of subjects being management':'Số lượng môn học đang quản lý',
+          'Number of questions created':'Số lượng câu hỏi đã tạo',
+          'Number of tests created':'Số lượng bài kiểm tra đã tạo',
+          'Number of students being taught':'Số lượng học sinh đang dạy',
+          'Calendar':'Lịch',
+          'Teacher home':'Trang chủ giáo viên'
           // more translations...
         }
       }

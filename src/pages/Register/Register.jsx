@@ -74,14 +74,16 @@ const Register = () => {
                               toast.success(`Sign-up successfully!`, {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
-                              saveCredential(response.data.content) 
+                              console.log(response.data)
+                              saveCredential(response.data) 
                               navigate(Path.VERIFY_EMAIL);
                         })
                         .catch((error) => {
                               toast.error(`Sign-up fail !`, {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
-                              setErrorMessage(error.response.data.message)
+                              // console.log(error.response.data.message)
+                              setErrorMessage(error.response.data?.message)
                         });
             else {
                   setErrorMessage("Password and confirm password do not match");

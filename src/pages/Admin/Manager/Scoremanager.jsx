@@ -43,19 +43,21 @@ export const Scoremanager = () => {
 
   const handleSearch = (data) => {
     getAllStudentScoreByIDExamService(idExam, undefined, undefined, undefined, undefined, data).then((res) => {
+      console.log(res.data)
       setListAllScore(res.data.content);
-      setIsLast(res.data.content.last);
-      setIsFirst(res.data.content.first);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.data.content.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.data.content.totalElements);
-      setOffset(res.data.content.pageable.offset);
-      setNumberOfElements(res.data.content.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
+      console.log(error)
       setIsLoading(false);
       toast.error(t('Get score fail !'), {
         position: toast.POSITION.TOP_RIGHT,
@@ -66,22 +68,23 @@ export const Scoremanager = () => {
 
   }
 
-  const getAllStudentSocreByIdExam = async (page, sortType, column, size, search) => {
+  const getAllStudentScoreByIdExam = async (page, sortType, column, size, search) => {
     getAllStudentScoreByIDExamService(idExam, page, sortType, column, size, search).then((res) => {
-      console.log(res.data.content)
+      console.log(res.data)
       setListAllScore(res.data.content);
-      setIsLast(res.data.content.last);
-      setIsFirst(res.data.content.first);
+      setIsLast(res.data.last);
+      setIsFirst(res.data.first);
       const pageNumbers2 = [];
-      for (let i = 1; i <= res.data.content.totalPages; i++) {
+      for (let i = 1; i <= res.data.totalPages; i++) {
         pageNumbers2.push(i);
       }
       setPageNumbers(pageNumbers2);
-      setTotalElements(res.data.content.totalElements);
-      setOffset(res.data.content.pageable.offset);
-      setNumberOfElements(res.data.content.numberOfElements);
+      setTotalElements(res.data.totalElements);
+      setOffset(res.data.pageable.offset);
+      setNumberOfElements(res.data.numberOfElements);
       setIsLoading(false);
     }).catch((error) => {
+      console.log(error)
       setIsLoading(false);
       toast.error(t('Get score fail !'), {
         position: toast.POSITION.TOP_RIGHT,
@@ -92,7 +95,7 @@ export const Scoremanager = () => {
   }
 
   const getAllScore = (page, sortType, column, size, search) => {
-    getAllStudentSocreByIdExam(page, sortType, column, size, search);
+    getAllStudentScoreByIdExam(page, sortType, column, size, search);
   }
 
   const isActive = (index) => {
@@ -110,7 +113,7 @@ export const Scoremanager = () => {
 
   return (
     <>
-      <div className=" p-4 h-full w-full flex-row flex justify-center items-center">
+      <div className=" p-4 h-full w-full flex-row flex justify-center">
         <div className="p-4 dark:border-gray-700">
           <div className='flex font-bold items-center justify-center pb-3 text-[40px]'>
             {t('Score management')}

@@ -11,6 +11,8 @@ import { toast } from 'react-toastify';
 import { getRoles, loginInService, removeCredential, saveCredential } from '../../services/ApiService';
 import Path from '../../utils/Path';
 import { ROLE_ADMIN, ROLE_TEACHER } from '../../utils/Constant';
+import WebSocketService from '../../services/WebSocketService';
+import { useWebSocket } from '../../routes/WebSocketProvider';
 
 const USERNAME = 'loginName';
 const PASSWORD = 'password';
@@ -18,6 +20,7 @@ const PASSWORD = 'password';
 const Login = () => {
       const navigate = useNavigate();
       document.title = 'Login';
+      const { connectWebSocket } = useWebSocket();
       // Link tham khao userForm
       // https://viblo.asia/p/react-hook-form-xu-ly-form-de-dang-hon-bao-gio-het-RnB5pAdDKPG
       const initialValue = {
@@ -47,8 +50,10 @@ const Login = () => {
             removeCredential();
       }, [])
       const [errorMessage, setErrorMessage] = useState();
-      // True nếu user nhận mình là giáo viên"
 
+      const handleNewNotification = (notification) => {
+            console.log(notification);
+      };
       const submitForm = (body) => {
             // Tạo service để chứa response từ API riêng
 
@@ -58,10 +63,17 @@ const Login = () => {
                         let roles = getRoles()
                         if (roles.includes(ROLE_ADMIN))
                               navigate('/admin/');
-                        else if(roles.includes(ROLE_TEACHER))
+                        else if (roles.includes(ROLE_TEACHER))
                               navigate(Path.TEACHERHOME)
-                        else
+                        else {
+                              // Kết nối WebSocket sau khi đăng nhập thành công
+                              connectWebSocket(response.data.userId);
                               navigate(Path.HOME);
+
+                              //On testing
+                              // navigate(Path.TEACHERHOME)
+
+                        }
                         // else
                         //       navigate(Path.TEACHERHOME)
                   })
@@ -72,7 +84,7 @@ const Login = () => {
                         });
                         setErrorMessage(error?.response?.data?.message)
                   });
-          
+
       };
       return (
             <div className='mt-12'>

@@ -171,12 +171,29 @@ export const sendEmailVerifyCodeService = async () => {
       })
 }
 
-export const getScoreOfStudentService = async (studentId, multipleChoiceTestId) => {
+export const getScoreOfStudentService = async (studentId, multipleChoiceTestId, page, sortType, column, size) => {
       let accessToken = getAccessToken();
+      let getScoreOfStudentParam = getScoreOfStudent ;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (queryParams.length > 0) {
+            getScoreOfStudentParam += '?' + queryParams.join('&');
+      }
       return await axios.request({
             method: 'post',
             maxBodyLength: Infinity,
-            url: getScoreOfStudent,
+            url: getScoreOfStudentParam,
 
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
@@ -189,12 +206,29 @@ export const getScoreOfStudentService = async (studentId, multipleChoiceTestId) 
       })
 }
 
-export const getMyScoreService = async (MCTestId) => {
+export const getMyScoreService = async (MCTestId, page, sortType, column, size) => {
       let accessToken = getAccessToken();
+      let getMyScoreParam = getMyScore + `/${MCTestId}`;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (queryParams.length > 0) {
+            getMyScoreParam += '?' + queryParams.join('&');
+      }
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getMyScore + `/${MCTestId}`,
+            url: getMyScoreParam,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
@@ -243,12 +277,29 @@ export const createTestTrackingService = async (MCTestId) => {
       })
 }
 
-export const getDoMultipleChoiceTestService = async (MCTestId) => {
+export const getDoMultipleChoiceTestService = async (MCTestId, page, sortType, column, size) => {
       let accessToken = getAccessToken();
+      let getDoMultipleChoiceTestParam = getDoMultipleChoiceTest + `/${MCTestId}`;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (queryParams.length > 0) {
+            getDoMultipleChoiceTestParam += '?' + queryParams.join('&');
+      }
       return await axios.request({
             method: 'get',
             maxBodyLength: Infinity,
-            url: getDoMultipleChoiceTest + `/${MCTestId}`,
+            url: getDoMultipleChoiceTestParam ,
             headers: {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"

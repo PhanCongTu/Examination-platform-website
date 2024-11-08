@@ -96,6 +96,9 @@ function MyInfo() {
                               toast.success(t('Update successfully!'), {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
+                              setOldPassword('');
+                              setConfirmNewPassword('');
+                              setNewPassword('');
                         })
                         .catch(err => {
                               setError(err?.message)

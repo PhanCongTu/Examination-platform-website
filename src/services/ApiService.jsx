@@ -18,6 +18,8 @@ const getAllUnActiveQuestionGroupUrl = 'exam/question-group/inactive/subject/{id
 const getAllStudentOfClassUrl = 'exam/student/subject';
 const getAllActiveStudentUrl = 'identity/student';
 const addStudentToClassUrl = 'exam/student/add-to-class';
+const addTeacherManageSubjectUrl = 'exam/teacher/add-manage-subject';
+
 const getAllExamOfClassUrl = 'exam/multiple-choice-test/subject';
 const addExamByIdClassroomUrl = 'exam/multiple-choice-test/create'
 const getAllActiveQuestionUrl = 'exam/question/question-group'
@@ -38,9 +40,127 @@ const deleteStudentOfClassroomUrl = 'exam/student/remove-from-class'
 const exportListStudentOfClassUrl = 'exam/student/export/subject';
 const getQuestionByIdUrl = 'exam/question/{idQuestion}'
 const exportListQuestionOfQuestionGroupUrl = 'exam/question-group/export/questions'
-const importListQuestionIntoQuestionGroupUrl = 'exam/question-group/import/questions'
+const exportScorePDFUrl= 'exam/score/export'
+
+// const importListQuestionIntoQuestionGroupUrl = 'exam/question-group/import/questions'
+const importListQuestionIntoQuestionGroupUrl = 'file/question-group/import/questions'
 const getReportTotalUrl='exam/report/total';
+const getReportTeacherTotalUrl='exam/report/teacher/total';
 const getReportTestsByMonthUrl='exam/report/testByMonth';
+const getAllVerifiedTeacherUrl = 'identity/teacher/verified';
+const getAllActiveTeacherUrl = 'identity/teacher';
+const getAllSubjectManagementUrl='exam/subject/manager'
+const getMCTestOfSubjectManagerAroundTwoWeekUrl='exam/multiple-choice-test/two-weeks-around'
+const getAllExamManageUrl = 'exam/multiple-choice-test/manage';
+export const getAllExamManageService = async (page, sortType, column, size, search, startOfDate, endOfDate) => {
+      let accessToken = getAccessToken();
+      let paramUrl = getAllExamManageUrl ;
+      let queryParams = [];
+      if (startOfDate) {
+            queryParams.push(`startOfDate=${startOfDate}`);
+      }
+      if (endOfDate) {
+            queryParams.push(`endOfDate=${endOfDate}`);
+      }
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+ 
+      if (queryParams.length > 0) {
+            paramUrl += '?' + queryParams.join('&');
+      }
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: paramUrl,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+
+export const getMCTestOfSubjectManagerAroundTwoWeekService = async (page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getMy2WeeksAroundMCTestParam = getMCTestOfSubjectManagerAroundTwoWeekUrl ;
+      let queryParams = [];
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+ 
+      if (queryParams.length > 0) {
+            getMy2WeeksAroundMCTestParam += '?' + queryParams.join('&');
+      }
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: getMy2WeeksAroundMCTestParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+
+export const getAllSubjectManagementService = async (page, sortType, column, size, search ,isPrivate) => {
+      let accessToken = getAccessToken();
+      let getAllSubjectManagementUrlParam = getAllSubjectManagementUrl;
+      let queryParams = [];
+      if (isPrivate)
+            queryParams.push(`isPrivate=${isPrivate}`);
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllSubjectManagementUrlParam += '?' + queryParams.join('&');
+      }
+
+      return await axios.request({
+            method: 'get',
+            url: getAllSubjectManagementUrlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
 
 export const getReportTestsByMonthService = async () => {
       let accessToken = getAccessToken();
@@ -69,7 +189,19 @@ export const getReportTotalService = async () => {
 
       })
 }
+export const getReportTeacherTotalService = async () => {
+      let accessToken = getAccessToken();
 
+      return await axios.request({
+            method: 'get',
+            url: getReportTeacherTotalUrl,
+            headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+
+      })
+}
 export const importListQuestionIntoQuestionGroupService = async (formData, idQuestionGroup) => {
       let accessToken = getAccessToken();
 
@@ -112,6 +244,21 @@ export const exportListQuestionOfQuestionGroupService = async (idQuestionGroup) 
             responseType: 'blob',
       })
 }
+
+export const exportScorePDFService = async (idScore) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: exportScorePDFUrl + '/' + idScore ,
+            headers: {
+
+                  'Authorization': `Bearer ${accessToken}`
+            },
+            responseType: 'blob',
+      })
+}
+
 export const exportListStudentOfClassService = async (idClass, typeExport) => {
       let accessToken = getAccessToken();
       return await axios.request({
@@ -248,6 +395,39 @@ export const getAllActiveQuestionByIdClassroomService = async (id, page, sortTyp
             }
       })
 }
+export const getAllVerifiedTeacherService = async (page, sortType, column, size, search) => {
+      let accessToken = getAccessToken();
+      let getAllVerifiedTeacherUrlParam = getAllVerifiedTeacherUrl;
+      let queryParams = [];
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllVerifiedTeacherUrlParam += '?' + queryParams.join('&');
+      }
+
+      return await axios.request({
+            method: 'get',
+            url: getAllVerifiedTeacherUrlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
 
 export const getAllVerifiedStudentService = async (page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
@@ -374,6 +554,7 @@ export const updateQuestionService = async (body) => {
 
 export const addQuestionByQuestionGroupService = async (body) => {
       let accessToken = getAccessToken();
+      console.log(body);
       return await axios.request({
             method: 'post',
             url: addQuestionByQuestionGroupUrl,
@@ -561,7 +742,19 @@ export const getAllExamOfClassService = async (id, isEnded, page, sortType, colu
             },
       });
 }
-
+export const addTeacherManageSubjectService = async (body) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: addTeacherManageSubjectUrl,
+            data: body,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
 export const addStudentToClassService = async (body) => {
       let accessToken = getAccessToken();
       return await axios.request({
@@ -573,6 +766,39 @@ export const addStudentToClassService = async (body) => {
                   'Authorization': `Bearer ${accessToken}`,
                   'Content-Type': "application/json"
             }
+      })
+}
+export const getAllActiveTeacherService = async (page, sortType, column, size, search) => {
+      let getAllActiveStudentOUrlParam = getAllActiveTeacherUrl;
+      let queryParams = [];
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (search) {
+            queryParams.push(`search=${search}`);
+      }
+      if (queryParams.length > 0) {
+            getAllActiveStudentOUrlParam += '?' + queryParams.join('&');
+      }
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: "get",
+            maxBodyLength: Infinity,
+            url: getAllActiveStudentOUrlParam,
+            headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': `Bearer ${accessToken}`
+            },
       })
 }
 

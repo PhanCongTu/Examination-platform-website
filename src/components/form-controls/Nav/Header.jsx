@@ -3,7 +3,7 @@ import { Link, NavLink, useNavigate } from 'react-router-dom'
 import './headersc'
 import './header.css'
 import { getAccessToken, getRoles, getUserInfo, removeCredential } from '../../../services/ApiService'
-import { ROLE_STUDENT } from '../../../utils/Constant'
+import { ROLE_STUDENT, ROLE_TEACHER } from '../../../utils/Constant'
 import { toast } from 'react-toastify'
 import Path from '../../../utils/Path'
 import UserIcon from '../../../assets/user.png';
@@ -18,9 +18,10 @@ import { useLanguage } from '../../../App'
 import { useTranslation } from 'react-i18next'
 
 export const Header = () => {
-
+    const [isStudent, setIsStudent] = useState(false);
+    const [isTeacher, setIsTeacher] = useState(false);
     const [isHovered, setIsHovered] = useState(false);
-    let [isStudent, setIsStudent] = useState(false);
+    const [roles, setRoles] = useState(getRoles())
     const userInfor = JSON.parse(getUserInfo());
     let navigate = useNavigate();
     const { language, setLanguage } = useLanguage();
@@ -41,15 +42,20 @@ export const Header = () => {
     const handleMouseLeave = () => {
         setIsHovered(false);
     };
-
     const dropdownRef = useRef(null);
 
 
     useEffect(() => {
-        let accessToken = getAccessToken();
-        let roles = getRoles();
-        setIsStudent(accessToken && roles.includes(ROLE_STUDENT))
-    }, [])
+        const accessToken = getAccessToken();
+        if(roles?.includes(ROLE_TEACHER)){
+            setIsTeacher(accessToken && roles.includes(ROLE_TEACHER));
+        }else{
+            setIsStudent(accessToken && roles.includes(ROLE_STUDENT));
+        }
+        
+        
+
+    });
 
     useEffect(() => {
         const handleClickOutside = (event) => {
@@ -81,6 +87,7 @@ export const Header = () => {
         navigate(Path.HOME)
         window.location.reload();
     };
+
     return (
         <div className='shadow-[5px_9px_30px_4px_#00000024] rounded-b-md fixed z-50 w-full'>
             <nav className="relative bg-white border-gray-200 dark:bg-gray-900">
@@ -153,7 +160,7 @@ export const Header = () => {
                     <div className="items-center justify-between hidden md:flex md:w-auto md:order-1" id="navbar-user">
                         <ul className="flex flex-col justify-center items-center font-medium md:p-0 border border-gray-100 rounded-lg bg-gray-50 md:flex-row md:space-x-8 md:mt-0 md:border-0 md:bg-white dark:bg-gray-800 md:dark:bg-gray-900 dark:border-gray-700">
                             <li>
-                                <NavLink to={Path.HOME} className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500">
+                                <NavLink to={roles?.includes(ROLE_TEACHER) ? Path.TEACHERHOME : Path.HOME} className="block py-2 pl-3 pr-4 text-white bg-blue-700 rounded md:bg-transparent md:text-blue-700 md:p-0 md:dark:text-blue-500">
                                     {t('Home')}</NavLink>
                             </li>
                             {!userInfor ?
@@ -162,16 +169,16 @@ export const Header = () => {
                                         {t('Login')}</NavLink>
                                 </li>
                                 : <>
-                                    {isStudent ?
-                                        <li className='relative' onMouseEnter={() => { handleMouseEnter() }}>
-                                            <button
-                                                id="mega-menu-full-dropdown-button" data-collapse-toggle="mega-menu-full-dropdown" className="flex items-center justify-between w-full py-2 pl-3 pr-4  text-gray-900 rounded md:w-auto hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
-                                                {t('Option')}<svg className="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
-                                                    <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
-                                                </svg>
-                                            </button>
-                                        </li>
-                                        : <></>}
+
+                                    <li className='relative' onMouseEnter={() => { handleMouseEnter() }}>
+                                        <button
+                                            id="mega-menu-full-dropdown-button" data-collapse-toggle="mega-menu-full-dropdown" className="flex items-center justify-between w-full py-2 pl-3 pr-4  text-gray-900 rounded md:w-auto hover:bg-gray-100 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0 dark:text-white md:dark:hover:text-blue-500 dark:hover:bg-gray-700 dark:hover:text-blue-500 md:dark:hover:bg-transparent dark:border-gray-700">
+                                            {t('Option')}<svg className="w-2.5 h-2.5 ml-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
+                                            </svg>
+                                        </button>
+                                    </li>
+
                                 </>}
                             <li>
                                 <Menu className=''>
@@ -205,27 +212,67 @@ export const Header = () => {
                     <div onMouseLeave={() => { handleMouseLeave() }} id="mega-menu-full-dropdown" data-carousel="static" className="border-gray-200 shadow-sm bg-gray-50 md:bg-white border-y dark:bg-gray-800 dark:border-gray-600 ">
                         <div className="w-full group absolute bg-white border-b-2 border-[#aeaeae] z-10 overflow-hidden rounded-lg md:h-auto px-4 py-5 mx-auto text-gray-900 dark:text-white sm:grid-cols-2 md:px-6">
                             <ul className='flex flex-row justify-center gap-x-10'>
-                                <li >
-                                    <NavLink to={Path.MY_SUBJECTS} className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <div className="font-semibold">{t("Subject")}</div>
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">{t("Check my all current subjects.")}</span>
-                                    </NavLink >
-                                </li>
+                                {isTeacher && (
+                                    <>
+                                        {/* <li>
+                                            <NavLink to={Path.TEACHER_DASHBOARD} className="py-2 pl-3 pr-4 text-blue-700 dark:text-blue-500">
+                                                {t('Dashboard')}
+                                            </NavLink>
+                                        </li> */}
+                                        <li >
+                                            <NavLink to={Path.TEACHER_SUBJECTS_MANAGE} className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <div className="font-semibold">{t("My subject management")}</div>
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">{t("Check my all current subjects.")}</span>
+                                            </NavLink >
+                                        </li>
+                                        <li >
+                                            <NavLink to={Path.TEACHER_MANAGE_TESTS} className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <div className="font-semibold">{t("Manage tests")}</div>
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">{t("Check my all current subjects.")}</span>
+                                            </NavLink >
+                                        </li>
+                                        {/* <li>
+                                            <NavLink to={Path.TEACHER_SUBJECTS_MANAGE} className="py-2 pl-3 pr-4 text-blue-700 dark:text-blue-500">
+                                                {t('My subject management')}
+                                            </NavLink>
+                                        </li>
+                                        <li>
+                                            <NavLink to={Path.TEACHER_MANAGE_TESTS} className="py-2 pl-3 pr-4 text-blue-700 dark:text-blue-500">
+                                                {t('Manage tests')}
+                                            </NavLink>
+                                        </li> */}
+                                        {/* <li>
+                                            <NavLink to={Path.TEACHER_RESULT_MANAGEMENT} className="py-2 pl-3 pr-4 text-blue-700 dark:text-blue-500">
+                                                {t('Results')}
+                                            </NavLink>
+                                        </li> */}
+                                    </>
+                                )}
+                                {
+                                    isStudent && <>
+                                        <li >
+                                            <NavLink to={Path.MY_SUBJECTS} className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <div className="font-semibold">{t("Subject")}</div>
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">{t("Check my all current subjects.")}</span>
+                                            </NavLink >
+                                        </li>
 
-                                <li >
-                                    <NavLink to={Path.MY_ALL_SCORES}
-                                        className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <div className="font-semibold">{t('Score')}</div>
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">{t('Check the results of the examinations.')}</span>
-                                    </NavLink >
-                                </li>
-                                <li >
-                                    <NavLink to={Path.MY_ALL_TEST}
-                                        className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
-                                        <div className="font-semibold">{t('Test')}</div>
-                                        <span className="text-sm text-gray-500 dark:text-gray-400">{t("Check my all examinations.")}</span>
-                                    </NavLink >
-                                </li>
+                                        <li >
+                                            <NavLink to={Path.MY_ALL_SCORES}
+                                                className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <div className="font-semibold">{t('Score')}</div>
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">{t('Check the results of the examinations.')}</span>
+                                            </NavLink >
+                                        </li>
+                                        <li >
+                                            <NavLink to={Path.MY_ALL_TEST}
+                                                className="block p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                                                <div className="font-semibold">{t('Test')}</div>
+                                                <span className="text-sm text-gray-500 dark:text-gray-400">{t("Check my all examinations.")}</span>
+                                            </NavLink >
+                                        </li>
+                                    </>
+                                }
 
                             </ul>
                             <button type="button" className="absolute top-0 start-0 z-30 flex items-center justify-center h-full px-4 cursor-pointer group focus:outline-none" data-carousel-prev>
