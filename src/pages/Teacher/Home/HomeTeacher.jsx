@@ -79,7 +79,7 @@ export default function HomeTeacher() {
 
     useEffect(() => {
         getReportTeacherTotal();
-        getAllSubjectManagement(undefined,undefined,undefined,6,undefined,true);
+        getAllSubjectManagement(undefined,undefined,undefined,6,undefined,false);
         getMCTestOfSubjectManagerAroundTwoWeek();
     }, []);
 

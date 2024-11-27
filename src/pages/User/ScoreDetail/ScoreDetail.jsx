@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { getRoles, getAccessToken, removeCredential } from '../../../services/ApiService';
+import { getRoles, getAccessToken, removeCredential, exportScorePDFService } from '../../../services/ApiService';
 import classroomPNG from '../../../assets/classroomPNG.png';
 import { NavLink, useNavigate, useParams } from 'react-router-dom';
 import { ROLE_STUDENT } from '../../../utils/Constant';
@@ -27,6 +27,23 @@ function ScoreDetail() {
             removeCredential()
             navigate(Path.LOGIN)
       }
+      const handleClickExport = () => {
+            exportScorePDFService(score.id).then((res) => {
+              console.log(res)
+              const url = window.URL.createObjectURL(new Blob([res]));
+              const link = document.createElement('a');
+              link.href = url;
+              link.setAttribute('download', `ScoreDetail.pdf`); // Tên file
+              document.body.appendChild(link);
+              link.click();
+              link.remove();
+              window.URL.revokeObjectURL(url);
+              console.log("successeee")
+        
+            }).catch((e) => {
+              console.log(e)
+            })
+          }
       useEffect(() => {
             getMyScoreService(testId, page, undefined, undefined, size)
                   .then((res) => {
@@ -78,7 +95,14 @@ function ScoreDetail() {
                                                                               <p><strong>{t('Description')}:</strong> {score?.multipleChoiceTest?.description || 0}</p>
                                                                         </div>
 
-
+                                                                        <div className='flex items-center justify-end'>
+                                                                              <button
+                                                                                    onClick={() => {handleClickExport()}}
+                                                                                    className="bg-green-500 text-white px-4 py-2 rounded mt-4"
+                                                                              >
+                                                                                    {t('Export pdf score')}
+                                                                              </button>
+                                                                        </div>
                                                                   </div>
                                                             </div>
                                                       </div>

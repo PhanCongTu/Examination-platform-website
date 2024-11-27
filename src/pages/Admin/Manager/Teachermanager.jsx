@@ -158,7 +158,27 @@ const Teachermanager = ({ idSubject ,selectTeacher }) => {
         navigate(Path.LOGIN);
       });
     else {
-      
+      getAllActiveTeacherService(undefined, undefined, undefined, undefined, data).then((res) => {
+        setlistAllTeacher(res.data.content);
+        setIsLast(res.data.last);
+        setIsFirst(res.data.first);
+        const pageNumbers2 = [];
+        for (let i = 1; i <= res.data.totalPages; i++) {
+          pageNumbers2.push(i);
+        }
+        setPageNumbers(pageNumbers2);
+        setTotalElements(res.data.totalElements);
+        setOffset(res.data.pageable.offset);
+        setNumberOfElements(res.data.numberOfElements);
+        setIsLoading(false);
+      }).catch((error) => {
+        setIsLoading(false);
+        toast.error(t('Get teacher fail !'), {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        removeCredential();
+        navigate(Path.LOGIN);
+      });
       
     }
   }
@@ -429,11 +449,11 @@ const Teachermanager = ({ idSubject ,selectTeacher }) => {
         
         {isAddConfirm && (
           <>
-            <Modal className="bg-opacity-60  z-[101]" show={true} theme={{ 'content': { 'base': 'w-3/4 ' } }} popup onClose={() => handleClose()} >
+            <Modal className="bg-opacity-60  z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/4 ' } }} popup onClose={() => handleClose()} >
               <Modal.Header />
               <Modal.Body>
                 <form onSubmit={form.handleSubmit(submitForm)}
-                  className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                  className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                 >
                   <InputField name={ID_SUBJECT} disabled form={form} defaultValue={idSubject} />
                   <InputField name={ID_TEACHER} disabled form={form} defaultValue={teacherSelect.id} />

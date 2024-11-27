@@ -36,7 +36,7 @@ export const Questionmanager = (props) => {
     const [questionType, setQuestionType] = useState('');
     const [contentQuestion, setContentQuestion] = useState('');
     const [listAnswer, setListAnswer] = useState([]);
-
+    const [isClickImport, setIsClickImport] = useState(false);
     const [isQuestionGroupOpen, setIsQuestionGroupOpen] = useState(false);
     const [isAdd, setIsAdd] = useState(false);
     const [searchData, setSearchData] = useState('');
@@ -249,6 +249,7 @@ export const Questionmanager = (props) => {
         setQuestionType('')
         setChooseTrue(false)
         setSelectedOption('');
+        setFile(undefined);
         // setAnswer('');
 
 
@@ -297,31 +298,31 @@ export const Questionmanager = (props) => {
             questionGroupId: questionSelect.questionGroupId,
             questionType: questionSelect.questionType
         }
-       
-      
+
+
         if (questionSelect.questionType === 'Multiple Choice') {
             newBody.answers.forEach((item) => {
                 console.log(selectedOption);
                 if (item.idAnswerQuestion == selectedOption) {
                     console.log("Start change option ", selectedOption, item.idAnswerQuestion)
                     item.isCorrect = true;
-    
+
                 }
                 else {
                     item.isCorrect = false;
-    
+
                 }
             })
         } else if (questionSelect.questionType === 'True/False') {
             newBody.answers.forEach((item) => {
                 if (item.answerContent == selectedOption) {
-                    
+
                     item.isCorrect = true;
-    
+
                 }
                 else {
                     item.isCorrect = false;
-    
+
                 }
             })
             // newBody.answers = [
@@ -329,7 +330,7 @@ export const Questionmanager = (props) => {
             //     { answerContent: 'False', isCorrect: selectedOption === 'False', idAnswerQuestion: 2 },
             // ];
         } else if (questionSelect.questionType === 'Fill in the blank') {
-          
+
         }
         console.log(newBody)
         updateQuestionService(newBody).then((res) => {
@@ -733,16 +734,25 @@ export const Questionmanager = (props) => {
 
                                         <Button className="bg-blue-800" handleOnClick={() => { handleClickAdd() }}>{t('Add question')}</Button>
                                         <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>{t('Export list question')}</Button>
+                                        {!isClickImport &&
+                                            <>
+                                                <Button className="bg-yellow-500 w-auto " handleOnClick={() => { setIsClickImport(true) }}>{t('Import list question')}</Button>
 
-                                        <input type="file" id="file-upload" onChange={handleFileChange} className="hidden" />
-                                        <label htmlFor="file-upload" className="bg-blue-500 hover:bg-blue-700 text-white h-10 w-full inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset cursor-pointer rounded-lg">
-                                            {t('Select file')}
-                                        </label>
+                                            </>}
                                         {
-                                            file && <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
-                                                {t('Upload')}
-                                            </button>
-                                        }
+                                            isClickImport && <>
+                                                <input type="file" id="file-upload" accept=".xlsx, .xls" onChange={handleFileChange} className="hidden" />
+                                                <label htmlFor="file-upload" className="bg-blue-500 hover:bg-blue-700 text-white h-10 w-full inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset cursor-pointer rounded-lg">
+                                                    {t('Select file')}
+                                                </label>
+                                                {
+                                                    file && <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
+                                                        {t('Upload')}
+                                                    </button>
+                                                }
+
+                                            </>}
+
 
 
                                     </div>
@@ -1071,7 +1081,7 @@ export const Questionmanager = (props) => {
                                             )}
 
                                             {questionType === 'True/False' && (
-                                                <TrueFalseQuestion  selectedOption={selectedOption} handleOptionChange={handleOptionChange}  />
+                                                <TrueFalseQuestion selectedOption={selectedOption} handleOptionChange={handleOptionChange} />
                                             )}
 
                                             {questionType === 'Fill in the blank' && (
@@ -1096,7 +1106,7 @@ export const Questionmanager = (props) => {
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTION} disabled form={form} defaultValue={questionSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Warning')} </p>

@@ -7,7 +7,7 @@ import PaginationNav from '../../../components/pagination/PaginationNav';
 import { toast } from 'react-toastify';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
-import { addStudentToClassService, deleteStudentOfClassroomService, exportListStudentOfClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, removeCredential } from '../../../services/ApiService';
+import { addStudentToClassService, deleteStudentOfClassroomService, exportListStudentOfClassService, getAllActiveStudentService, getAllStudentOfClassService, getAllVerifiedStudentService, importListStudentIntoSubjectService, removeCredential } from '../../../services/ApiService';
 import Path from '../../../utils/Path';
 import clsx from 'clsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,6 +21,8 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
   const { t } = useTranslation();
   document.title = t('Student management');
   const { idClassRoom } = useParams();
+  const [file, setFile] = useState();
+
   const [isAddConfirm, setIsAddConfirm] = useState(false);
   const [isAdd, setIsAdd] = useState(false);
   const [searchData, setSearchData] = useState('');
@@ -36,12 +38,18 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [checkShowByIdClassroom, setCheckShowByIdClassroom] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
+  const [isClickImport, setIsImport] = useState(false);
   const navigate = useNavigate();
   const initialValue = {
     [ID_CLASSROOM]: '',
     [ID_STUDENT]: ''
   };
-
+  const handleClickImport = () => {
+    setIsImport(true);
+  }
+  const handleFileChange = (e) => {
+    setFile(e.target.files[0]);
+  };
   const handleClose = () => {
     setCheckShowByIdClassroom(true);
     if (isAdd)
@@ -50,6 +58,9 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
       setIsAddConfirm(false);
     if (isDelete)
       setIsDelete(false);
+    if (isClickImport)
+      setIsImport(false);
+    setFile(undefined);
   }
 
   const handleClickAdd = () => {
@@ -129,6 +140,40 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
     setActiveIndex(index + 1);
     getAllStudent(index + 1);
   }
+  const handleUpload = () => {
+    const formData = new FormData();
+    formData.append('file', file);
+    importListStudentIntoSubjectService(formData, idClassRoom).then((res) => {
+      getAllStudentOfClassService(idClassRoom, undefined, undefined, undefined, undefined, undefined).then((res) => {
+        setlistAllStudent(res.data.content);
+        setIsLast(res.data.last);
+        setIsFirst(res.data.first);
+
+        const pageNumbers2 = [];
+        for (let i = 1; i <= res.data.totalPages; i++) {
+          pageNumbers2.push(i);
+        }
+        setPageNumbers(pageNumbers2);
+        setTotalElements(res.data.totalElements);
+        setOffset(res.data.pageable?.offset);
+        setNumberOfElements(res.data.numberOfElements);
+        setIsLoading(false);
+        handleClose();
+      }).catch((error) => {
+        setIsLoading(false);
+        toast.error(t('Search student fail !'), {
+          position: toast.POSITION.TOP_RIGHT,
+        });
+        removeCredential();
+        navigate(Path.LOGIN);
+      });
+      toast.success(t('Import successfuly !'), { position: toast.POSITION.TOP_RIGHT });
+    }).catch(e => {
+      console.log(e)
+      toast.error(t("Cannot import file !"), { position: toast.POSITION.TOP_RIGHT })
+    })
+
+  };
   const handleClickExport = () => {
     exportListStudentOfClassService(idClassRoom, "excel").then((res) => {
       console.log(res)
@@ -349,7 +394,26 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
                   {idClassRoom && showByIdClassRoom && (
                     <div className='w-full flex flex-row'>
                       <Button className="bg-blue-800 w-auto mr-1" handleOnClick={() => { handleClickAdd() }}>{t('Add student to subject')}</Button>
-                      <Button className="bg-green-500 w-auto " handleOnClick={() => { handleClickExport() }}>{t('Export list student of subject')}</Button>
+                      <Button className="bg-green-500 w-auto mr-1 " handleOnClick={() => { handleClickExport() }}>{t('Export list student of subject')}</Button>
+                      {!isClickImport &&
+                        <>
+                          <Button className="bg-yellow-500 w-auto " handleOnClick={() => { handleClickImport() }}>{t('Import list student into subject')}</Button>
+
+                        </>}
+                      {
+                        isClickImport && <>
+                          <input type="file" id="file-upload" onChange={handleFileChange} className="hidden" />
+                          <label htmlFor="file-upload" className="bg-blue-500 hover:bg-blue-700 text-white h-10 w-full inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset cursor-pointer rounded-lg mr-1">
+                            {t('Select file')}
+                          </label>
+                          {
+                            file && <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
+                              {t('Upload')}
+                            </button>
+                          }
+                        </>
+                      }
+
                     </div>
                   )}
 
@@ -533,7 +597,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
               <Modal.Header />
               <Modal.Body>
                 <form onSubmit={form.handleSubmit(submitForm)}
-                  className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                  className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                 >
                   <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
                   <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />
@@ -555,7 +619,7 @@ const Studentmanager = ({ showByIdClassRoom = true }) => {
               <Modal.Header />
               <Modal.Body>
                 <form onSubmit={form.handleSubmit(submitForm)}
-                  className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                  className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                 >
                   <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={idClassRoom} />
                   <InputField name={ID_STUDENT} disabled form={form} defaultValue={studentSelect.id} />

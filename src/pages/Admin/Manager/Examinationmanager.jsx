@@ -34,7 +34,7 @@ const DESCRIPTION = 'description';
 const TARGET_SCORE = 'targetScore';
 
 export const Examinationmanager = () => {
-    const {t}=useTranslation();
+    const { t } = useTranslation();
     document.title = t('Examination management');
     const { idClassRoom } = useParams();
     const navigate = useNavigate();
@@ -295,7 +295,7 @@ export const Examinationmanager = () => {
     };
 
     useEffect(() => {
-       
+
         setCheckExamStart([]);
         if (idClassRoom)
             getAllExam();
@@ -401,11 +401,11 @@ export const Examinationmanager = () => {
                                                                     </MenuHandler>
                                                                     <MenuList className='rounded-md'>
                                                                         {
-                                                                            checkExamStart.indexOf(item.id) > -1 ? 
-                                                                            <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>{t('Show student score has joined exam')}</MenuItem> : (<>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>{t('Edit')}</MenuItem>
-                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >{t('Delete')}</MenuItem>
-                                                                            </>)
+                                                                            checkExamStart.indexOf(item.id) > -1 ?
+                                                                                <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleShowStudentScore(item) }}>{t('Show student score has joined exam')}</MenuItem> : (<>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickEdit(item) }}>{t('Edit')}</MenuItem>
+                                                                                    <MenuItem className='rounded-sm hover:bg-slate-200 flex justify-start p-2' onClick={() => { handleClickDelete(item) }} >{t('Delete')}</MenuItem>
+                                                                                </>)
                                                                         }
                                                                     </MenuList>
                                                                 </Menu>
@@ -446,7 +446,7 @@ export const Examinationmanager = () => {
                                         >
                                             Uh-oh!
                                         </h1>
-                                        <p className="mt-4 text-gray-500">{t('We cannot find any exam in this subject.')}</p>
+                                        <p className="mt-4 text-gray-500">{t('We cannot find any exam.')}</p>
                                     </div>
                                 </div>
                             </>))
@@ -458,7 +458,7 @@ export const Examinationmanager = () => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 "
                                 >
                                     <p className="text-center text-lg font-medium">{t('Edit exam')}</p>
                                     <InputField name={EXAM_NAME} label={t("Exam name")} form={form} defaultValue={examSelect.testName} />
@@ -486,7 +486,7 @@ export const Examinationmanager = () => {
 
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg px-4 pt-4 shadow-lg"
+                                    className="relative mb-0 space-y-4 rounded-lg px-4 pt-4 "
                                 >
                                     <div className='flex items-center justify-center'>
                                         <p className="text-center text-lg font-medium">{t('Add exam')}</p>
@@ -531,7 +531,7 @@ export const Examinationmanager = () => {
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_EXAM} disabled form={form} defaultValue={examSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Warning')} </p>
@@ -548,7 +548,7 @@ export const Examinationmanager = () => {
                 {isShowRamdomQuestion && (
                     <>
                         <Modal className=" bg-opacity-60 z-[103] h-full-[500px]" show={true} theme={{ 'content': { 'base': 'w-[1000px]' } }} popup onClose={() => handleCloseShowChooseRandomQuestion()} >
-
+                            <Modal.Header />
                             <Modal.Body className='flex justify-center flex-col'>
                                 <div className='flex justify-center'>
                                     <QuestionGroup id={idClassRoom} chooseQuestionGroup={setChooseQuestionByQr} listQuestionGrChoose={chooseQuestionByQuestionGr} />

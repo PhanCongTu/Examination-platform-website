@@ -71,7 +71,7 @@ const Register = () => {
                   signUpService(body, isTeacher)
                         .then((response) => {
                               // Link tham khảo Toast: https://blog.logrocket.com/using-react-toastify-style-toast-messages/
-                              toast.success(`Sign-up successfully!`, {
+                              toast.success(`Sign up successfully!`, {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
                               console.log(response.data)
@@ -79,7 +79,7 @@ const Register = () => {
                               navigate(Path.VERIFY_EMAIL);
                         })
                         .catch((error) => {
-                              toast.error(`Sign-up fail !`, {
+                              toast.error(`Sign up fail!`, {
                                     position: toast.POSITION.TOP_RIGHT,
                               });
                               // console.log(error.response.data.message)
@@ -105,7 +105,7 @@ const Register = () => {
                                     <InputField name={DISPLAY_NAME} label="Display name" form={form} />
                                     <InputField name={USERNAME} label="Username" form={form} />
                                     <InputField type='password' name={PASSWORD} label="Password" form={form} />
-                                    <InputField type='password' name={CONFIRMPASSWORD} label="Confirm Password" form={form} />
+                                    <InputField type='password' name={CONFIRMPASSWORD} label="Confirm password" form={form} />
                                     <InputField name={EMAIL} label="Email address" form={form} />
                                     <Toggle handleToggle={getToggle} >I am a teacher.</Toggle>
                                     {errorMessage && <p className="text-sm text-red-500">{errorMessage}</p>}

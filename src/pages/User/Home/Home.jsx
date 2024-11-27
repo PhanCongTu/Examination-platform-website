@@ -46,13 +46,23 @@ function Home() {
             start: firstDayCurrentMonth,
             end: endOfMonth(firstDayCurrentMonth),
       })
-      const { isConnected } = useWebSocket();
+      const { isConnected,isNewNotification } = useWebSocket();
 
       useEffect(() => {
             if (isConnected) {
                   console.log('WebSocket is connected, ready to receive notifications');
             }
-      }, [isConnected]);
+            if(isNewNotification){
+                  getMy2WeeksAroundMCTestService(0, undefined, undefined, 100, undefined)
+                  .then(response => {
+                        setMCTest(response.data)
+                  })
+                  .catch((error) => {
+                        removeCredential();
+                        // navigate(Path.LOGIN);
+                  })
+            }
+      }, [isConnected,isNewNotification]);
 
       function previousMonth() {
             let firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 })

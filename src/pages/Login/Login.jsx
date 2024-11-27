@@ -74,6 +74,9 @@ const Login = () => {
                               // navigate(Path.TEACHERHOME)
 
                         }
+                        toast.success(`Log in successfully !`, {
+                              position: toast.POSITION.TOP_RIGHT,
+                        });
                         // else
                         //       navigate(Path.TEACHERHOME)
                   })

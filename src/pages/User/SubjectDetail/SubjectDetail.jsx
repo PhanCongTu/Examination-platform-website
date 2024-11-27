@@ -216,7 +216,7 @@ function SubjectDetail() {
                                                             >
                                                                   Uh-oh!
                                                             </h1>
-                                                            <p className="mt-4 text-gray-500">{t('We cannot find any exam of this subject.')}</p>
+                                                            <p className="mt-4 text-gray-500">{t('We cannot find any exam.')}</p>
                                                       </div>
                                                 </div>
                                           </> : <></>}

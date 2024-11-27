@@ -79,7 +79,7 @@ function MyInfo() {
                   })
                   .catch(err => {
                         getMyInfo()
-                        toast.error(t('Update fail !'), {
+                        toast.error(t('Update fail!'), {
                               position: toast.POSITION.TOP_RIGHT,
                         });
                   })

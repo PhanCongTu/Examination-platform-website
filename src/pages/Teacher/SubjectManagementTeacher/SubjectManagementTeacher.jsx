@@ -117,7 +117,8 @@ export default function SubjectManagementTeacher() {
             });
     };
 
-    const handleClickActiveClass = (id) => {
+    const handleClickActive = (id) => {
+        console.log("handleClickActive")
         activeClassroomService(id).then((res) => {
             getAllSubjectManagement(page, 10, searchText, sortBy, sortType, filterStatus);
             setIdActive(undefined)
@@ -241,8 +242,8 @@ export default function SubjectManagementTeacher() {
                                     </button>
                                     <button
                                         onClick={() => setIdActive(subject.id)}
-                                        className={`px-3 py-1 ${subject.isEnable ? 'bg-gray-300' : ' bg-yellow-500'} text-white rounded hover:bg-yellow-600`}
-                                        disabled={subject.isEnable}
+                                        className={`px-3 py-1 ${!subject.isEnable ? 'bg-gray-300' : ' bg-yellow-500'} text-white rounded hover:bg-yellow-600`}
+                                        disabled={!subject.isEnable}
                                     >
                                         {t('Active')}
                                     </button>
@@ -419,7 +420,7 @@ export default function SubjectManagementTeacher() {
                             </h1>
                             <div className="flex gap-3 justify-center">
                                 <Button
-                                    handleOnClick={() => handleClickActiveClass(idActive)}
+                                    handleOnClick={() => handleClickActive(idActive)}
                                     className="bg-yellow-500 w-[100px]"
                                 >
                                     {t('Activate')}

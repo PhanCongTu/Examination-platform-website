@@ -121,7 +121,7 @@ const ForgotPassword = () => {
                                                 type={'text'}
                                                 name={EMAIL}
                                                 className={clsx("text-opacity-50", "border-2", "border-gray-500/75", "w-full", "rounded-lg", "p-4", "pe-12", "text-sm", "shadow-sm")}
-                                                placeholder="Enter Email address"
+                                                placeholder="Enter email address"
                                                 onChange={(e) => {
                                                       setEmail(e.target.value);
                                                 }}

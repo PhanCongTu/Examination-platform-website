@@ -44,6 +44,8 @@ const exportScorePDFUrl= 'exam/score/export'
 
 // const importListQuestionIntoQuestionGroupUrl = 'exam/question-group/import/questions'
 const importListQuestionIntoQuestionGroupUrl = 'file/question-group/import/questions'
+const importListStudentIntoSubjectUrl = 'exam/subject/import/students'
+
 const getReportTotalUrl='exam/report/total';
 const getReportTeacherTotalUrl='exam/report/teacher/total';
 const getReportTestsByMonthUrl='exam/report/testByMonth';
@@ -52,6 +54,40 @@ const getAllActiveTeacherUrl = 'identity/teacher';
 const getAllSubjectManagementUrl='exam/subject/manager'
 const getMCTestOfSubjectManagerAroundTwoWeekUrl='exam/multiple-choice-test/two-weeks-around'
 const getAllExamManageUrl = 'exam/multiple-choice-test/manage';
+const getAllMyNotificationUrl='notify/my'
+export const getAllMyNotificationService = async ( page, sortType, column, size) => {
+      let accessToken = getAccessToken();
+      let urlParam = getAllMyNotificationUrl;
+      let queryParams = [];
+  
+
+      if (page) {
+            queryParams.push(`page=${page}`);
+      }
+      if (sortType) {
+            queryParams.push(`sortType=${sortType}`);
+      }
+      if (column) {
+            queryParams.push(`column=${column}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+   
+      if (queryParams.length > 0) {
+           urlParam += '?' + queryParams.join('&');
+      }
+
+      return await axios.request({
+            method: 'get',
+            url: urlParam,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  "Content-Type": 'application/json'
+            }
+      })
+}
+
 export const getAllExamManageService = async (page, sortType, column, size, search, startOfDate, endOfDate) => {
       let accessToken = getAccessToken();
       let paramUrl = getAllExamManageUrl ;
@@ -216,7 +252,20 @@ export const importListQuestionIntoQuestionGroupService = async (formData, idQue
 
       })
 }
+export const importListStudentIntoSubjectService = async (formData, idSubject) => {
+      let accessToken = getAccessToken();
 
+      return await axios.request({
+            method: 'post',
+            url: importListStudentIntoSubjectUrl + '/' + idSubject,
+            data: formData,
+            headers: {
+                  'Content-Type': 'multipart/form-data',
+                  'Authorization': `Bearer ${accessToken}`
+            },
+
+      })
+}
 export const getQuestionByIdService = async (idQuestion) => {
       let accessToken = getAccessToken();
       console.log(idQuestion)
@@ -488,7 +537,7 @@ export const getAllStudentScoreByIDExamService = async (id, page, sortType, colu
       if (queryParams.length > 0) {
             getAllStudentScoreByIDExamUrlParam += '?' + queryParams.join('&');
       }
-
+      console.log(getAllStudentScoreByIDExamUrlParam)
       return await axios.request({
             method: 'get',
             url: getAllStudentScoreByIDExamUrlParam,

@@ -548,7 +548,7 @@ export const QuestionGroup = (props) => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 "
                                 >
                                     <p className="text-center text-lg font-medium"> {t('Edit question group')} </p>
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
@@ -572,7 +572,7 @@ export const QuestionGroup = (props) => {
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 "
                                 >
                                     <p className="text-center text-lg font-medium">{t('Add question group')}</p>
                                     <InputField name={ID_CLASSROOM} disabled form={form} defaultValue={id} />
@@ -595,7 +595,7 @@ export const QuestionGroup = (props) => {
                             <Modal.Header />
                             <Modal.Body>
                                 <div
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg p-4  sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {t('Warning')} </p>
@@ -614,7 +614,7 @@ export const QuestionGroup = (props) => {
                             <Modal.Header />
                             <Modal.Body>
                                 <div
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg p-4  sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_QUESTIONGROUP} disabled form={form} defaultValue={questionGroupSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-green-400 uppercase"> {t('Confirm')} </p>

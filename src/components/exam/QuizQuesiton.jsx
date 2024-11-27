@@ -11,7 +11,6 @@ const QuizQuestion = React.memo(({ question, handleChooseAnswer, indexQuestion, 
         }
     };
 
-    // Helper function to check if the choice is selected
     const isAnswerSelected = (answerContent, questionId) => {
         const submittedAnswer = listSubmitAnswer?.find(ans => ans.questionId === questionId);
         return submittedAnswer ? submittedAnswer.answer === answerContent : false;
@@ -41,9 +40,9 @@ const QuizQuestion = React.memo(({ question, handleChooseAnswer, indexQuestion, 
                                             <label
                                                 htmlFor={`choice-${question.id}-${choice.id}`}
                                                 className={`w-full py-3 ms-2 text-sm font-medium ${question.correctAnswer === choice.answerContent
-                                                        ? "text-green-600 font-semibold" // Đánh dấu đáp án đúng với màu xanh lá
+                                                        ? "text-green-600 font-semibold" 
                                                         : choice.answerContent === question.submittedAnswer && question.correctAnswer !== question.submittedAnswer
-                                                            ? "text-red-500" // Đánh dấu câu trả lời sai bằng màu đỏ
+                                                            ? "text-red-500" 
                                                             : "text-gray-900 dark:text-gray-300"
                                                     }`}
                                                 dangerouslySetInnerHTML={{ __html: choice.answerContent }}
@@ -124,7 +123,7 @@ const QuizQuestion = React.memo(({ question, handleChooseAnswer, indexQuestion, 
                                 dangerouslySetInnerHTML={{ __html: question.submittedAnswer }}
                             />
                             <p className={`mt-2 ${question.submittedAnswer === answer ? 'text-green-500' : 'text-red-500'}`}>
-                                {question.submittedAnswer === answer ? 'Correct!' : `Incorrect! The correct answer is: ${question.submittedAnswer}`}
+                                {question.submittedAnswer === answer ? 'Correct!' : `Incorrect! The correct answer is: ${question.correctAnswer}`}
                             </p>
                         </>
                     )}

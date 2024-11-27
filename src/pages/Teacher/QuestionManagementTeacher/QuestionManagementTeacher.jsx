@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import { deleteQuestionService, addQuestionByQuestionGroupService, updateQuestionService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByQuestionGrIDService, getQuestionByIdService, activeQuestionService } from '../../../services/ApiService';
+import { deleteQuestionService, addQuestionByQuestionGroupService, updateQuestionService, getAllActiveQuestionByQuestionGrIDService, getAllInActiveQuestionByQuestionGrIDService, getQuestionByIdService, activeQuestionService, exportListQuestionOfQuestionGroupService, importListQuestionIntoQuestionGroupService } from '../../../services/ApiService';
 import { toast } from 'react-toastify';
 
 import Button from '../../../components/form-controls/Button/Button';
@@ -30,6 +30,8 @@ export default function QuestionManagementTeacher() {
         [QUESTION_TYPE]: '',
 
     };
+    const [isClickImport, setIsClickImport] = useState(false);
+    const [file, setFile] = useState();
     const { subjectId, questionGroupId } = useParams();
     const [questions, setQuestions] = useState([]);
     const [page, setPage] = useState(0);
@@ -222,7 +224,39 @@ export default function QuestionManagementTeacher() {
         setListAnswer([]);
 
     }
+    const handleFileChange = (e) => {
+        setFile(e.target.files[0]);
+    };
+    const handleUpload = () => {
+        const formData = new FormData();
+        formData.append('file', file);
+        importListQuestionIntoQuestionGroupService(formData, questionGroupId).then((res) => {
+            getAllActiveQuestionByQuestionGrID();
+            toast.success(t('Import successfuly !'), { position: toast.POSITION.TOP_RIGHT });
+        }).catch(e => {
+            console.log(e)
+            toast.error(t("Cannot import file !"), { position: toast.POSITION.TOP_RIGHT })
+        })
 
+    };
+    const handleClickExport = () => {
+        exportListQuestionOfQuestionGroupService(questionGroupId)
+            .then((res) => {
+                console.log(res)
+                const url = window.URL.createObjectURL(new Blob([res]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', `Question.xlsx`); 
+                document.body.appendChild(link);
+                link.click();
+                link.remove();
+                window.URL.revokeObjectURL(url);
+
+
+            }).catch((e) => {
+                toast.error(t('Export question fail !'), { position: toast.POSITION.TOP_RIGHT });
+            })
+    }
     const handleSubmitEdit = () => {
         console.log("handleSubmitEdit");
         console.log(listAnswer)
@@ -352,6 +386,25 @@ export default function QuestionManagementTeacher() {
                 >
                     {t('Add')}
                 </button>
+                <button className="bg-teal-500 px-4 py-2 text-white rounded-lg" onClick={() => { handleClickExport() }}>{t('Export list question')}</button>
+                {!isClickImport &&
+                    <>
+                        <button className="bg-yellow-500 px-4 py-2 text-white rounded-lg " onClick={() => { setIsClickImport(true) }}>{t('Import list question')}</button>
+
+                    </>}
+                {
+                    isClickImport && <>
+                        <input type="file" id="file-upload" accept=".xlsx, .xls" onChange={handleFileChange} className="hidden" />
+                        <label htmlFor="file-upload" className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset cursor-pointer rounded-lg">
+                            {t('Select file')}
+                        </label>
+                        {
+                            file && <button onClick={handleUpload} className="bg-blue-500 hover:bg-blue-700 text-white h-10 inline-flex items-center justify-center py-2 px-4 text-sm font-semibold shadow-sm ring-1 ring-inset rounded-lg">
+                                {t('Upload')}
+                            </button>
+                        }
+
+                    </>}
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md">

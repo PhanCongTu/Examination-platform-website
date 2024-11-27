@@ -1,27 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { getAllStudentScoreByIDExamService, getScoresService } from '../../../services/ApiService';
+import { getAllStudentScoreByIDExamService, getFormattedDateTimeByMilisecond, getScoresService } from '../../../services/ApiService';
 import { toast } from 'react-toastify';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
+import Path from '../../../utils/Path';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
 
 export default function ScoreManagementTeacher() {
     const { t } = useTranslation();
     const {idExam} =useParams();
+    const navigate=useNavigate();
     const [scores, setScores] = useState([]);
     const [page, setPage] = useState(0);
     const [totalPages, setTotalPages] = useState(1);
     const [sortType, setSortType] = useState('asc');
-    const [sortBy, setSortBy] = useState('studentName');
+    const [sortBy, setSortBy] = useState();
     const [searchText, setSearchText] = useState('');
 
     const sortOptions = [
-        { value: 'studentName', label: t('Student Name') },
-        { value: 'score', label: t('Score') },
-        { value: 'examDate', label: t('Exam Date') },
+       
+        { value: 'totalScore', label: t('Score') },
+        { value: 'submittedDate', label: t('Submitted Date') },
     ];
 
     const getAllStudentScoreByIdExam = async (page, sortType, column, size, search) => {
-        getAllStudentScoreByIDExamService(idExam, page, sortType, column, size, search).then((res) => {
+        getAllStudentScoreByIDExamService(idExam, page, sortType,column, size, search).then((res) => {
           console.log(res.data)
           setScores(res.data.content);
           setTotalPages(res.data.totalPages)
@@ -36,7 +40,7 @@ export default function ScoreManagementTeacher() {
       }
 
     useEffect(() => {
-        getAllStudentScoreByIdExam(page, sortType, sortBy,  searchText);
+        getAllStudentScoreByIdExam(page, sortType, sortBy, 12, searchText);
     }, [page, sortBy, sortType, searchText]);
 
     const handleSearch = (e) => {
@@ -46,6 +50,10 @@ export default function ScoreManagementTeacher() {
 
     return (
         <div className="p-6 bg-gray-100 min-h-screen">
+             <div onClick={() => navigate(-1)} className="flex items-center cursor-pointer mb-4">
+                <FontAwesomeIcon className="mr-2" icon={faLeftLong} />
+                {t('Back to previous page')}
+            </div>
             <h1 className="text-2xl font-bold text-gray-700 mb-6">{t('Score Management')}</h1>
             <input
                 type="text"
@@ -54,7 +62,7 @@ export default function ScoreManagementTeacher() {
                 onChange={handleSearch}
                 className="border p-2 rounded bg-white mb-4"
             />
-            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border p-2 rounded bg-white">
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border p-2 rounded bg-white ml-2">
                 {sortOptions.map(option => (
                     <option key={option.value} value={option.value}>
                         {option.label}
@@ -62,15 +70,15 @@ export default function ScoreManagementTeacher() {
                 ))}
             </select>
             <select value={sortType} onChange={(e) => setSortType(e.target.value)} className="border p-2 rounded bg-white ml-2">
-                <option value="asc">{t('Ascending')}</option>
-                <option value="desc">{t('Descending')}</option>
+                <option value='asc'>{t('Ascending')}</option>
+                <option value='desc'>{t('Descending')}</option>
             </select>
             <ul className="space-y-3 mt-4">
                 {scores.map(score => (
-                    <li key={score.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
-                        <p className="text-lg font-medium text-gray-700">{score.studentName}</p>
-                        <p className="text-gray-500">{t('Score')}: {score.score}</p>
-                        <p className="text-gray-500">{t('Exam Date')}: {new Date(score.examDate).toLocaleDateString()}</p>
+                    <li key={score.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200" onClick={()=>navigate(Path.TEACHER_SCORE_DETAIL.replace(":scoreId",score.id),{ state: { studentId: score.studentId, testId: score.testId } })}>
+                        <p className="text-lg font-medium text-gray-700">{score.studentDisplayName}</p>
+                        <p className="text-gray-500">{t('Score')}: {score.totalScore}</p>
+                        <p className="text-gray-500">{t('Submit date')}: {getFormattedDateTimeByMilisecond(score.submittedDate)}</p>
                     </li>
                 ))}
             </ul>

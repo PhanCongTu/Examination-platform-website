@@ -91,7 +91,7 @@ i18n
           'End date': 'End date',
           'Exam time': 'Exam time',
           'Show student score has joined exam': 'Show student score has joined exam',
-          'We cannot find any exam in this subject.': 'We cannot find any exam in this subject.',
+          'We cannot find any exam.': 'We cannot find any exam.',
           'Edit exam': 'Edit exam',
           "Time test (minutes)": "Time test (minutes)",
           "Target score (x/10)": "Target score (x/10)",
@@ -244,7 +244,7 @@ i18n
           'Add management teacher for subject': 'Add management teacher for subject',
           'Teacher management': 'Teacher management',
           'List teacher verified': 'List teacher verified',
-'All teachers':'All teachers',
+          'All teachers': 'All teachers',
 
 
 
@@ -341,7 +341,7 @@ i18n
           'Exam time': 'Thời gian làm bài',
           'Target score': 'Điểm đạt',
           'Show student score has joined exam': 'Xem điểm số học sinh',
-          'We cannot find any exam in this subject.': 'Không thể tìm thấy bất kỳ bài thi nào.',
+          'We cannot find any exam.': 'Không thể tìm thấy bất kỳ bài thi nào.',
           'Edit exam': 'Chỉnh sửa bài kiểm tra',
           "Time test (minutes)": 'Thời gian làm bài (phút)',
           "Target score (x/10)": "Điểm đạt (x/10)",
@@ -495,22 +495,28 @@ i18n
           'Add management teacher for subject': 'Thêm giáo viên quản lý cho môn học',
           'Teacher management': 'Quản lý giáo viên',
           'List teacher verified': 'Danh sách giáo viên đã xác thực',
-          'All teachers':'Tất cả giáo viên',
-          'Add teacher manager to subject':'Thêm giáo viên quản lý cho lớp học',
-          'Are you sure you want to add this teacher as the manager of this subject?':'Bạn có chắc chắn muốn thêm giáo viên này vào làm người quản lý môn học này không?',
-          'We cannot find any teachers.':"Không thể tìm thấy bất kỳ giáo viên.",
-          'Add teacher manage for subject successfuly !':'Thêm giáo viên quản lý môn học thành công !',
-          'Add teacher manage for subject fail !':'Thêm giáo viên quản lý môn học thất bại !',
-          'Get teacher fail !':'Lấy danh sách giáo viên thất bại',
-          'Get a list of failed verified teachers!':'Lấy danh sách giáo viên xác minh thất bại!',
-          "Get list management subject fail !":'Lấy danh sách môn học quản lý thất bại !',
-          "You don't currently manage any subjects.":'Bạn hiện tại chưa quản lý môn học nào.',
-          'Number of subjects being management':'Số lượng môn học đang quản lý',
-          'Number of questions created':'Số lượng câu hỏi đã tạo',
-          'Number of tests created':'Số lượng bài kiểm tra đã tạo',
-          'Number of students being taught':'Số lượng học sinh đang dạy',
-          'Calendar':'Lịch',
-          'Teacher home':'Trang chủ giáo viên'
+          'All teachers': 'Tất cả giáo viên',
+          'Add teacher manager to subject': 'Thêm giáo viên quản lý cho lớp học',
+          'Are you sure you want to add this teacher as the manager of this subject?': 'Bạn có chắc chắn muốn thêm giáo viên này vào làm người quản lý môn học này không?',
+          'We cannot find any teachers.': "Không thể tìm thấy bất kỳ giáo viên.",
+          'Add teacher manage for subject successfuly !': 'Thêm giáo viên quản lý môn học thành công !',
+          'Add teacher manage for subject fail !': 'Thêm giáo viên quản lý môn học thất bại !',
+          'Get teacher fail !': 'Lấy danh sách giáo viên thất bại',
+          'Get a list of failed verified teachers!': 'Lấy danh sách giáo viên xác minh thất bại!',
+          "Get list management subject fail !": 'Lấy danh sách môn học quản lý thất bại !',
+          "You don't currently manage any subjects.": 'Bạn hiện tại chưa quản lý môn học nào.',
+          'Number of subjects being management': 'Số lượng môn học đang quản lý',
+          'Number of questions created': 'Số lượng câu hỏi đã tạo',
+          'Number of tests created': 'Số lượng bài kiểm tra đã tạo',
+          'Number of students being taught': 'Số lượng học sinh đang dạy',
+          'Calendar': 'Lịch',
+          'Teacher home': 'Trang chủ giáo viên',
+          'Load more': 'Tải thêm',
+          'Notification': 'Thông báo',
+          'No notifications': 'Không có thông báo'
+
+
+
           // more translations...
         }
       }

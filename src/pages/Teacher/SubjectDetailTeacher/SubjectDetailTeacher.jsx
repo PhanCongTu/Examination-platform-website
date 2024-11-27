@@ -8,6 +8,9 @@ import { addExamByIdClassroomService, deleteExamService, exportListStudentOfClas
 import Path from '../../../utils/Path';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLeftLong } from '@fortawesome/free-solid-svg-icons';
+import ManualQuestionForm from '../../../components/exam/ManualQuestionForm';
+import RandomQuestionForm from '../../../components/exam/RandomQuestionForm';
+import TestForm from '../../../components/exam/TestForm';
 
 const TEST_NAME = 'test_name';
 const START_DATE = 'start_date';
@@ -32,7 +35,7 @@ export default function SubjectDetailTeacher() {
 
     const [showEditModal, setShowEditModal] = useState(false);
     const [showDeleteModal, setShowDeleteModal] = useState(false);
-    const [selectedTest, setSelectedTest] = useState(null); // Bài kiểm tra đang được sửa hoặc xóa
+    const [selectedTest, setSelectedTest] = useState(null); 
 
     const [showAddModal, setShowAddModal] = useState(false);
     const [newTest, setNewTest] = useState({
@@ -49,7 +52,7 @@ export default function SubjectDetailTeacher() {
     const [students, setStudents] = useState([]);
     const [studentPage, setStudentPage] = useState(0);
     const [studentTotalPages, setStudentTotalPages] = useState(1);
-    const [studentSortBy, setStudentSortBy] = useState('displayName');
+    const [studentSortBy, setStudentSortBy] = useState('display_name');
     const [studentSortType, setStudentSortType] = useState('asc');
     const [studentSearchText, setStudentSearchText] = useState('');
     const handleClose = () => {
@@ -70,6 +73,7 @@ export default function SubjectDetailTeacher() {
     const fetchStudents = () => {
         getAllStudentOfClassService(subjectId, studentPage, studentSortType, studentSortBy, 10, studentSearchText)
             .then((res) => {
+                console.log(res);
                 setStudents(res.data.content);
                 setStudentPage(res.data.number);
                 setStudentTotalPages(res.data.totalPages);
@@ -265,14 +269,19 @@ export default function SubjectDetailTeacher() {
                                         <p>{t('Start date')}: {new Date(test.startDate).toLocaleDateString()}</p>
                                         <p>{t('End date')}: {new Date(test.endDate).toLocaleDateString()}</p>
                                         <p>{t('Duration')}: {test.testingTime} {t('minutes')}</p>
+                                        <p>{t('Target score')}: {test.targetScore}/10</p>
+
                                     </div>
                                 </div>
                                 <div>
                                     <button onClick={() => { setSelectedTest(test); setShowEditModal(true); }} className="bg-yellow-500 text-white px-2 py-1 rounded mr-2">
                                         {t('Edit')}
                                     </button>
-                                    <button onClick={() => { setSelectedTest(test); setShowDeleteModal(true); }} className="bg-red-500 text-white px-2 py-1 rounded">
+                                    <button onClick={() => { setSelectedTest(test); setShowDeleteModal(true); }} className="bg-red-500 text-white px-2 py-1 rounded mr-2">
                                         {t('Delete')}
+                                    </button>
+                                    <button onClick={() => { navigate(Path.TEACHER_MANAGER_SCORE.replace(':idExam?',test.id)) }} className="bg-blue-500 text-white px-2 py-1 rounded">
+                                        {t('Show student score has joined exam')}
                                     </button>
                                 </div>
                             </li>
@@ -312,14 +321,14 @@ export default function SubjectDetailTeacher() {
                     onChange={(e) => setStudentSortBy(e.target.value)}
                     className="border p-2 rounded bg-white mr-4"
                 >
-                    <option value="displayName">{t('Name')}</option>
-                    <option value="emailAddress">{t('Email')}</option>
+                    <option value="display_name">{t('Name')}</option>
+                    <option value="email_address">{t('Email')}</option>
                 </select>
 
                 <select
                     value={studentSortType}
                     onChange={(e) => setStudentSortType(e.target.value)}
-                    className="border p-2 rounded bg-white"
+                    className="border p-2 rounded bg-white mr-4" 
                 >
                     <option value="asc">{t('Ascending')}</option>
                     <option value="desc">{t('Descending')}</option>
@@ -333,8 +342,8 @@ export default function SubjectDetailTeacher() {
                         {students.map(student => (
                             <li key={student.id} className="p-4 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors duration-200">
                                 <p className="text-lg font-medium text-gray-700">{student.displayName}</p>
-                                <p className="text-sm text-gray-500">{student.emailAddress}</p>
-                                <p className="text-sm text-gray-500">{t('Roles')}: {student.roles.join(', ')}</p>
+                                <p className="text-sm text-gray-500">{t('Email')}: {student.emailAddress}</p>
+                                {/* <p className="text-sm text-gray-500">{t('Roles')}: {student.roles.join(', ')}</p> */}
                                 <p className="text-sm text-gray-500">{t('Status')}: {student.isEnable ? t('Enabled') : t('Disabled')}</p>
                             </li>
                         ))}
@@ -364,7 +373,7 @@ export default function SubjectDetailTeacher() {
             </div>
             {showAddModal && (
                 <ModalCustom title={t('Add New Test')} onClose={() => setShowAddModal(false)}>
-                    <AddTestForm
+                    <TestForm
                         test={newTest}
                         onChange={setNewTest}
                         onSave={handleAddTest}
@@ -389,8 +398,37 @@ export default function SubjectDetailTeacher() {
                     </div>
                 </ModalCustom>
             )}
+ {addQuestionModal === 'random' && (
+                <ModalCustom title={t('Add random questions')} onClose={() => setAddQuestionModal(null)}>
+                    <RandomQuestionForm
+                        onSave={(questions) => {
+                            const updatedTest = { ...newTest, randomQuestions: questions };
+                            delete updatedTest.questionIds;
+                            setNewTest(updatedTest);
+                            setAddQuestionModal(null);
+                        }}
+                        subjectId={newTest.subjectId}
+                        
+                        initialSelectedQuestions={newTest?.randomQuestions}
+                    />
+                </ModalCustom>
+            )}
 
-            {addQuestionModal === 'random' && (
+            {addQuestionModal === 'manual' && (
+                <ModalCustom title={t('Add manual questions')} onClose={() => setAddQuestionModal(null)}>
+                    <ManualQuestionForm
+                        onSave={(questionIds) => {
+                            const updatedTest = { ...newTest, questionIds: questionIds };
+                            delete updatedTest.randomQuestions;
+                            setNewTest(updatedTest);
+                            setAddQuestionModal(null);
+                        }}
+                        subjectId={newTest.subjectId}
+                        initialSelectedQuestions={newTest?.questionIds}
+                    />
+                </ModalCustom>
+            )}
+            {/* {addQuestionModal === 'random' && (
                 <ModalCustom title={t('Add random questions')} onClose={() => setAddQuestionModal(null)}>
                     <RandomQuestionForm onSave={(questions) => {
                         setNewTest({ ...newTest, randomQuestions: questions });
@@ -406,11 +444,11 @@ export default function SubjectDetailTeacher() {
                         setAddQuestionModal(null);
                     }} subjectId={subjectId} />
                 </ModalCustom>
-            )}
+            )} */}
 
             {showEditModal && (
                 <ModalCustom title={t('Edit Test')} onClose={() => handleClose()}>
-                    <AddTestForm test={selectedTest} onChange={setSelectedTest} onSave={handleEditTest} />
+                    <TestForm test={selectedTest} onChange={setSelectedTest} onSave={handleEditTest} />
                 </ModalCustom>
             )}
 
@@ -434,374 +472,12 @@ export default function SubjectDetailTeacher() {
 
 
 
-function AddTestForm({ test, onChange, onSave, openAddQuestionModal }) {
-    const { t } = useTranslation();
-    const [errors, setErrors] = useState({});
-    const currentDate = new Date().toISOString().split("T")[0]; // Lấy ngày hiện tại để kiểm tra
-
-    const validateForm = () => {
-        const newErrors = {};
-
-        // Kiểm tra ngày bắt đầu
-        if (test.startDate < currentDate) {
-            newErrors.startDate = t('Start date must be in the future');
-        }
-
-        // Kiểm tra ngày kết thúc
-        if (test.endDate <= test.startDate) {
-            newErrors.endDate = t('End date must be after start date');
-        }
-
-        // Kiểm tra điểm mục tiêu
-        if (test.targetScore < 0 || test.targetScore > 10) {
-            newErrors.targetScore = t('Target score must be between 0 and 10');
-        }
-
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
-
-    const handleSave = () => {
-        if (validateForm()) {
-            onSave();
-
-        }
-    };
-
-  
-
-    return (
-        <div>
-            <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-1">{t('Test Name')}</label>
-                <input
-                    type="text"
-                    placeholder={t('Enter test name')}
-                    value={test.testName}
-                    onChange={(e) => onChange({ ...test, testName: e.target.value })}
-                    className="border p-2 rounded w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-1">{t('Start Date')}</label>
-                <input
-                    type="datetime-local"
-                    value={setFormatDateYYYYMMDD(test.startDate)}
-                    onChange={(e) => onChange({ ...test, startDate: new Date(e.target.value).getTime() })}
-                    className="border p-2 rounded w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                />
-                {errors.startDate && <p className="text-red-500 text-sm">{errors.startDate}</p>}
-            </div>
-
-            <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-1">{t('End Date')}</label>
-                <input
-                    type="datetime-local"
-                  value={setFormatDateYYYYMMDD(test.endDate)}
-                    onChange={(e) => onChange({ ...test, endDate: new Date(e.target.value).getTime() })}
-                    className="border p-2 rounded w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                />
-                {errors.endDate && <p className="text-red-500 text-sm">{errors.endDate}</p>}
-            </div>
-
-            <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-1">{t('Duration (minutes)')}</label>
-                <input
-                    type="number"
-                    placeholder={t('Enter duration')}
-                    value={test.testingTime}
-                    onChange={(e) => onChange({ ...test, testingTime: e.target.value })}
-                    className="border p-2 rounded w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                />
-            </div>
-
-            <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-1">{t('Target Score')}</label>
-                <input
-                    type="number"
-                    placeholder={t('Enter target score')}
-                    value={test.targetScore}
-                    onChange={(e) => onChange({ ...test, targetScore: parseFloat(e.target.value) })}
-                    className="border p-2 rounded w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                />
-                {errors.targetScore && <p className="text-red-500 text-sm">{errors.targetScore}</p>}
-            </div>
-
-            <div className="mb-4">
-                <label className="block text-gray-700 font-semibold mb-1">{t('Description')}</label>
-                <textarea
-                    placeholder={t('Enter description')}
-                    value={test.description}
-                    onChange={(e) => onChange({ ...test, description: e.target.value })}
-                    className="border p-2 rounded w-full focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition duration-200"
-                />
-            </div>
-
-            <button
-                onClick={openAddQuestionModal}
-                className="bg-gray-500 text-white px-4 py-2 rounded mb-4 hover:bg-gray-600 transition duration-200 mr-2 "
-            >
-                {t('Add question')}
-            </button>
-            <button
-                onClick={handleSave}
-                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-200"
-            >
-                {t('Save')}
-            </button>
-        </div>
-    );
-}
 
 
-function RandomQuestionForm({ onSave, subjectId }) {
-    const { t } = useTranslation();
-    const [listQuestionGroup, setListQuestionGroup] = useState([]);
-    const [selectedQuestions, setSelectedQuestions] = useState([]);
-    const [selectedGroups, setSelectedGroups] = useState(new Set());
-    const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(1);
-    const [sortBy, setSortBy] = useState('id');
-    const [sortType, setSortType] = useState('asc');
-    const [search, setSearch] = useState('');
-
-    const handleSelectChange = (groupId) => {
-        setSelectedGroups((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has(groupId)) {
-                newSet.delete(groupId);
-            } else {
-                newSet.add(groupId);
-            }
-            return newSet;
-        });
-    };
-
-    const handleQuantityChange = (groupId, value) => {
-        setSelectedQuestions((prev) => {
-            const updatedQuestions = prev.filter((q) => q.questionGroupId !== groupId);
-            if (value > 0) {
-                updatedQuestions.push({ questionGroupId: groupId, numberOfQuestion: parseInt(value, 10) });
-            }
-            return updatedQuestions;
-        });
-    };
-
-    const fetchQuestionGroups = () => {
-        getAllActivateQuestionGroupService(subjectId, page, sortType, sortBy, 10, search)
-            .then((res) => {
-                setListQuestionGroup(res.data.content);
-                setTotalPages(res.data.totalPages);
-            })
-            .catch(() => {
-                toast.error(t('Get question group failed!'), {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-            });
-    };
-
-    useEffect(() => {
-        fetchQuestionGroups();
-    }, [page, sortBy, sortType, search]);
-
-    return (
-        <div>
-            {/* Search Input */}
-            <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder={t('Search Question Groups')}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border p-2 rounded w-full"
-                />
-            </div>
-
-            {listQuestionGroup.map((group) => (
-                <div key={group.id} className="flex items-center mb-2">
-                    <input
-                        type="checkbox"
-                        checked={selectedGroups.has(group.id)}
-                        onChange={() => handleSelectChange(group.id)}
-                        className="mr-2"
-                    />
-                    <span className="mr-4">{`Group ID: ${group.id} - ${group.name}`}</span>
-                    <input
-                        type="number"
-                        placeholder={t('Number of Questions')}
-                        value={
-                            selectedQuestions.find((q) => q.questionGroupId === group.id)?.numberOfQuestion || ''
-                        }
-                        onChange={(e) => handleQuantityChange(group.id, e.target.value)}
-                        disabled={!selectedGroups.has(group.id)}
-                        className="border p-2 rounded w-full"
-                    />
-                </div>
-            ))}
-
-            {/* Pagination Controls */}
-            <div className="flex items-center justify-between mt-4">
-                <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-                    disabled={page === 0}
-                    className="px-4 py-2 bg-gray-300 text-gray-600 rounded"
-                >
-                    {t('Previous')}
-                </button>
-                <span>{t('Page')} {page + 1} {t('of')} {totalPages}</span>
-                <button
-                    onClick={() => setPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev))}
-                    disabled={page >= totalPages - 1}
-                    className="px-4 py-2 bg-gray-300 text-gray-600 rounded"
-                >
-                    {t('Next')}
-                </button>
-            </div>
-
-            {/* Sort Controls */}
-            <div className="flex items-center mt-4">
-                <label className="mr-2">{t('Sort By')}:</label>
-                <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="border p-2 rounded mr-2"
-                >
-                    <option value="id">{t('ID')}</option>
-                    <option value="name">{t('Name')}</option>
-                </select>
-                <select
-                    value={sortType}
-                    onChange={(e) => setSortType(e.target.value)}
-                    className="border p-2 rounded"
-                >
-                    <option value="asc">{t('Ascending')}</option>
-                    <option value="desc">{t('Descending')}</option>
-                </select>
-            </div>
-
-            <button
-                onClick={() => onSave(selectedQuestions)}
-                className="bg-green-500 text-white px-4 py-2 rounded mt-4"
-            >
-                {t('Save Selected Questions')}
-            </button>
-        </div>
-    );
-}
 
 
-function ManualQuestionForm({ onSave, subjectId }) {
-    const { t } = useTranslation();
-    const [listAllQuestion, setListAllQuestion] = useState([]);
-    const [selectedQuestions, setSelectedQuestions] = useState([]);
-    const [page, setPage] = useState(0);
-    const [totalPages, setTotalPages] = useState(1);
-    const [sortBy, setSortBy] = useState('id');
-    const [sortType, setSortType] = useState('asc');
-    const [search, setSearch] = useState('');
 
-    const handleSelectChange = (questionId) => {
-        setSelectedQuestions((prevSelected) => {
-            if (prevSelected.includes(questionId)) {
-                return prevSelected.filter((id) => id !== questionId);
-            } else {
-                return [...prevSelected, questionId];
-            }
-        });
-    };
 
-    const fetchQuestions = () => {
-        getAllActiveQuestionByIdClassroomService(subjectId, page, sortType, sortBy, 10, search)
-            .then((res) => {
-                setListAllQuestion(res.data.content);
-                setTotalPages(res.data.totalPages);
-            })
-            .catch((error) => {
-                toast.error(t('Get question failed!'), {
-                    position: toast.POSITION.TOP_RIGHT,
-                });
-            });
-    };
 
-    useEffect(() => {
-        fetchQuestions();
-    }, [page, sortBy, sortType, search]);
-
-    return (
-        <div>
-            {/* Search Input */}
-            <div className="mb-4">
-                <input
-                    type="text"
-                    placeholder={t('Search Questions')}
-                    value={search}
-                    onChange={(e) => setSearch(e.target.value)}
-                    className="border p-2 rounded w-full"
-                />
-            </div>
-
-            {/* List of Questions with Checkbox */}
-            {listAllQuestion.map((question) => (
-                <div key={question.id} className="flex items-center mb-2">
-                    <input
-                        type="checkbox"
-                        checked={selectedQuestions.includes(question.id)}
-                        onChange={() => handleSelectChange(question.id)}
-                        className="mr-2"
-                    />
-                    <span className="mr-4">{`Question ID: ${question.id} - ${question.content}`}</span>
-                </div>
-            ))}
-
-            {/* Pagination Controls */}
-            <div className="flex items-center justify-between mt-4">
-                <button
-                    onClick={() => setPage((prev) => Math.max(prev - 1, 0))}
-                    disabled={page === 0}
-                    className="px-4 py-2 bg-gray-300 text-gray-600 rounded"
-                >
-                    {t('Previous')}
-                </button>
-                <span>{t('Page')} {page + 1} {t('of')} {totalPages}</span>
-                <button
-                    onClick={() => setPage((prev) => (prev < totalPages - 1 ? prev + 1 : prev))}
-                    disabled={page >= totalPages - 1}
-                    className="px-4 py-2 bg-gray-300 text-gray-600 rounded"
-                >
-                    {t('Next')}
-                </button>
-            </div>
-
-            {/* Sort Controls */}
-            <div className="flex items-center mt-4">
-                <label className="mr-2">{t('Sort By')}:</label>
-                <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="border p-2 rounded mr-2"
-                >
-                    <option value="id">{t('ID')}</option>
-                    <option value="content">{t('Content')}</option>
-                </select>
-                <select
-                    value={sortType}
-                    onChange={(e) => setSortType(e.target.value)}
-                    className="border p-2 rounded"
-                >
-                    <option value="asc">{t('Ascending')}</option>
-                    <option value="desc">{t('Descending')}</option>
-                </select>
-            </div>
-
-            <button
-                onClick={() => onSave(selectedQuestions)}
-                className="bg-green-500 text-white px-4 py-2 rounded mt-4"
-            >
-                {t('Save Selected Questions')}
-            </button>
-        </div>
-    );
-}
 
 

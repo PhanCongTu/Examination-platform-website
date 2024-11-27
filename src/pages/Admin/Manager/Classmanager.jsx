@@ -462,7 +462,7 @@ export const Classmanager = () => {
                             <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg"
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 "
                                 >
                                     <p className="text-center text-lg font-medium">{t('Edit subject')}</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
@@ -485,7 +485,7 @@ export const Classmanager = () => {
                         <Modal className="bg-opacity-60 z-[101]" theme={{ 'content': { 'base': 'w-1/2 m-10' } }} show={true} popup onClose={() => handleClose()} >
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
-                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg "
+                                    className="relative mb-0 space-y-4 rounded-lg pt-4 px-4  "
                                 >
                                     <p className="text-center text-lg font-medium">{t('Add subject')}</p>
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={''} />
@@ -509,7 +509,7 @@ export const Classmanager = () => {
                             <Modal.Header />
                             <Modal.Body>
                                 <form
-                                    className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                    className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                                 >
                                     <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
                                     <p className="text-center text-[20px] font-medium text-yellow-300 uppercase"> {('Warning')} </p>
@@ -544,7 +544,7 @@ export const Classmanager = () => {
                         <Modal.Header />
                         <Modal.Body>
                             <form
-                                className="relative mb-0 space-y-4 rounded-lg p-4 shadow-lg sm:p-6 lg:p-8"
+                                className="relative mb-0 space-y-4 rounded-lg p-4 sm:p-6 lg:p-8"
                             >
                                 <InputField name={ID_CLASS} disabled form={form} defaultValue={classSelect.id} />
                                 <p className="text-center text-[20px] font-medium text-green-300 uppercase"> {t('Confirm')} </p>

@@ -16,6 +16,7 @@ import vietNamIcon from '../../../assets/vietnam-icon.png';
 import ukIcon from '../../../assets/uk-icon.png';
 import { useLanguage } from '../../../App'
 import { useTranslation } from 'react-i18next'
+import ButtonNotify from '../Button/ButtonNotify'
 
 export const Header = () => {
     const [isStudent, setIsStudent] = useState(false);
@@ -47,13 +48,13 @@ export const Header = () => {
 
     useEffect(() => {
         const accessToken = getAccessToken();
-        if(roles?.includes(ROLE_TEACHER)){
+        if (roles?.includes(ROLE_TEACHER)) {
             setIsTeacher(accessToken && roles.includes(ROLE_TEACHER));
-        }else{
+        } else {
             setIsStudent(accessToken && roles.includes(ROLE_STUDENT));
         }
-        
-        
+
+
 
     });
 
@@ -110,13 +111,13 @@ export const Header = () => {
                         </div>
                     </form>
                     {userInfor ?
-                        <div ref={dropdownRef} className=" relative flex items-center md:order-2">
-                            <div className='relative'>
+                        <div ref={dropdownRef} className=" relative flex items-center md:order-2 ">
+                            <div className='relative mr-3'>
                                 <button onClick={() => { toggleDropdown() }} type="button" className="flex mr-3 text-sm bg-gray-800 rounded-full md:mr-0 focus:ring-4 focus:ring-gray-300 dark:focus:ring-gray-600" id="user-menu-button" aria-expanded="false" data-dropdown-toggle="user-dropdown" data-dropdown-placement="bottom">
                                     <span className="sr-only">{t("Open user menu")}</span>
                                     <img className="w-8 h-8 rounded-full" src={UserIcon} alt="" />
                                 </button>
-                                {/* Dropdown menu */}
+
                                 {showDropdown && (
                                     <div className="z-50 absolute -right-28 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">
                                         <div className="px-4 py-3">
@@ -153,6 +154,10 @@ export const Header = () => {
                                         </ul>
                                     </div>
                                 )}
+
+                            </div>
+                            <div className='relative'>
+                                <ButtonNotify />
                             </div>
                         </div>
                         : <></>}

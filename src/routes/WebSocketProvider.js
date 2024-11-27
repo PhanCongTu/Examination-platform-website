@@ -7,7 +7,7 @@ const WebSocketContext = createContext(null);
 export const WebSocketProvider = ({ children }) => {
     const [stompClient, setStompClient] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
-
+    const [isNewNotification,setIsNewNotification]=useState(false);
     const connectWebSocket = (userId) => {
         const client = Stomp.over(() => new SockJS('http://localhost:8081/notify/ws', null, {
             transports: ['xhr-streaming', 'xhr-polling', 'websocket'],
@@ -18,6 +18,7 @@ export const WebSocketProvider = ({ children }) => {
             console.log('Connected to WebSocket');
             setIsConnected(true);
             client.subscribe(`/topic/notifications/${userId}`, (message) => {
+                setIsNewNotification(true);
                 console.log('Received message:', message);
                 // Xử lý thông báo tại đây
                 let data;
@@ -49,12 +50,13 @@ export const WebSocketProvider = ({ children }) => {
             stompClient.disconnect(() => {
                 console.log('Disconnected from WebSocket');
                 setIsConnected(false);
+                setIsNewNotification(false);
             });
         }
     };
 
     return (
-        <WebSocketContext.Provider value={{ connectWebSocket, disconnectWebSocket, isConnected }}>
+        <WebSocketContext.Provider value={{ connectWebSocket, disconnectWebSocket, isConnected,isNewNotification }}>
             {children}
         </WebSocketContext.Provider>
     );
