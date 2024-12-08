@@ -518,10 +518,11 @@ export const Examinationmanager = () => {
                                     <div className='flex justify-around'>
                                         <ButtonE onClick={() => handleClose()} className="bg-blue-800 !w-[80px]" type='submit'>{t('Submit')}</ButtonE>
                                     </div>
-                                    <div className='flex justify-center m-0'>
-                                        <Modal.Header />
-                                    </div>
+
                                 </form>
+                                <div className='flex justify-center m-0'>
+                                    <Modal.Header />
+                                </div>
                             </Modal.Body>
                         </Modal></>)
                 }

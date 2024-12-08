@@ -18,7 +18,61 @@ const changePassword = 'identity/user/change-password';
 const getAllMyScore = 'exam/score/my';
 const getScoreOfStudent = 'exam/score/student';
 const getAllMyTestSpecifyDay='exam/multiple-choice-test/me/specific-day';
-
+const getMessages='chat/messages/{senderId}/{receiverId}';
+const sendMessage='chat/send';
+const getAllSenderOfReceiver='chat/senders/to/{receiverId}';
+export const getAllSenderOfReceiverService = async (receiverId,page,size) => {
+      let accessToken = getAccessToken();
+      let paramUrl = getAllSenderOfReceiver.replace("{receiverId}",receiverId) ;
+      let queryParams = [];
+      console.log(page)
+      if (page) {
+            console.log(page)
+            queryParams.push(`page=${page}`);
+      }
+      if (size) {
+            queryParams.push(`size=${size}`);
+      }
+      if (queryParams.length > 0) {
+            paramUrl += '?' + queryParams.join('&');
+      }
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: paramUrl,
+            
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+export const sendMessageService = async (data) => {
+      let accessToken = getAccessToken();
+      console.log(accessToken)
+      return await axios.request({
+            method: 'post',
+            maxBodyLength: Infinity,
+            url: sendMessage,
+            data: data,
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
+export const getMessagesService = async (senderId, receiverId) => {
+      let accessToken = getAccessToken();
+      return await axios.request({
+            method: 'get',
+            maxBodyLength: Infinity,
+            url: getMessages.replace('{senderId}',senderId).replace('{receiverId}',receiverId),
+            headers: {
+                  'Authorization': `Bearer ${accessToken}`,
+                  'Content-Type': "application/json"
+            }
+      })
+}
 export const getAllMyTestSpecifyDayService = async (dateFrom, dateTo, page, sortType, column, size, search) => {
       let accessToken = getAccessToken();
       let getAllMyTestSpecifyDayParam = getAllMyTestSpecifyDay;

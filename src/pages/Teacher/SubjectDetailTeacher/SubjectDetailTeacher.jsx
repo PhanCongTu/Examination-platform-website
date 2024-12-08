@@ -210,9 +210,7 @@ export default function SubjectDetailTeacher() {
 
             <div className="bg-white p-6 rounded-lg shadow-md">
                 <div className="flex items-center justify-between mb-4">
-                    <h2 className="text-xl font-semibold text-gray-700">{t('Related Tests')}</h2>
-
-
+                    <h2 className="text-xl font-semibold text-gray-700">{t('Tests')}</h2>
                     <input
                         type="text"
                         placeholder={t('Search tests')}
@@ -304,7 +302,7 @@ export default function SubjectDetailTeacher() {
             </div>
 
             <div className="bg-white p-6 rounded-lg shadow-md mt-6">
-                <h2 className="text-xl font-semibold text-gray-700 mb-4">{t('Students in this Subject')}</h2>
+                <h2 className="text-xl font-semibold text-gray-700 mb-4">{t('Students in this subject')}</h2>
 
 
                 <input

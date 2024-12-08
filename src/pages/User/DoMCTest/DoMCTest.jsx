@@ -110,7 +110,7 @@ function DoMCTest() {
       const handleSubmit = () => {
             submitMCTestService(submitValue)
                   .then(() => navigate(Path.SCORE_DETAIL.replace(':testId', MCTestId)))
-                  .catch(console.error)
+                  .catch(console.log)
                   .finally(() => navigate(Path.SCORE_DETAIL.replace(':testId', MCTestId)));
       };
 

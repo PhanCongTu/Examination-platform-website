@@ -17,6 +17,7 @@ import ukIcon from '../../../assets/uk-icon.png';
 import { useLanguage } from '../../../App'
 import { useTranslation } from 'react-i18next'
 import ButtonNotify from '../Button/ButtonNotify'
+import ChatBox from '../../ChatBox/ChatBox'
 
 export const Header = () => {
     const [isStudent, setIsStudent] = useState(false);
@@ -156,8 +157,11 @@ export const Header = () => {
                                 )}
 
                             </div>
-                            <div className='relative'>
+                            <div className='relative mr-2'>
                                 <ButtonNotify />
+                            </div>
+                            <div className='relative'>
+                                <ChatBox senderId={userInfor.userId} buttonSize={32} />
                             </div>
                         </div>
                         : <></>}
@@ -207,8 +211,7 @@ export const Header = () => {
                                 </Menu>
                             </li>
 
-
-
+                
 
                         </ul>
                     </div>

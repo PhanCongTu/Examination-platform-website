@@ -79,6 +79,7 @@ export default function ExamManagementTeacher() {
     };
     const addExamByIdSubject = (body) => {
         addExamByIdClassroomService(body).then((res) => {
+            console.log(res)
             fetchTests();
             toast.success(t('Add exam successful !'), {
                 position: toast.POSITION.TOP_RIGHT,

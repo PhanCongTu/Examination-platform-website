@@ -69,7 +69,7 @@ export default function QuestionManagementTeacher() {
     const questionTypeOptions = [
         { value: 'Multiple Choice', label: t('Multiple Choice') },
         { value: 'True/False', label: t('True/False') },
-        { value: 'Fill in the Blank', label: t('Fill in the Blank') }
+        { value: 'Fill in the blank', label: t('Fill in the blank') }
     ];
 
     const getAllInActiveQuestionByQuestionGrID = async (page, sortType, column, size, search) => {
@@ -432,7 +432,7 @@ export default function QuestionManagementTeacher() {
                                             setQuestionSelect(question);
                                         }}
                                         className={`px-3 py-1 ${isModeActive ? 'bg-gray-300' : ' bg-yellow-500'} text-white rounded hover:bg-yellow-600`}
-                                        disabled={question.isEnable}
+                                        disabled={isModeActive}
                                     >
                                         {t('Active')}
                                     </button>
@@ -466,7 +466,7 @@ export default function QuestionManagementTeacher() {
             {showAddModal && (
                 <ModalCustom title={t('Add question')} onClose={() => handleClose()}>
                     <div className="flex flex-col space-y-4">
-                        <label htmlFor="questionType" className="font-medium">{t('Select Question Type')}</label>
+                        <label htmlFor="questionType" className="font-medium">{t('Select question type')}</label>
                         <select
                             id="questionType"
                             value={newQuestion.questionType}

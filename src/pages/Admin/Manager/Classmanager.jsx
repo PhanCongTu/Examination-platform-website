@@ -459,7 +459,6 @@ export const Classmanager = () => {
                 {isEdit && (
                     <>
                         <Modal className="bg-opacity-60 z-[101]" show={true} theme={{ 'content': { 'base': 'w-1/2 m-10' } }} popup onClose={() => handleClose()} >
-                            <Modal.Header />
                             <Modal.Body>
                                 <form onSubmit={form.handleSubmit(submitForm)}
                                     className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 "

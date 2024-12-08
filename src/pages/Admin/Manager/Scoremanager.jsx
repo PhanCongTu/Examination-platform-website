@@ -203,7 +203,7 @@ export const Scoremanager = () => {
                                   {
                                     item.isLate === false ? (<><div className="h-2.5 w-2.5 rounded-full bg-green-500 mr-2"></div>
                                       {t('Early')}</>
-                                    ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2">{t('Lated')}</div> </>)
+                                    ) : (<><div className="h-2.5 w-2.5 rounded-full bg-red-500 mr-2">{t('Late')}</div> </>)
                                   }
                                 </div>
                               </td>

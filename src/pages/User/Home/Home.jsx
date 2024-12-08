@@ -25,6 +25,7 @@ import { toast } from 'react-toastify'
 import Path from '../../../utils/Path.jsx'
 import { useTranslation } from 'react-i18next'
 import { useWebSocket } from '../../../routes/WebSocketProvider.js'
+import ChatBox from '../../../components/ChatBox/ChatBox.jsx'
 
 function classNames(...classes) {
       return classes.filter(Boolean).join(' ')
@@ -98,6 +99,7 @@ function Home() {
             <>
                   <Header />
                   <div className="pt-36">
+                        
                         <div className="max-w-md px-4 mx-auto sm:px-7 md:max-w-7xl md:px-6">
                               <div className="md:grid md:grid-cols-3 md:divide-x md:divide-gray-200">
                                     <div className="md:pr-14">
@@ -247,7 +249,7 @@ function Home() {
                         </div>
 
                   </div>
-                  )
+                  
             </>
 
       )

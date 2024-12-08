@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, Link, NavLink, useNavigate } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import {
+    activeQuestionGroupService,
     addQuestionGroupService,
     deleteQuestionGroupService,
     getAllActivateQuestionGroupService,
@@ -98,7 +99,19 @@ export default function QuestionGroupManagementTeacher() {
         setSearchText(e.target.value);
         setPage(0);
     };
+    const handleActiveQuestionGr = (questionGrId) => {
 
+        handleClose();
+        activeQuestionGroupService(questionGrId).then((res) => {
+            toast.success('Active question group successfuly !', { position: toast.POSITION.TOP_RIGHT });
+            getAllQuestionGroup();
+        }).catch((error) => {
+            toast.error(t('Active question group fail !'), {
+                position: toast.POSITION.TOP_RIGHT,
+            });
+        })
+
+    }
     const handleCreateOrUpdate = () => {
         if (editQuestionSet) {
             // Update existing question set
@@ -216,8 +229,15 @@ export default function QuestionGroupManagementTeacher() {
                                     >
                                         {t('Edit')}
                                     </button>
-                                    <button onClick={() => setIdDelete(set.id)} className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600">
+                                    <button onClick={() => setIdDelete(set.id)} className="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 mr-2">
                                         {t('Delete')}
+                                    </button>
+                                    <button
+                                        onClick={() => handleActiveQuestionGr(set.id)}
+                                        className={`px-3 py-1 ${!set.isEnable ? 'bg-gray-300' : ' bg-yellow-500'} text-white rounded hover:bg-yellow-600`}
+                                        disabled={!set.isEnable}
+                                    >
+                                        {t('Active')}
                                     </button>
                                 </div>
                             </li>

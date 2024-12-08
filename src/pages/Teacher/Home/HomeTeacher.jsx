@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { add, eachDayOfInterval, endOfMonth, format, isSameDay, isSameMonth, parse, startOfToday } from 'date-fns';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { getAllSubjectManagementService, getMCTestOfSubjectManagerAroundTwoWeekService, getReportTeacherTotalService } from '../../../services/ApiService';
 import { toast } from 'react-toastify';
+import Path from '../../../utils/Path';
 
 export default function HomeTeacher() {
     const { t } = useTranslation();
+    const navigate=useNavigate();
     document.title = t('Teacher home');
     const [reportTotal,setReport]=useState({
          totalTests:0,
@@ -14,7 +16,6 @@ export default function HomeTeacher() {
          totalStudents:0,
          totalQuestions:0,
     })
-    const [notifications, setNotifications] = useState([]);
     const [subjects, setSubjects] = useState(['Math', 'Physics', 'Chemistry', 'Biology']); 
     const [upcomingTests, setUpcomingTests] = useState([
         { subject: 'Math Test - Class 10A', date: new Date(2023, 9, 12, 10, 0) },
@@ -94,7 +95,7 @@ export default function HomeTeacher() {
             </div>
 
             {/* Section: Notifications */}
-            <div className='bg-white p-6 rounded-lg shadow-md'>
+            {/* <div className='bg-white p-6 rounded-lg shadow-md'>
                 <SectionTitle title={t('Recent Notifications')} />
                 {notifications.length > 0 ? (
                     <ul className='space-y-3'>
@@ -105,14 +106,14 @@ export default function HomeTeacher() {
                 ) : (
                     <p className='text-gray-500'>{t('No new notifications')}</p>
                 )}
-            </div>
+            </div> */}
             {/* Section: Subject List */}
             <div className='bg-white p-6 rounded-lg shadow-md'>
                 <SectionTitle title={t('Subject management')} />
                 <ul className='space-y-3'>
                     
                     {subjects.length>0 && subjects.map((subject, index) => (
-                        <li key={index} className='p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200'>
+                        <li key={index} onClick={()=>navigate(Path.TEACHER_SUBJECT_DETAIL.replace(':subjectId', subject.id))}className='p-4 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors duration-200'>
                             {subject.subjectName}
                         </li>
                     ))}
@@ -122,6 +123,17 @@ export default function HomeTeacher() {
                         )
                     }
                 </ul>
+               
+                {subjects.length >= 4 && (
+                    <div className="mt-4 text-center">
+                        <NavLink
+                            to={Path.TEACHER_SUBJECTS_MANAGE}
+                            className='px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
+                        >
+                            {t('View all subject')}
+                        </NavLink>
+                    </div>
+                )}
             </div>
             {/* Calendar */}
             <div className='bg-white p-6 rounded-lg shadow-md'>

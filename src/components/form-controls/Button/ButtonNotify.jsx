@@ -9,6 +9,7 @@ import Path from "../../../utils/Path";
 
 export default function ButtonNotify() {
     const { t } = useTranslation();
+    const [totalNotifyUnRead,setUnRead]=useState(0);
     const [notifications, setNotifications] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
@@ -18,14 +19,15 @@ export default function ButtonNotify() {
     const containerRef = useRef(null);
     const pageSize = 5;
     const navigate = useNavigate();
-    const { isConnected, isNewNotification } = useWebSocket();
+    const { isConnected, isNewNotification,setIsNewNotification } = useWebSocket();
 
     const fetchNotifications = useCallback(async (page) => {
         setIsLoading(true);
         try {
             const res = await getAllMyNotificationService(page, undefined, undefined, pageSize);
-            setNotifications((prev) => (page === 0 ? res.data.content : [...prev, ...res.data.content]));
-            setTotalPages(res.data.totalPages);
+            setNotifications((prev) => (page === 0 ? res.data.notifications.content : [...prev,...res.data.notifications.content ]));
+            setTotalPages(res.data.notifications.totalPages);
+            setUnRead(res.data.totalUnreadNotifications)
         } catch (e) {
             console.error(e);
         } finally {
@@ -35,7 +37,10 @@ export default function ButtonNotify() {
 
   
     useEffect(() => {
+       
         if (isConnected && isNewNotification && !isFetching) {
+            console.log("1 ",isNewNotification)
+            setIsNewNotification(false);
             setIsFetching(true);
             fetchNotifications(0).finally(() => setIsFetching(false));
         }
@@ -43,8 +48,12 @@ export default function ButtonNotify() {
 
 
     useEffect(() => {
-        if (!isFetching) fetchNotifications(currentPage);
-    }, [currentPage, fetchNotifications, isFetching]);
+        
+        if (!isFetching && !isNewNotification) {
+            console.log(isNewNotification)
+            fetchNotifications(currentPage);
+        }
+    }, [currentPage, fetchNotifications, isFetching, isNewNotification]);
 
    
     useEffect(() => {
@@ -73,9 +82,12 @@ export default function ButtonNotify() {
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
                     <path strokeLinecap="round" strokeLinejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6 6 0 00-9.33-4.77M9 21h6a3 3 0 11-6 0z" />
                 </svg>
-                <span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
-                    {notifications.length}
+                {
+                    totalNotifyUnRead>0 &&<span className="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold leading-none text-white bg-red-600 rounded-full">
+                    {totalNotifyUnRead}
                 </span>
+                }
+                
             </button>
 
             {showNotifications && (

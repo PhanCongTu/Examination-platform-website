@@ -927,7 +927,7 @@ export const Questionmanager = (props) => {
                                                 //     })
                                                 questionSelect && (
                                                     <>
-                                                        <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg ">
+                                                        <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 ">
                                                             {questionType === 'Multiple Choice' && (<>
 
                                                                 <MultipleChoiceAnswers
@@ -1066,8 +1066,8 @@ export const Questionmanager = (props) => {
                                     <>
                                         <p className="text-center text-lg font-medium m-2">{t('Add question')}</p>
                                         <InputField name={QUESTION_GROUP_ID} disabled form={form} defaultValue={props.id} />
-                                        <QuestionContentInput onChange={handleInputContent} />
-                                        <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 shadow-lg ">
+                                        <QuestionContentInput onChange={handleInputContent}  />
+                                        <form onSubmit={form.handleSubmit(submitForm)} className="relative mb-0 space-y-4 rounded-lg pt-4 px-4 ">
                                             {questionType === 'Multiple Choice' && (
 
                                                 <MultipleChoiceAnswers

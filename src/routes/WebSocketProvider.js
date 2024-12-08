@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Stomp } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
+import { getUserInfo } from '../services/ApiService';
 
 const WebSocketContext = createContext(null);
 
@@ -8,6 +9,7 @@ export const WebSocketProvider = ({ children }) => {
     const [stompClient, setStompClient] = useState(null);
     const [isConnected, setIsConnected] = useState(false);
     const [isNewNotification,setIsNewNotification]=useState(false);
+    const userInfor=JSON.parse(getUserInfo());
     const connectWebSocket = (userId) => {
         const client = Stomp.over(() => new SockJS('http://localhost:8081/notify/ws', null, {
             transports: ['xhr-streaming', 'xhr-polling', 'websocket'],
@@ -17,20 +19,20 @@ export const WebSocketProvider = ({ children }) => {
         client.connect({}, () => {
             console.log('Connected to WebSocket');
             setIsConnected(true);
+           
             client.subscribe(`/topic/notifications/${userId}`, (message) => {
                 setIsNewNotification(true);
-                console.log('Received message:', message);
-                // Xử lý thông báo tại đây
+                console.log('Received notification:', message);
+
                 let data;
 
-                // Kiểm tra xem body có phải là Uint8Array không
                 if (message.binaryBody) {
-                    // Chuyển đổi Uint8Array thành chuỗi
+                   
                     const bodyString = new TextDecoder().decode(message.binaryBody);
-                    // Phân tích cú pháp JSON
+                    
                     data = JSON.parse(bodyString);
                 } else {
-                    // Nếu là chuỗi JSON, phân tích trực tiếp
+                   
                     data = JSON.parse(message.body);
                 }
 
@@ -54,9 +56,13 @@ export const WebSocketProvider = ({ children }) => {
             });
         }
     };
-
+    useEffect(()=>{
+      
+        connectWebSocket(userInfor?.userId)
+        return (()=>disconnectWebSocket())
+    },[])
     return (
-        <WebSocketContext.Provider value={{ connectWebSocket, disconnectWebSocket, isConnected,isNewNotification }}>
+        <WebSocketContext.Provider value={{ connectWebSocket, disconnectWebSocket, isConnected,isNewNotification, setIsNewNotification }}>
             {children}
         </WebSocketContext.Provider>
     );

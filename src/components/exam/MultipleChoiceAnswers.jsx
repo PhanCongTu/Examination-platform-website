@@ -96,7 +96,7 @@ export default function MultipleChoiceAnswers({ questionSelect, listAnswer, setL
                             name="options"
                             value={questionSelect ? ans.idAnswerQuestion : ans}
                             className="mr-2"
-                            checked={questionSelect ? (selectedOption == ans.idAnswerQuestion):(selectedOption === ans)}
+                            checked={questionSelect ? (selectedOption == ans.idAnswerQuestion) : (selectedOption === ans)}
                             onChange={(event) => handleOptionChange(event)}
                         />
                         {
@@ -123,7 +123,7 @@ export default function MultipleChoiceAnswers({ questionSelect, listAnswer, setL
                             </button>)
                         }
 
-                        {!questionSelect &&
+                        {questionSelect &&
                             <button
                                 type="button"
                                 onClick={() => handleDeleteAnswer(index)}
@@ -131,7 +131,7 @@ export default function MultipleChoiceAnswers({ questionSelect, listAnswer, setL
                             >
                                 {t('Delete')}
                             </button>
-                            }
+                        }
                     </div>
                 ))}
             </div>

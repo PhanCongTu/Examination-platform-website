@@ -6,19 +6,19 @@ import { WebSocketProvider } from './routes/WebSocketProvider';
 const LanguageContext = createContext();
 function App() {
   const [language, setLanguage] = useState('en');
-  useEffect(() => {
-    const handleBeforeUnload = () => {
-      localStorage.clear(); 
-    };
+  // useEffect(() => {
+  //   const handleBeforeUnload = () => {
+  //     localStorage.clear(); 
+  //   };
 
 
-    window.addEventListener('beforeunload', handleBeforeUnload);
+  //   window.addEventListener('beforeunload', handleBeforeUnload);
 
 
-    return () => {
-      window.removeEventListener('beforeunload', handleBeforeUnload);
-    };
-  }, []);
+  //   return () => {
+  //     window.removeEventListener('beforeunload', handleBeforeUnload);
+  //   };
+  // }, []);
   return (
     <div className="app h-full">
       <LanguageContext.Provider value={{ language, setLanguage }}>
